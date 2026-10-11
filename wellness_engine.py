@@ -2,16 +2,18 @@ from copy import deepcopy
 import random
 import math
 
-VERSION="5.0.0"
+VERSION="5.0.1"
 PROMPT_INTERVAL_SECONDS=4.5
 MINUTES_MIN=3
 MINUTES_MAX=10
+
 SECTIONS={
 "plants":{"es":"Plantas y naturaleza","en":"Plants and nature"},
 "movement":{"es":"Energía y movimiento","en":"Energy and movement"},
 "calm":{"es":"Calma y atención","en":"Calm and mindfulness"},
 "coach":{"es":"Mi coach de bienestar","en":"My wellness coach"}}
-# Cada fila: id, categoría, título ES, título EN, enfoque ES, enfoque EN.
+
+# id, categoría, título ES, título EN, enfoque ES, enfoque EN
 ACTIVITY_DEFS=[
 ("p01","plants","Mira una planta con atención","Observe a plant closely","una planta","a plant"),
 ("p02","plants","Descubre una hierba aromática","Discover an aromatic herb","una hierba aromática","an aromatic herb"),
@@ -92,48 +94,59 @@ ACTIVITY_DEFS=[
 ("w17","coach","Revisa lo que puedes controlar","Review what you can control","lo que puedes controlar","what you can control"),
 ("w18","coach","Elige una acción realista","Choose a realistic action","una acción realista","a realistic action"),
 ("w19","coach","Prepara el siguiente momento","Prepare for the next moment","el siguiente momento","the next moment"),
-("w20","coach","Reconoce tu esfuerzo de hoy","Recognize today's effort","tu esfuerzo de hoy","today's effort")
+("w20","coach","Reconoce tu esfuerzo de hoy","Recognize today's effort","tu esfuerzo de hoy","your effort today")
 ]
-# Indicaciones cortas; cada plantilla se personaliza con el enfoque de la actividad.
+
+# Cada sección contiene directamente las listas ES y EN.
+# Cada lista contiene 20 indicaciones.
 PROMPT_TEMPLATES={
 "plants":{
 "es":[
-"Observa {f} durante unos segundos.","Busca una forma que destaque en {f}.","Encuentra un detalle pequeño en {f}.","Compara dos partes de {f}.","Nota un cambio de color en {f}.","Mira {f} desde otro ángulo seguro.","Elige una parte de {f} y descríbela.","Busca una línea o curva en {f}.","Identifica una zona clara en {f}.","Encuentra una zona oscura en {f}.","Observa qué queda cerca de {f}.","Fíjate en el fondo que rodea {f}.","Elige una palabra para describir {f}.","Mira {f} sin apresurarte.","Descubre algo nuevo en {f}.","Compara lo grande y lo pequeño en {f}.","Observa la luz que alcanza {f}.","Escoge tu detalle favorito de {f}.","Recuerda un detalle que viste en {f}.","Vuelve a mirar {f} una última vez."],
+"Observa {f} durante unos segundos.","Busca una forma que destaque en {f}.","Encuentra un detalle pequeño en {f}.","Compara dos partes de {f}.","Nota un cambio de color en {f}.","Mira {f} desde otro ángulo seguro.","Elige una parte de {f} y descríbela.","Busca una línea o curva en {f}.","Identifica una zona clara en {f}.","Encuentra una zona oscura en {f}.","Observa qué queda cerca de {f}.","Fíjate en el fondo que rodea {f}.","Elige una palabra para describir {f}.","Mira {f} sin apresurarte.","Descubre algo nuevo en {f}.","Compara lo grande y lo pequeño en {f}.","Observa la luz que alcanza {f}.","Escoge tu detalle favorito de {f}.","Recuerda un detalle que viste en {f}.","Vuelve a mirar {f} una última vez."
+],
 "en":[
-"Observe {f} for a few seconds.","Find a shape that stands out in {f}.","Notice one small detail in {f}.","Compare two parts of {f}.","Notice a color change in {f}.","View {f} from another safe angle.","Choose one part of {f} and describe it.","Find a line or curve in {f}.","Identify a bright area in {f}.","Find a darker area in {f}.","Notice what is near {f}.","Look at the background around {f}.","Choose one word to describe {f}.","Look at {f} without rushing.","Discover something new in {f}.","Compare large and small details in {f}.","Notice the light reaching {f}.","Choose your favorite detail in {f}.","Recall one detail you saw in {f}.","Take one final look at {f}."]
-},
+"Observe {f} for a few seconds.","Find a shape that stands out in {f}.","Notice one small detail in {f}.","Compare two parts of {f}.","Notice a color change in {f}.","View {f} from another safe angle.","Choose one part of {f} and describe it.","Find a line or curve in {f}.","Identify a bright area in {f}.","Find a darker area in {f}.","Notice what is near {f}.","Look at the background around {f}.","Choose one word to describe {f}.","Look at {f} without rushing.","Discover something new in {f}.","Compare large and small details in {f}.","Notice the light reaching {f}.","Choose your favorite detail in {f}.","Recall one detail you saw in {f}.","Take one final look at {f}."
+]},
 "movement":{
 "es":[
-"Busca una postura estable antes de mover {f}.","Haz un movimiento pequeño con {f}, si resulta cómodo.","Reduce el recorrido de {f} si lo necesitas.","Mueve {f} despacio y sin rebotes.","Haz una pausa y relaja {f}.","Comprueba si {f} está cómodo.","Cambia suavemente la posición de {f}.","Deja que {f} descanse un momento.","Repite el movimiento solo si te resulta cómodo.","Mantén el movimiento dentro de un rango natural.","Evita forzar {f}.","Respira con normalidad mientras mueves {f}.","Detente si aparece dolor o mareo.","Busca apoyo estable antes de continuar.","Haz el movimiento más pequeño si lo prefieres.","Regresa lentamente a la posición inicial.","Compara cómo se siente {f} al descansar.","Elige la opción más cómoda para {f}.","Termina el movimiento sin prisa.","Quédate en una postura segura y cómoda."],
+"Busca una postura estable antes de mover {f}.","Haz un movimiento pequeño con {f}, si resulta cómodo.","Reduce el recorrido de {f} si lo necesitas.","Mueve {f} despacio y sin rebotes.","Haz una pausa y relaja {f}.","Comprueba si {f} está cómodo.","Cambia suavemente la posición de {f}.","Deja que {f} descanse un momento.","Repite el movimiento solo si te resulta cómodo.","Mantén el movimiento dentro de un rango natural.","Evita forzar {f}.","Respira con normalidad mientras mueves {f}.","Detente si aparece dolor o mareo.","Busca apoyo estable antes de continuar.","Haz el movimiento más pequeño si lo prefieres.","Regresa lentamente a la posición inicial.","Compara cómo se siente {f} al descansar.","Elige la opción más cómoda para {f}.","Termina el movimiento sin prisa.","Quédate en una postura segura y cómoda."
+],
 "en":[
-"Find a stable position before moving {f}.","Make a small movement with {f}, if comfortable.","Use a smaller range for {f} if needed.","Move {f} slowly, without bouncing.","Pause and relax {f}.","Check whether {f} feels comfortable.","Gently change the position of {f}.","Let {f} rest for a moment.","Repeat only if the movement feels comfortable.","Keep the movement within a natural range.","Do not force {f}.","Breathe normally while moving {f}.","Stop if you feel pain or dizziness.","Find stable support before continuing.","Make the movement smaller if you prefer.","Slowly return to the starting position.","Notice how {f} feels while resting.","Choose the most comfortable option for {f}.","Finish the movement without rushing.","Stay in a safe, comfortable position."]
-},
+"Find a stable position before moving {f}.","Make a small movement with {f}, if comfortable.","Use a smaller range for {f} if needed.","Move {f} slowly, without bouncing.","Pause and relax {f}.","Check whether {f} feels comfortable.","Gently change the position of {f}.","Let {f} rest for a moment.","Repeat only if the movement feels comfortable.","Keep the movement within a natural range.","Do not force {f}.","Breathe normally while moving {f}.","Stop if you feel pain or dizziness.","Find stable support before continuing.","Make the movement smaller if you prefer.","Slowly return to the starting position.","Notice how {f} feels while resting.","Choose the most comfortable option for {f}.","Finish the movement without rushing.","Stay in a safe, comfortable position."
+]},
 "calm":{
 "es":[
-"Dirige suavemente la atención hacia {f}.","Observa {f} sin intentar cambiarlo.","Nombra mentalmente un detalle de {f}.","Permite que {f} esté como está.","Vuelve a {f} cuando te distraigas.","No necesitas hacerlo perfectamente con {f}.","Dedica unos segundos a {f}.","Nota qué es sencillo de reconocer en {f}.","Deja pasar cualquier pensamiento y vuelve a {f}.","Elige una palabra neutral para {f}.","Mira o escucha {f} a tu propio ritmo.","Relaja la mandíbula si te resulta cómodo.","Deja caer los hombros sin forzarlos.","Respira como lo haces normalmente.","Siente el apoyo de la superficie bajo tu cuerpo.","Observa un detalle presente en {f}.","No hace falta sentir algo especial con {f}.","Permite que la atención vuelva a {f}.","Agradece este breve momento de pausa.","Termina observando {f} una vez más."]
-},
-"en":{
-"es":[
-"Dirige suavemente la atención hacia {f}.","Observa {f} sin intentar cambiarlo.","Nombra mentalmente un detalle de {f}.","Permite que {f} esté como está.","Vuelve a {f} cuando te distraigas.","No necesitas hacerlo perfectamente con {f}.","Dedica unos segundos a {f}.","Nota qué es sencillo de reconocer en {f}.","Deja pasar cualquier pensamiento y vuelve a {f}.","Elige una palabra neutral para {f}.","Mira o escucha {f} a tu propio ritmo.","Relaja la mandíbula si te resulta cómodo.","Deja caer los hombros sin forzarlos.","Respira como lo haces normalmente.","Siente el apoyo de la superficie bajo tu cuerpo.","Observa un detalle presente en {f}.","No hace falta sentir algo especial con {f}.","Permite que la atención vuelva a {f}.","Agradece este breve momento de pausa.","Termina observando {f} una vez más."]
-},
+"Dirige suavemente la atención hacia {f}.","Observa {f} sin intentar cambiarlo.","Nombra mentalmente un detalle de {f}.","Permite que {f} esté como está.","Vuelve a {f} cuando te distraigas.","No necesitas hacerlo perfectamente con {f}.","Dedica unos segundos a {f}.","Nota qué es sencillo de reconocer en {f}.","Deja pasar cualquier pensamiento y vuelve a {f}.","Elige una palabra neutral para {f}.","Mira o escucha {f} a tu propio ritmo.","Relaja la mandíbula si te resulta cómodo.","Deja caer los hombros sin forzarlos.","Respira como lo haces normalmente.","Siente el apoyo de la superficie bajo tu cuerpo.","Observa un detalle presente en {f}.","No hace falta sentir algo especial con {f}.","Permite que la atención vuelva a {f}.","Agradece este breve momento de pausa.","Termina observando {f} una vez más."
+],
+"en":[
+"Direct your attention gently toward {f}.","Notice {f} without trying to change it.","Silently name one detail of {f}.","Allow {f} to be just as it is.","Return to {f} when your mind wanders.","You do not need to do {f} perfectly.","Spend a few seconds with {f}.","Notice what is easy to recognize in {f}.","Let a thought pass, then return to {f}.","Choose a neutral word for {f}.","Look at or listen to {f} at your own pace.","Relax your jaw if that feels comfortable.","Let your shoulders drop without forcing them.","Breathe in your usual, natural way.","Feel the surface supporting your body.","Notice one detail present in {f}.","You do not need to feel anything special about {f}.","Allow your attention to return to {f}.","Appreciate this brief moment of pause.","Finish by noticing {f} one more time."
+]},
 "coach":{
 "es":[
-"Define un resultado concreto para {f}.","Identifica el primer paso de {f}.","Piensa qué necesitas preparar para {f}.","Reduce {f} a una acción que puedas explicar.","Decide cuándo revisarás {f}.","Elige una opción realista para {f}.","Separa lo urgente de lo que puede esperar en {f}.","Nombra un obstáculo práctico de {f}.","Busca una forma sencilla de facilitar {f}.","Comprueba si el tiempo para {f} es realista.","Decide qué significa completar {f}.","Elige un recurso que ayude con {f}.","Si hace falta, piensa a quién pedir ayuda con {f}.","Evita intentar resolver todo {f} a la vez.","Haz que el primer paso de {f} sea pequeño.","Revisa qué parte de {f} depende de ti.","Escoge una fecha o momento para {f}.","Imagina cómo comprobarás el avance de {f}.","Ajusta {f} si las circunstancias cambian.","Resume tu siguiente acción para {f}."]
-},
-"en":{
-"es":[
-"Define a concrete result for {f}.","Identify the first step for {f}.","Think about what you need to prepare for {f}.","Reduce {f} to an action you can explain.","Decide when you will review {f}.","Choose a realistic option for {f}.","Separate urgent parts from what can wait in {f}.","Name one practical obstacle to {f}.","Find a simple way to make {f} easier.","Check whether the time for {f} is realistic.","Decide what completing {f} means.","Choose a resource that can help with {f}.","If needed, decide whom to ask for help with {f}.","Avoid trying to solve all of {f} at once.","Make the first step for {f} small.","Review which part of {f} you can control.","Choose a date or time for {f}.","Picture how you will check progress on {f}.","Adjust {f} if circumstances change.","Summarize your next action for {f}."]
-}}
+"Define un resultado concreto para {f}.","Identifica el primer paso de {f}.","Piensa qué necesitas preparar para {f}.","Reduce {f} a una acción que puedas explicar.","Decide cuándo revisarás {f}.","Elige una opción realista para {f}.","Separa lo urgente de lo que puede esperar en {f}.","Nombra un obstáculo práctico de {f}.","Busca una forma sencilla de facilitar {f}.","Comprueba si el tiempo para {f} es realista.","Decide qué significa completar {f}.","Elige un recurso que ayude con {f}.","Si hace falta, piensa a quién pedir ayuda con {f}.","Evita intentar resolver todo {f} a la vez.","Haz que el primer paso de {f} sea pequeño.","Revisa qué parte de {f} depende de ti.","Escoge una fecha o momento para {f}.","Imagina cómo comprobarás el avance de {f}.","Ajusta {f} si las circunstancias cambian.","Resume tu siguiente acción para {f}."
+],
+"en":[
+"Define a concrete result for {f}.","Identify the first step for {f}.","Think about what you need to prepare for {f}.","Reduce {f} to an action you can explain.","Decide when you will review {f}.","Choose a realistic option for {f}.","Separate urgent parts from what can wait in {f}.","Name one practical obstacle to {f}.","Find a simple way to make {f} easier.","Check whether the time for {f} is realistic.","Decide what completing {f} means.","Choose a resource that can help with {f}.","If needed, decide whom to ask for help with {f}.","Avoid trying to solve all of {f} at once.","Make the first step for {f} small.","Review which part of {f} you can control.","Choose a date or time for {f}.","Picture how you will check progress on {f}.","Adjust {f} if circumstances change.","Summarize your next action for {f}."
+]}}
 
-# Textos de calma en inglés, para que el cambio de idioma sea completo.
-PROMPT_TEMPLATES["calm"]["en"]=[
-"Direct your attention gently toward {f}.","Notice {f} without trying to change it.","Silently name one detail of {f}.","Allow {f} to be just as it is.","Return to {f} when your mind wanders.","You do not need to do {f} perfectly.","Spend a few seconds with {f}.","Notice what is easy to recognize in {f}.","Let a thought pass, then return to {f}.","Choose a neutral word for {f}.","Look at or listen to {f} at your own pace.","Relax your jaw if that feels comfortable.","Let your shoulders drop without forcing them.","Breathe in your usual, natural way.","Feel the surface supporting your body.","Notice one detail present in {f}.","You do not need to feel anything special about {f}.","Allow your attention to return to {f}.","Appreciate this brief moment of pause.","Finish by noticing {f} one more time."
-]
-# Genera 20 indicaciones breves y personalizadas para cada actividad.
+# Comprueba la estructura antes de generar el catálogo.
+for _section in SECTIONS:
+    if _section not in PROMPT_TEMPLATES:
+        raise ValueError(f"Falta la sección de plantillas: {_section}")
+    for _lang in ("es","en"):
+        if _lang not in PROMPT_TEMPLATES[_section]:
+            raise ValueError(f"Falta el idioma {_lang} en {_section}")
+        if len(PROMPT_TEMPLATES[_section][_lang])!=20:
+            raise ValueError(f"La sección {_section}, idioma {_lang}, debe tener 20 plantillas")
+        if any("{f}" not in _template for _template in PROMPT_TEMPLATES[_section][_lang]):
+            raise ValueError(f"Hay una plantilla sin el marcador {{f}} en {_section}/{_lang}")
+
 def _make_steps(section,focus_es,focus_en,lang):
+    lang=lang if lang in ("es","en") else "es"
     focus=focus_es if lang=="es" else focus_en
     templates=PROMPT_TEMPLATES[section][lang]
-    return [s.format(f=focus) for s in templates]
+    return [template.format(f=focus) for template in templates]
+
 def _description(section,focus_es,focus_en,lang):
     focus=focus_es if lang=="es" else focus_en
     if section=="plants":
@@ -143,7 +156,8 @@ def _description(section,focus_es,focus_en,lang):
     if section=="calm":
         return (f"Una pausa breve para prestar atención a {focus}, sin exigirte un resultado ni cambiar cómo te sientes." if lang=="es" else f"A short pause to pay attention to {focus}, without demanding a result or trying to change how you feel.")
     return (f"Una práctica concreta para organizar {focus} en pasos sencillos, realistas y manejables." if lang=="es" else f"A practical exercise to organize {focus} into simple, realistic, manageable steps.")
-# RAW mantiene la estructura de ocho elementos que ya utilizaba la versión anterior.
+
+# RAW conserva la estructura de ocho elementos.
 RAW=[]
 for aid,section,title_es,title_en,focus_es,focus_en in ACTIVITY_DEFS:
     desc_es=_description(section,focus_es,focus_en,"es")
@@ -151,16 +165,20 @@ for aid,section,title_es,title_en,focus_es,focus_en in ACTIVITY_DEFS:
     steps_es=_make_steps(section,focus_es,focus_en,"es")
     steps_en=_make_steps(section,focus_es,focus_en,"en")
     RAW.append((aid,section,title_es,title_en,desc_es,desc_en,steps_es,steps_en))
+
 RAW_BY_ID={item[0]:item for item in RAW}
 SECTION_KIND={"plants":"nature","movement":"energy","calm":"calm","coach":"coach"}
+
 def _normalize_lang(lang):
     return lang if lang in ("es","en") else "es"
+
 def _normalize_minutes(minutes,default=3):
     try:
         value=int(minutes)
     except (TypeError,ValueError,OverflowError):
         value=default
     return max(MINUTES_MIN,min(MINUTES_MAX,value))
+
 def _activity(raw,lang="es"):
     lang=_normalize_lang(lang)
     aid,section,title_es,title_en,desc_es,desc_en,steps_es,steps_en=raw
@@ -176,21 +194,22 @@ def _activity(raw,lang="es"):
         "step_count":20,
         "prompt_interval_seconds":PROMPT_INTERVAL_SECONDS
     }
+
 def get_catalog():
     return [
         {"id":key,"title":value["es"],"title_en":value["en"],
-         "count":sum(1 for a in RAW if a[1]==key)}
+         "count":sum(1 for activity in RAW if activity[1]==key)}
         for key,value in SECTIONS.items()
     ]
+
 def get_activities(lang="es",section="all"):
     lang=_normalize_lang(lang)
     valid_sections=set(SECTIONS)|{"all"}
     section=section if section in valid_sections else "all"
     return [_activity(a,lang) for a in RAW if section=="all" or a[1]==section]
+
 def _session_pool(base,lang):
     section=base[1]
-    # La secuencia utiliza hasta siete actividades de la misma categoría.
-    # Cada una aporta 20 frases cortas personalizadas: hasta 140 indicaciones.
     same_section=[a for a in RAW if a[1]==section and a[0]!=base[0]]
     random.SystemRandom().shuffle(same_section)
     selected=[base]+same_section[:6]
@@ -204,7 +223,6 @@ def _session_pool(base,lang):
                 "activity_title":activity["title"],
                 "prompt_number":index+1
             })
-    # Evita duplicados textuales dentro de una sesión.
     unique={}
     for prompt in pool:
         key=" ".join(prompt["text"].casefold().split())
@@ -213,6 +231,7 @@ def _session_pool(base,lang):
     result=list(unique.values())
     random.SystemRandom().shuffle(result)
     return result,selected
+
 def get_session(lang="es",kind="pause",minutes=3):
     lang=_normalize_lang(lang)
     minutes=_normalize_minutes(minutes)
@@ -222,13 +241,11 @@ def get_session(lang="es",kind="pause",minutes=3):
     }
     base=RAW_BY_ID[mapping.get(kind,"c01")]
     pool,selected=_session_pool(base,lang)
-    # Una indicación cada 4,5 segundos aproximadamente.
     target=max(1,math.ceil(minutes*60/PROMPT_INTERVAL_SECONDS))
-    # Hay hasta 140 frases disponibles para sesiones de hasta 10 minutos.
     steps=[p["text"] for p in pool[:target]]
-    # Respaldo por si se modifica el catálogo y quedan menos frases únicas.
     if len(steps)<target:
-        remaining=[p["text"] for p in pool if p["text"] not in set(steps)]
+        used=set(steps)
+        remaining=[p["text"] for p in pool if p["text"] not in used]
         steps.extend(remaining[:target-len(steps)])
     activity=_activity(base,lang)
     activity.update({
@@ -251,26 +268,36 @@ def get_session(lang="es",kind="pause",minutes=3):
         }
     })
     return activity
+
 PLANTS={
 "mint":{
 "es":("Menta","Mentha spp.","Hierba aromática utilizada en alimentos e infusiones.","Observa la forma y el aroma sin ingerirla.","Puede empeorar el reflujo en algunas personas. No ingieras aceites esenciales."),
-"en":("Mint","Mentha spp.","An aromatic herb used in foods and infusions.","Observe its shape and scent without ingesting it.","It may worsen reflux for some people. Do not ingest essential oils.")},
+"en":("Mint","Mentha spp.","An aromatic herb used in foods and infusions.","Observe its shape and scent without ingesting it.","It may worsen reflux for some people. Do not ingest essential oils.")
+},
 "chamomile":{
 "es":("Manzanilla","Matricaria chamomilla","Se consume tradicionalmente como infusión.","Observa los detalles de una flor.","Puede provocar alergias, especialmente en personas sensibles a la familia Asteraceae."),
-"en":("Chamomile","Matricaria chamomilla","Traditionally consumed as an infusion.","Notice the details of a flower.","It may cause allergies, especially in people sensitive to Asteraceae plants.")},
+"en":("Chamomile","Matricaria chamomilla","Traditionally consumed as an infusion.","Notice the details of a flower.","It may cause allergies, especially in people sensitive to Asteraceae plants.")
+},
 "rosemary":{
 "es":("Romero","Salvia rosmarinus","Hierba aromática utilizada en cocina y jardinería.","Observa sus hojas y su forma.","No ingieras aceite esencial y evita el contacto con los ojos."),
-"en":("Rosemary","Salvia rosmarinus","An aromatic herb used in cooking and gardening.","Observe its leaves and shape.","Do not ingest essential oil and avoid eye contact.")}}
+"en":("Rosemary","Salvia rosmarinus","An aromatic herb used in cooking and gardening.","Observe its leaves and shape.","Do not ingest essential oil and avoid eye contact.")
+}}
+
 def get_plant(plant_id,lang="es"):
     lang=_normalize_lang(lang)
     if plant_id not in PLANTS:
         return None
     p=PLANTS[plant_id][lang]
     return {
-        "id":plant_id,"name":p[0],"scientific":p[1],
-        "traditional":p[2],"activity":p[3],"caution":p[4],
+        "id":plant_id,
+        "name":p[0],
+        "scientific":p[1],
+        "traditional":p[2],
+        "activity":p[3],
+        "caution":p[4],
         "language":lang
     }
+
 PROGRAM=[
 ("Comienza con una pausa","Begin with a pause","c01",3),
 ("Observa la naturaleza","Observe nature","p03",5),
@@ -278,7 +305,9 @@ PROGRAM=[
 ("Vuelve al presente","Return to the present","c02",5),
 ("Descubre una planta","Discover a plant","p02",5),
 ("Elige una prioridad","Choose a priority","w01",3),
-("Repasa lo que te resultó útil","Review what helped","w02",5)]
+("Repasa lo que te resultó útil","Review what helped","w02",5)
+]
+
 def get_program_day(lang="es",day=1):
     lang=_normalize_lang(lang)
     try:
@@ -297,8 +326,8 @@ def get_program_day(lang="es",day=1):
         "minutes":minutes,
         "activity":activity
     }
+
 def get_metrics():
-    # Conteos verificables del catálogo, no estimaciones fisiológicas.
     return {
         "engine_version":VERSION,
         "total_activities":len(RAW),
