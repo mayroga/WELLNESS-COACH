@@ -1,6 +1,5 @@
-
 from pathlib import Path
-from fastapi import FastAPI,Query
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
 import wellness_engine as engine
@@ -21,40 +20,32 @@ def home():
 
 @app.get("/health")
 def health():
-    return {"status":"ok","app":"WELLNESS COACH","version":VERSION}
+    return {"status":"ok","app":"WELLNESS COACH","version":VERSION,"activities":len(engine.get_activities("es"))}
 
 @app.get("/api/config")
 def config():
-    return {"name":"WELLNESS COACH","version":VERSION,"languages":["es","en"],"durations":[3,5,10],"activity_count":len(engine.get_activities("es","all")),"program_days":7,"sections":engine.get_catalog()}
+    return {"name":"WELLNESS COACH","version":VERSION,"audience":"40+","languages":["es","en"],"durations":[3,5,10],"program_days":7,"sections":engine.get_catalog(),"activity_count":len(engine.get_activities("es"))}
 
 @app.get("/api/activities")
 def activities(lang:str="es",section:str="all"):
     lang=lang if lang in ("es","en") else "es"
+    section=section if section in ("all","plants","movement","calm","coach") else "all"
     return JSONResponse({"language":lang,"activities":engine.get_activities(lang,section)})
 
 @app.get("/api/session")
 def session(lang:str="es",kind:str="pause",minutes:int=3):
     lang=lang if lang in ("es","en") else "es"
-    minutes=max(3,min(10,minutes))
-    return JSONResponse(engine.get_session(lang,kind,minutes))
-
-@app.get("/api/activity/{activity_id}")
-def activity(activity_id:str,lang:str="es"):
-    lang=lang if lang in ("es","en") else "es"
-    data=engine.get_activity(activity_id,lang)
-    if not data:
-        return JSONResponse({"error":"Activity not found"},status_code=404)
-    return JSONResponse(data)
+    kind=kind if kind in ("pause","energy","calm","nature","coach","program") else "pause"
+    return JSONResponse(engine.get_session(lang,kind,max(3,min(10,minutes))))
 
 @app.get("/api/plant/{plant_id}")
 def plant(plant_id:str,lang:str="es"):
     lang=lang if lang in ("es","en") else "es"
     data=engine.get_plant(plant_id,lang)
-    if not data:
-        return JSONResponse({"error":"Plant not found"},status_code=404)
+    if not data:return JSONResponse({"error":"Plant not found"},status_code=404)
     return JSONResponse(data)
 
 @app.get("/api/program")
-def program(lang:str="es",day:int=Query(default=1,ge=1,le=7)):
+def program(lang:str="es",day:int=1):
     lang=lang if lang in ("es","en") else "es"
-    return JSONResponse(engine.get_program_day(lang,day))
+    return JSONResponse(engine.get_program_day(lang,max(1,min(7,day))))
