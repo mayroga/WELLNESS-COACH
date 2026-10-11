@@ -95,22 +95,17 @@ footer a{color:var(--green)}
 </style>
 </head>
 <body>
-<header>
-<div class="nav">
+<header><div class="nav">
 <div class="brand"><div class="logo" aria-hidden="true">🌿</div><span>WELLNESS COACH</span></div>
 <div class="navright"><button class="langbtn" id="langES" aria-pressed="true" type="button">ES</button><button class="langbtn" id="langEN" aria-pressed="false" type="button">EN</button></div>
-</div>
-</header>
+</div></header>
 <main>
-<section class="hero">
-<div class="heroText">
+<section class="hero"><div class="heroText">
 <span class="pill" data-i="eyebrow">Un momento para ti</span>
 <h1 data-i="heroTitle">Bienestar sencillo, a tu ritmo.</h1>
 <p class="muted" data-i="heroDesc">Elige una actividad breve de naturaleza, movimiento suave, atención o planificación. No necesitas experiencia previa.</p>
 <div class="btnrow"><button class="primary" id="goQuick" data-i="begin" type="button">Comenzar</button><span class="pill" data-i="minutesBadge">3, 5 o 10 minutos</span></div>
-</div>
-<div class="heroImage"><img id="heroImg" src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&q=85" alt="Espacio tranquilo rodeado de naturaleza" loading="eager"></div>
-</section>
+</div><div class="heroImage"><img id="heroImg" src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&q=85" alt="Espacio tranquilo rodeado de naturaleza" loading="eager"></div></section>
 <div class="sectionHead"><div><h2 data-i="chooseCategory">Elige lo que necesitas hoy</h2><p data-i="categoryDesc">Cuatro formas sencillas de hacer una pausa.</p></div></div>
 <section class="grid" id="categories">
 <button class="category" data-section="plants" type="button"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">🌱</span><h3 data-i="plantsTitle">Plantas y naturaleza</h3><p data-i="plantsDesc">Observar colores, hojas y detalles.</p></div></button>
@@ -126,33 +121,20 @@ footer a{color:var(--green)}
 <section class="panel hidden" id="detailPanel" style="margin-top:22px">
 <div class="sectionHead" style="margin-top:0"><div><h2 id="detailTitle"></h2><p id="detailDesc"></p></div><button class="secondary" id="backHome" data-i="backHome" type="button">Volver al inicio</button></div>
 <div id="plantSearchBox" class="field hidden"><label for="plantSearch" data-i="searchPlants">Buscar una planta</label><input id="plantSearch" type="search" placeholder="Nombre común o científico"></div>
-<div class="activityGrid" id="activityList"></div>
-<p class="muted" id="catalogStatus" role="status"></p>
+<div class="activityGrid" id="activityList"></div><p class="muted" id="catalogStatus" role="status"></p>
 </section>
 <section class="panel hidden" id="sessionPanel" style="margin-top:22px">
 <div class="sessionTop"><div><span class="eyebrow" data-i="yourSession">Tu sesión</span><h2 id="sessionTitle">Actividad</h2><p class="muted" id="sessionDescription"></p><button class="secondary" id="backFromSession" data-i="backCatalog" type="button">Volver al catálogo</button></div><div class="timer" id="timer" aria-live="off">03:00</div></div>
 <div class="progressTrack" role="progressbar" aria-label="Progreso de la sesión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="progressFill" id="progressFill"></div></div>
-<div class="sessionLayout">
-<div><div class="sessionVisual"><img id="sessionImage" src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=900&q=80" alt="Imagen de naturaleza"><span class="imageCaption" id="imageCaption">WELLNESS COACH</span></div><p class="muted" data-i="imageHint">La imagen cambia cada 10 segundos durante la sesión.</p></div>
-<div><div class="stepBox"><div class="stepCount" id="stepCount">Paso 1</div><div class="stepText" id="stepText">Prepárate para comenzar.</div></div><div class="voiceStatus" id="voiceStatus" role="status" aria-live="polite"></div><div class="btnrow"><button class="primary" id="startClock" data-i="start" type="button">Comenzar</button><button class="secondary hidden" id="pauseClock" data-i="pause" type="button">Pausar</button><button class="secondary hidden" id="resumeClock" data-i="resume" type="button">Continuar</button><button class="secondary" id="repeatVoice" data-i="repeat" type="button">Repetir voz</button><button class="secondary" id="stopVoice" data-i="mute" type="button">Detener voz</button><button class="secondary" id="restartSession" data-i="restart" type="button">Reiniciar</button></div></div>
-</div>
+<div class="sessionLayout"><div><div class="sessionVisual"><img id="sessionImage" src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=900&q=80" alt="Imagen de naturaleza"><span class="imageCaption" id="imageCaption">WELLNESS COACH</span></div><p class="muted" data-i="imageHint">La imagen cambia cada 10 segundos durante la sesión.</p></div>
+<div><div class="stepBox"><div class="stepCount" id="stepCount">Paso 1</div><div class="stepText" id="stepText">Prepárate para comenzar.</div></div><div class="voiceStatus" id="voiceStatus" role="status" aria-live="polite"></div><div class="btnrow"><button class="primary" id="startClock" data-i="start" type="button">Comenzar</button><button class="secondary hidden" id="pauseClock" data-i="pause" type="button">Pausar</button><button class="secondary hidden" id="resumeClock" data-i="resume" type="button">Continuar</button><button class="secondary" id="repeatVoice" data-i="repeat" type="button">Repetir voz</button><button class="secondary" id="stopVoice" data-i="mute" type="button">Detener voz</button><button class="secondary" id="restartSession" data-i="restart" type="button">Reiniciar</button></div></div></div>
 <div class="notice" style="margin-top:18px" data-i="safety">Haz solo lo que te resulte cómodo. Detente si aparece dolor, mareo o malestar. Esta aplicación ofrece actividades generales y no sustituye atención profesional.</div>
-<div id="finishBox" class="hidden" style="margin-top:20px">
-<h2 data-i="finishTitle">Has terminado esta sesión.</h2><p data-i="finishDesc">Puedes guardar tu actividad o elegir otra.</p>
-<div class="panel" style="box-shadow:none;margin-top:12px">
-<strong data-i="beforeLabel">¿Cómo te sentías antes? (opcional)</strong><div class="ratingRow" id="beforeRatings"></div>
-<strong style="display:block;margin-top:14px" data-i="afterLabel">¿Cómo te sientes ahora? (opcional)</strong><div class="ratingRow" id="afterRatings"></div>
-<div class="btnrow"><button class="primary" id="saveSession" data-i="save" type="button">Guardar en este dispositivo</button><button class="secondary" id="anotherSession" data-i="another" type="button">Elegir otra actividad</button></div>
-</div>
-</div>
+<div id="finishBox" class="hidden" style="margin-top:20px"><h2 data-i="finishTitle">Has terminado esta sesión.</h2><p data-i="finishDesc">Puedes guardar tu actividad o elegir otra.</p><div class="panel" style="box-shadow:none;margin-top:12px"><strong data-i="beforeLabel">¿Cómo te sentías antes? (opcional)</strong><div class="ratingRow" id="beforeRatings"></div><strong style="display:block;margin-top:14px" data-i="afterLabel">¿Cómo te sientes ahora? (opcional)</strong><div class="ratingRow" id="afterRatings"></div><div class="btnrow"><button class="primary" id="saveSession" data-i="save" type="button">Guardar en este dispositivo</button><button class="secondary" id="anotherSession" data-i="another" type="button">Elegir otra actividad</button></div></div></div>
 </section>
 <div class="sectionHead"><div><h2 data-i="programTitle">Tu programa de 7 días</h2><p data-i="programDesc">Un plan flexible para probar actividades diferentes.</p></div></div>
 <section class="panel" id="programPanel"><div class="programDays" id="programDays"></div><div class="programCard"><span class="pill" id="programDayLabel">Día 1</span><h3 id="programTitleText">Comenzar con calma</h3><p id="programDescriptionText"></p><p class="muted" id="programActivityText"></p><div class="btnrow"><button class="primary" id="startProgram" data-i="startDay" type="button">Iniciar este día</button></div></div></section>
 <div class="sectionHead"><div><h2 data-i="progressTitle">Tu progreso</h2><p data-i="progressDesc">El historial se guarda solo en este navegador.</p></div></div>
-<section class="panel" id="progressPanel">
-<div class="progressStats"><div class="stat"><span data-i="statSessions">Sesiones guardadas</span><strong id="statSessions">0</strong></div><div class="stat"><span data-i="statMinutes">Minutos completados</span><strong id="statMinutes">0</strong></div><div class="stat"><span data-i="statDays">Días del programa</span><strong id="statDays">0/7</strong></div></div>
-<div class="btnrow"><button class="secondary" id="exportProgress" data-i="export" type="button">Exportar datos JSON</button><button class="secondary" id="clearProgress" data-i="clear" type="button">Borrar historial</button></div><div id="historyList" style="margin-top:15px"></div>
-</section>
+<section class="panel" id="progressPanel"><div class="progressStats"><div class="stat"><span data-i="statSessions">Sesiones guardadas</span><strong id="statSessions">0</strong></div><div class="stat"><span data-i="statMinutes">Minutos completados</span><strong id="statMinutes">0</strong></div><div class="stat"><span data-i="statDays">Días del programa</span><strong id="statDays">0/7</strong></div></div><div class="btnrow"><button class="secondary" id="exportProgress" data-i="export" type="button">Exportar datos JSON</button><button class="secondary" id="clearProgress" data-i="clear" type="button">Borrar historial</button></div><div id="historyList" style="margin-top:15px"></div></section>
 <p class="muted" id="appStatus" role="status" style="margin-top:15px"></p>
 </main>
 <footer><p>WELLNESS COACH · May Roga LLC</p><p data-i="footerNote">Información general de bienestar cotidiano. No es un servicio médico ni ofrece diagnósticos o tratamientos.</p></footer>
@@ -200,7 +182,6 @@ if(!LANGS.includes(next)||next===lang)return;
 if(running&&!confirm(tr("confirmAnother")))return;
 const wasRunning=running&&!paused;
 stopVoiceSchedule();
-if("speechSynthesis"in window)speechSynthesis.cancel();
 lang=next;
 $("langES").setAttribute("aria-pressed",String(lang==="es"));
 $("langEN").setAttribute("aria-pressed",String(lang==="en"));
@@ -216,10 +197,7 @@ renderCurrentStep();
 if(!$("detailPanel").classList.contains("hidden"))renderActivities();
 await loadProgram(currentProgramDay);
 updateVoiceStatus();
-if(wasRunning&&voiceEnabled){
-buildVoiceQueue(true);
-startVoiceSchedule();
-}
+if(wasRunning&&voiceEnabled){buildVoiceQueue(true);startVoiceSchedule()}
 }
 async function loadActivities(){
 try{
@@ -228,10 +206,7 @@ activities=Array.isArray(data.activities)?data.activities:Array.isArray(data)?da
 setStatus("");
 if(!$("detailPanel").classList.contains("hidden"))renderActivities();
 return activities;
-}catch(e){
-setStatus(tr("loadError"));
-return activities;
-}
+}catch(e){setStatus(tr("loadError"));return activities}
 }
 function hidePanels(){["detailPanel","sessionPanel"].forEach(id=>$(id).classList.add("hidden"))}
 function stopVoiceSchedule(){
@@ -241,45 +216,32 @@ if("speechSynthesis"in window)speechSynthesis.cancel();
 }
 function stopClock(){
 if(clockId){clearInterval(clockId);clockId=null}
-running=false;
-paused=false;
-stopVoiceSchedule();
+running=false;paused=false;stopVoiceSchedule();
 if(imageId){clearInterval(imageId);imageId=null}
 if($("pauseClock"))$("pauseClock").classList.add("hidden");
 if($("resumeClock"))$("resumeClock").classList.add("hidden");
 }
 function showHome(){
 if(running&&!confirm(tr("confirmAnother")))return;
-stopClock();
-hidePanels();
+stopClock();hidePanels();
 $("quickPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function backFromSession(){
 if(running&&!confirm(tr("backConfirm")))return;
-stopClock();
-sessionDone=false;
-paused=false;
-hidePanels();
-if(lastSection&&["plants","movement","calm","coach"].includes(lastSection)){
-showSection(lastSection,true);
-}else{
-$("quickPanel").scrollIntoView({behavior:"smooth",block:"start"});
-}
+stopClock();sessionDone=false;paused=false;hidePanels();
+if(lastSection&&["plants","movement","calm","coach"].includes(lastSection))showSection(lastSection,true);
+else $("quickPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function sectionName(section){return CATEGORY_NAMES[section]?.[lang]||section}
 function showSection(section,keepScroll=false){
 if(!["plants","movement","calm","coach"].includes(section))return;
 if(running&&!confirm(tr("confirmAnother")))return;
-stopClock();
-lastSection=section;
-detailSection=section;
-hidePanels();
+stopClock();lastSection=section;detailSection=section;hidePanels();
 $("detailPanel").classList.remove("hidden");
 $("detailTitle").textContent=sectionName(section);
 $("detailDesc").textContent=tr(section==="plants"?"plantsDesc":section==="movement"?"movementDesc":section==="calm"?"calmDesc":"coachDesc");
 $("plantSearchBox").classList.toggle("hidden",section!=="plants");
-$("plantSearch").value="";
-renderActivities();
+$("plantSearch").value="";renderActivities();
 if(!keepScroll)$("detailPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function renderActivities(){
@@ -287,23 +249,22 @@ const section=detailSection;
 const term=$("plantSearch").value.trim().toLocaleLowerCase();
 let list=activities.filter(a=>a.section===section);
 if(section==="plants"&&term)list=list.filter(a=>(a.title||"").toLocaleLowerCase().includes(term)||(a.description||"").toLocaleLowerCase().includes(term)||(a.id||"").toLocaleLowerCase().includes(term));
-const root=$("activityList");
-root.innerHTML="";
+const root=$("activityList");root.innerHTML="";
 if(section==="plants")renderPlantProfiles(root,term);
-if(!list.length&&!(section==="plants"&&term&&PLANT_IDS.some(id=>id.includes(term))){
-const empty=document.createElement("div");empty.className="activityCard";const p=document.createElement("p");p.textContent=tr("empty");empty.append(p);root.append(empty);
+/* CORREGIDO: aquí faltaba un paréntesis de cierre antes de la llave. */
+if(!list.length&&!(section==="plants"&&term&&PLANT_IDS.some(id=>id.includes(term)))){
+const empty=document.createElement("div");empty.className="activityCard";
+const p=document.createElement("p");p.textContent=tr("empty");empty.append(p);root.append(empty);
 }else{
 for(const a of list){
 const card=document.createElement("article");card.className="activityCard";
 const title=document.createElement("h3");title.textContent=a.title||tr("noTitle");
-const desc=document.createElement("p");desc.textContent=a.description||"";
-card.append(title,desc);
+const desc=document.createElement("p");desc.textContent=a.description||"";card.append(title,desc);
 if(section==="plants"&&a.plant){const facts=document.createElement("div");facts.className="plantFacts";facts.textContent=[a.plant.scientific||"",a.plant.traditional||""].filter(Boolean).join(" · ");card.append(facts)}
 const btn=document.createElement("button");btn.className="primary";btn.type="button";btn.textContent=`${tr("choose")} · ${minutes} ${tr("min")}`;btn.addEventListener("click",()=>beginSession(a,minutes,null));card.append(btn);
 if(section==="plants"&&a.plant_id){const info=document.createElement("button");info.className="secondary";info.type="button";info.textContent=tr("plantInfo");info.addEventListener("click",()=>showPlantInfo(a.plant_id));card.append(info)}
 root.append(card);
-}
-}
+}}
 $("catalogStatus").textContent=`${list.length} ${tr("catalogCount")}`;
 }
 function renderPlantProfiles(root,term=""){
@@ -317,27 +278,18 @@ const h=document.createElement("h3");h.textContent=label;
 const p=document.createElement("p");p.textContent=lang==="es"?"Consulta la descripción, el uso tradicional y las precauciones.":"View the description, traditional use and precautions.";
 const b=document.createElement("button");b.className="secondary";b.type="button";b.textContent=tr("plantInfo");b.addEventListener("click",()=>showPlantInfo(id));
 card.append(h,p,b);root.append(card);
-}
-}
+}}
 async function showPlantInfo(id){
 toast(tr("loadingPlant"));
 try{
 const p=await fetchJSON(`/api/plant/${encodeURIComponent(id)}?lang=${encodeURIComponent(lang)}`);
-const lines=[
-`${p.name||"—"} (${p.scientific||"—"})`,
-`${tr("scientific")}: ${p.scientific||"—"}`,
-`${tr("plantTraditional")}: ${p.traditional||"—"}`,
-`${tr("plantActivity")}: ${p.activity||"—"}`,
-`${tr("precautions")}: ${p.caution||"—"}`,
-tr("disclaimer")
-];
+const lines=[`${p.name||"—"} (${p.scientific||"—"})`,`${tr("scientific")}: ${p.scientific||"—"}`,`${tr("plantTraditional")}: ${p.traditional||"—"}`,`${tr("plantActivity")}: ${p.activity||"—"}`,`${tr("precautions")}: ${p.caution||"—"}`,tr("disclaimer")];
 alert(lines.join("\n\n"));
 }catch(e){toast(tr("plantNotFound"))}
 }
 function setDuration(n){
 if(running)return;
-const value=Number(n);
-if(![3,5,10].includes(value))return;
+const value=Number(n);if(![3,5,10].includes(value))return;
 minutes=value;
 document.querySelectorAll("[data-min]").forEach(b=>b.setAttribute("aria-pressed",String(Number(b.dataset.min)===minutes)));
 document.querySelectorAll(".activityCard .primary").forEach(b=>b.textContent=`${tr("choose")} · ${minutes} ${tr("min")}`);
@@ -366,16 +318,14 @@ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]
 return a;
 }
 function setupImages(){
-imageDeck=shuffle(IMG_BANK);
-imagePointer=0;
+imageDeck=shuffle(IMG_BANK);imagePointer=0;
 if(imageId)clearInterval(imageId);
 showNextImage();
 imageId=setInterval(()=>{if(running&&!paused&&!sessionDone)showNextImage()},10000);
 }
 function showNextImage(){
 if(imagePointer>=imageDeck.length){imageDeck=shuffle(IMG_BANK);imagePointer=0}
-const img=$("sessionImage");
-const next=imageDeck[imagePointer++];
+const img=$("sessionImage"),next=imageDeck[imagePointer++];
 img.style.opacity=".25";
 const preload=new Image();
 preload.onload=()=>{img.src=next;img.alt=tr("imageLabel");img.style.opacity="1";$("imageCaption").textContent=tr("imageLabel")};
@@ -385,44 +335,17 @@ preload.src=next;
 function beginSession(activity,n,day){
 if(!activity||typeof activity!=="object"){toast(tr("startError"));return}
 stopClock();
-const mins=[3,5,10].includes(Number(n))?Number(n):3;
-minutes=mins;
+minutes=[3,5,10].includes(Number(n))?Number(n):3;
 if(detailSection&&["plants","movement","calm","coach"].includes(detailSection))lastSection=detailSection;
-current=activity;
-programMode=day!==null&&day!==undefined;
+current=activity;programMode=day!==null&&day!==undefined;
 currentProgramDay=programMode?Number(day):currentProgramDay;
-seconds=mins*60;
-totalSeconds=seconds;
-stepIndex=0;
-activeElapsed=0;
-sessionStart=null;
-lastTick=0;
-running=false;
-paused=false;
-sessionDone=false;
-sessionSaved=false;
-beforeRating=null;
-afterRating=null;
-voiceEnabled=true;
-voiceTurn=0;
-voiceQueue=[];
-voiceQueueIndex=0;
-spokenPhrases.clear();
+seconds=minutes*60;totalSeconds=seconds;stepIndex=0;activeElapsed=0;sessionStart=null;lastTick=0;
+running=false;paused=false;sessionDone=false;sessionSaved=false;beforeRating=null;afterRating=null;voiceEnabled=true;voiceTurn=0;voiceQueue=[];voiceQueueIndex=0;spokenPhrases.clear();
 $("sessionTitle").textContent=activity.title||tr("noTitle");
 $("sessionDescription").textContent=activity.description||"";
-$("timer").textContent=formatTime(seconds);
-$("progressFill").style.width="0%";
-$("progressTrack").setAttribute("aria-valuenow","0");
-$("finishBox").classList.add("hidden");
-$("startClock").classList.remove("hidden");
-$("pauseClock").classList.add("hidden");
-$("resumeClock").classList.add("hidden");
-renderRatings();
-renderCurrentStep();
-hidePanels();
-$("sessionPanel").classList.remove("hidden");
-setupImages();
-updateVoiceStatus();
+$("timer").textContent=formatTime(seconds);$("progressFill").style.width="0%";$("progressTrack").setAttribute("aria-valuenow","0");
+$("finishBox").classList.add("hidden");$("startClock").classList.remove("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
+renderRatings();renderCurrentStep();hidePanels();$("sessionPanel").classList.remove("hidden");setupImages();updateVoiceStatus();
 $("sessionPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function getSteps(){
@@ -432,53 +355,35 @@ return [tr("noSteps")];
 }
 function renderCurrentStep(){
 if(!current)return;
-const steps=getSteps();
-stepIndex=Math.max(0,Math.min(stepIndex,steps.length-1));
+const steps=getSteps();stepIndex=Math.max(0,Math.min(stepIndex,steps.length-1));
 $("stepCount").textContent=`${tr("step")} ${stepIndex+1} ${tr("of")} ${steps.length}`;
 $("stepText").textContent=steps[stepIndex]||tr("noSteps");
 }
-function formatTime(s){
-s=Math.max(0,Math.ceil(s));
-return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
-}
+function formatTime(s){s=Math.max(0,Math.ceil(s));return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
 function normalizePhrase(text){
 return String(text||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
 }
-function refreshVoiceList(){
-if(!("speechSynthesis"in window))return;
-voiceList=speechSynthesis.getVoices()||[];
-}
+function refreshVoiceList(){if("speechSynthesis"in window)voiceList=speechSynthesis.getVoices()||[]}
 function getPreferredVoice(){
 refreshVoiceList();
-const wanted=lang==="es"?"es":"en";
-return voiceList.find(v=>v.lang&&v.lang.toLowerCase()=== (lang==="es"?"es-es":"en-us"))
-||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted+"-"))
-||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted))
-||null;
+const wanted=lang==="es"?"es":"en",exact=lang==="es"?"es-es":"en-us";
+return voiceList.find(v=>v.lang&&v.lang.toLowerCase()===exact)||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted+"-"))||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted))||null;
 }
 function buildVoiceQueue(fromCurrent=false){
-const steps=getSteps();
-const source=fromCurrent?steps.slice(stepIndex):steps;
-const queue=[];
-const seen=new Set();
+const steps=getSteps(),source=fromCurrent?steps.slice(stepIndex):steps,queue=[],seen=new Set();
 for(const step of source){
 const parts=String(step||"").match(/[^.!?。！？\n]+[.!?。！？]?/g)||[];
 for(const part of parts){
-const phrase=part.trim();
-const key=normalizePhrase(phrase);
+const phrase=part.trim(),key=normalizePhrase(phrase);
 if(!key||seen.has(key)||spokenPhrases.has(key))continue;
-seen.add(key);
-queue.push({text:phrase,key});
-}
-}
-voiceQueue=queue;
-voiceQueueIndex=0;
+seen.add(key);queue.push({text:phrase,key});
+}}
+voiceQueue=queue;voiceQueueIndex=0;
 }
 function scheduleNextVoice(token){
 if(token!==voiceRunToken||!running||paused||sessionDone||!voiceEnabled)return;
 if(voiceTimerId)clearTimeout(voiceTimerId);
-const delay=voiceTurn%2===0?4000:5000;
-voiceTurn++;
+const delay=voiceTurn%2===0?4000:5000;voiceTurn++;
 voiceTimerId=setTimeout(()=>{voiceTimerId=null;speakNextVoiceChunk(token)},delay);
 }
 function speakNextVoiceChunk(token){
@@ -487,7 +392,6 @@ if(!("speechSynthesis"in window)){updateVoiceStatus();return}
 while(voiceQueueIndex<voiceQueue.length&&spokenPhrases.has(voiceQueue[voiceQueueIndex].key))voiceQueueIndex++;
 if(voiceQueueIndex>=voiceQueue.length){
 buildVoiceQueue(false);
-if(!voiceQueue.length){updateVoiceStatus();return}
 while(voiceQueueIndex<voiceQueue.length&&spokenPhrases.has(voiceQueue[voiceQueueIndex].key))voiceQueueIndex++;
 if(voiceQueueIndex>=voiceQueue.length){updateVoiceStatus();return}
 }
@@ -495,44 +399,41 @@ const item=voiceQueue[voiceQueueIndex++];
 if(spokenPhrases.has(item.key)){scheduleNextVoice(token);return}
 spokenPhrases.add(item.key);
 const u=new SpeechSynthesisUtterance(item.text);
-u.lang=lang==="es"?"es-ES":"en-US";
-u.rate=.91;
-u.pitch=1;
-const voice=getPreferredVoice();
-if(voice)u.voice=voice;
+u.lang=lang==="es"?"es-ES":"en-US";u.rate=.91;u.pitch=1;
+const voice=getPreferredVoice();if(voice)u.voice=voice;
 u.onstart=()=>{if(token===voiceRunToken)$("voiceStatus").textContent=tr("voiceSpeaking")};
-u.onend=()=>{if(token!==voiceRunToken)return;if(running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token);else updateVoiceStatus()};
-u.onerror=()=>{if(token!==voiceRunToken)return;if(running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token);else updateVoiceStatus()};
+u.onend=()=>{if(token===voiceRunToken&&running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token)};
+u.onerror=()=>{if(token===voiceRunToken&&running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token)};
 speechSynthesis.speak(u);
 }
 function startVoiceSchedule(){
 if(!voiceEnabled||!current||!running||paused||sessionDone||!("speechSynthesis"in window)){updateVoiceStatus();return}
-stopVoiceSchedule();
+if(voiceTimerId){clearTimeout(voiceTimerId);voiceTimerId=null}
+voiceRunToken++;
 const token=voiceRunToken;
+speechSynthesis.cancel();
 if(!voiceQueue.length||voiceQueueIndex>=voiceQueue.length)buildVoiceQueue(false);
 speakNextVoiceChunk(token);
 }
 function speakCurrent(){
 if(!voiceEnabled)return;
 if(!("speechSynthesis"in window)){updateVoiceStatus();return}
-if(voiceTimerId){clearTimeout(voiceTimerId);voiceTimerId=null}
-if(running)stopVoiceSchedule();
-else speechSynthesis.cancel();
-const steps=getSteps();
-const phrase=String(steps[stepIndex]||"").trim();
+if(running){
+stopVoiceSchedule();
+buildVoiceQueue(true);
+startVoiceSchedule();
+return;
+}
+speechSynthesis.cancel();
+const steps=getSteps(),phrase=String(steps[stepIndex]||"").trim();
 if(!phrase){updateVoiceStatus();return}
 const key=normalizePhrase(phrase);
 spokenPhrases.add(key);
 const u=new SpeechSynthesisUtterance(phrase);
-u.lang=lang==="es"?"es-ES":"en-US";
-u.rate=.91;
-u.pitch=1;
-const voice=getPreferredVoice();
-if(voice)u.voice=voice;
-const token=voiceRunToken;
-u.onstart=()=>{if(token===voiceRunToken)$("voiceStatus").textContent=tr("voiceSpeaking")};
-u.onend=()=>{if(token!==voiceRunToken)return;if(running&&!paused&&!sessionDone&&voiceEnabled){buildVoiceQueue(true);startVoiceSchedule()}else updateVoiceStatus()};
-u.onerror=()=>{if(token===voiceRunToken)updateVoiceStatus()};
+u.lang=lang==="es"?"es-ES":"en-US";u.rate=.91;u.pitch=1;
+const voice=getPreferredVoice();if(voice)u.voice=voice;
+u.onstart=()=>{$("voiceStatus").textContent=tr("voiceSpeaking")};
+u.onend=updateVoiceStatus;u.onerror=updateVoiceStatus;
 speechSynthesis.speak(u);
 }
 function updateVoiceStatus(){
@@ -541,13 +442,10 @@ $("voiceStatus").textContent=voiceEnabled?tr("voiceReady"):tr("voiceOff");
 }
 function startClock(){
 if(sessionDone||running||!current)return;
-running=true;
-paused=false;
+running=true;paused=false;
 if(!sessionStart)sessionStart=Date.now();
 lastTick=performance.now();
-$("startClock").classList.add("hidden");
-$("pauseClock").classList.remove("hidden");
-$("resumeClock").classList.add("hidden");
+$("startClock").classList.add("hidden");$("pauseClock").classList.remove("hidden");$("resumeClock").classList.add("hidden");
 $("voiceStatus").textContent=tr("sessionRunning");
 if(!voiceQueue.length)buildVoiceQueue(false);
 startVoiceSchedule();
@@ -556,93 +454,57 @@ clockId=setInterval(tick,200);
 }
 function tick(){
 if(!running||paused||sessionDone)return;
-const now=performance.now();
-const delta=Math.max(0,(now-lastTick)/1000);
-lastTick=now;
-activeElapsed=Math.min(totalSeconds,activeElapsed+delta);
-seconds=Math.max(0,totalSeconds-activeElapsed);
+const now=performance.now(),delta=Math.max(0,(now-lastTick)/1000);
+lastTick=now;activeElapsed=Math.min(totalSeconds,activeElapsed+delta);seconds=Math.max(0,totalSeconds-activeElapsed);
 $("timer").textContent=formatTime(seconds);
 const pct=Math.min(100,activeElapsed/totalSeconds*100);
-$("progressFill").style.width=pct+"%";
-$("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
-const steps=getSteps();
-const newIndex=Math.min(steps.length-1,Math.floor(activeElapsed/totalSeconds*steps.length));
+$("progressFill").style.width=pct+"%";$("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
+const steps=getSteps(),newIndex=Math.min(steps.length-1,Math.floor(activeElapsed/totalSeconds*steps.length));
 if(newIndex!==stepIndex){stepIndex=newIndex;renderCurrentStep()}
 if(seconds<=0)finishSession();
 }
 function pauseClock(){
 if(!running)return;
-tick();
-if(sessionDone)return;
-running=false;
-paused=true;
+tick();if(sessionDone)return;
+running=false;paused=true;
 if(clockId){clearInterval(clockId);clockId=null}
 stopVoiceSchedule();
-$("pauseClock").classList.add("hidden");
-$("resumeClock").classList.remove("hidden");
-$("voiceStatus").textContent=tr("sessionPaused");
+$("pauseClock").classList.add("hidden");$("resumeClock").classList.remove("hidden");$("voiceStatus").textContent=tr("sessionPaused");
 }
-function resumeClock(){
-if(!paused||sessionDone)return;
-paused=false;
-startClock();
-}
+function resumeClock(){if(!paused||sessionDone)return;paused=false;startClock()}
 function finishSession(){
 if(sessionDone)return;
-activeElapsed=totalSeconds;
-seconds=0;
+activeElapsed=totalSeconds;seconds=0;
 if(clockId){clearInterval(clockId);clockId=null}
-running=false;
-paused=false;
-stopVoiceSchedule();
+running=false;paused=false;stopVoiceSchedule();
 if(imageId){clearInterval(imageId);imageId=null}
-sessionDone=true;
-stepIndex=getSteps().length-1;
-renderCurrentStep();
-$("timer").textContent="00:00";
-$("progressFill").style.width="100%";
-$("progressTrack").setAttribute("aria-valuenow","100");
-$("finishBox").classList.remove("hidden");
-$("startClock").classList.add("hidden");
-$("pauseClock").classList.add("hidden");
-$("resumeClock").classList.add("hidden");
+sessionDone=true;stepIndex=getSteps().length-1;renderCurrentStep();
+$("timer").textContent="00:00";$("progressFill").style.width="100%";$("progressTrack").setAttribute("aria-valuenow","100");
+$("finishBox").classList.remove("hidden");$("startClock").classList.add("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
 $("voiceStatus").textContent=tr("sessionDone");
 if(programMode)markProgramDay(currentProgramDay);
 if(voiceEnabled&&"speechSynthesis"in window){
-const u=new SpeechSynthesisUtterance(tr("sessionDone"));
-u.lang=lang==="es"?"es-ES":"en-US";
-const voice=getPreferredVoice();
-if(voice)u.voice=voice;
-speechSynthesis.speak(u);
-}
-}
+const u=new SpeechSynthesisUtterance(tr("sessionDone"));u.lang=lang==="es"?"es-ES":"en-US";
+const voice=getPreferredVoice();if(voice)u.voice=voice;speechSynthesis.speak(u);
+}}
 function resetSession(){
-stopClock();
-sessionDone=false;
-paused=false;
-current=null;
-hidePanels();
+stopClock();sessionDone=false;paused=false;current=null;hidePanels();
 $("quickPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function renderRatings(){
 for(const [id,key] of [["beforeRatings","before"],["afterRatings","after"]]){
 const root=$(id);if(!root)continue;root.innerHTML="";
 for(let i=1;i<=5;i++){
-const label=document.createElement("label");
-const radio=document.createElement("input");
+const label=document.createElement("label"),radio=document.createElement("input");
 radio.type="radio";radio.name=key+"Rating";radio.value=String(i);
 radio.checked=(key==="before"?beforeRating:afterRating)===i;
 radio.addEventListener("change",()=>{if(key==="before")beforeRating=i;else afterRating=i});
 const span=document.createElement("span");span.textContent=`${i} · ${tr("rating"+i)}`;
 label.append(radio,span);root.append(label);
-}
-}
-}
+}}}
 function readProgress(){
-try{
-const v=JSON.parse(localStorage.getItem(KEY)||"{}");
-return {sessions:Array.isArray(v.sessions)?v.sessions:[],programDays:Array.isArray(v.programDays)?v.programDays:[]};
-}catch(e){return {sessions:[],programDays:[]}}
+try{const v=JSON.parse(localStorage.getItem(KEY)||"{}");return {sessions:Array.isArray(v.sessions)?v.sessions:[],programDays:Array.isArray(v.programDays)?v.programDays:[]}}
+catch(e){return {sessions:[],programDays:[]}}
 }
 function writeProgress(data){
 try{localStorage.setItem(KEY,JSON.stringify(data));return true}
@@ -652,17 +514,13 @@ function saveSession(){
 if(!current||!sessionDone)return;
 if(sessionSaved){toast(tr("savedAlready"));return}
 const data=readProgress();
-data.sessions.push({id:`${Date.now()}-${Math.random().toString(36).slice(2)}`,activityId:current.id,activityTitle:current.title||tr("noTitle"),section:current.section||"calm",minutes:minutes,completedAt:new Date().toISOString(),language:lang,beforeRating,afterRating,programDay:programMode?currentProgramDay:null});
+data.sessions.push({id:`${Date.now()}-${Math.random().toString(36).slice(2)}`,activityId:current.id,activityTitle:current.title||tr("noTitle"),section:current.section||"calm",minutes,completedAt:new Date().toISOString(),language:lang,beforeRating,afterRating,programDay:programMode?currentProgramDay:null});
 data.sessions=data.sessions.slice(-300);
 if(writeProgress(data)){sessionSaved=true;renderProgress();toast(tr("saved"))}
 }
 function markProgramDay(day){
-const data=readProgress();
-if(!data.programDays.includes(day))data.programDays.push(day);
-data.programDays.sort((a,b)=>a-b);
-writeProgress(data);
-renderProgramDays();
-renderProgress();
+const data=readProgress();if(!data.programDays.includes(day))data.programDays.push(day);
+data.programDays.sort((a,b)=>a-b);writeProgress(data);renderProgramDays();renderProgress();
 }
 function renderProgress(){
 const data=readProgress();
@@ -673,9 +531,8 @@ $("historyList").innerHTML="";
 if(!data.sessions.length){$("historyList").textContent=tr("emptyHistory");return}
 data.sessions.slice().reverse().slice(0,12).forEach(s=>{
 const row=document.createElement("div");row.className="historyItem";
-const left=document.createElement("div");
-const title=document.createElement("strong");title.textContent=s.activityTitle||tr("noTitle");
-const meta=document.createElement("div");meta.className="muted";
+const left=document.createElement("div"),title=document.createElement("strong"),meta=document.createElement("div");
+title.textContent=s.activityTitle||tr("noTitle");meta.className="muted";
 let date="";
 try{date=new Date(s.completedAt).toLocaleString(lang==="es"?"es-US":"en-US",{dateStyle:"medium",timeStyle:"short"})}catch(e){}
 meta.textContent=`${date} · ${s.minutes||0} ${tr("min")}`;
@@ -683,33 +540,27 @@ left.append(title,meta);row.append(left);$("historyList").append(row);
 });
 }
 function exportProgress(){
-const data=readProgress();
-const payload={app:"WELLNESS COACH",company:"May Roga LLC",exportedAt:new Date().toISOString(),data};
+const data=readProgress(),payload={app:"WELLNESS COACH",company:"May Roga LLC",exportedAt:new Date().toISOString(),data};
 const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"});
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");a.href=url;a.download=`wellness-coach-progress-${new Date().toISOString().slice(0,10)}.json`;
+const url=URL.createObjectURL(blob),a=document.createElement("a");
+a.href=url;a.download=`wellness-coach-progress-${new Date().toISOString().slice(0,10)}.json`;
 document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function clearProgress(){
 if(!confirm(tr("clearConfirm")))return;
-localStorage.removeItem(KEY);
-renderProgress();renderProgramDays();toast(tr("historyDeleted"));
+localStorage.removeItem(KEY);renderProgress();renderProgramDays();toast(tr("historyDeleted"));
 }
 function renderProgramDays(){
 const root=$("programDays");if(!root)return;
-root.innerHTML="";
-const done=readProgress().programDays;
+root.innerHTML="";const done=readProgress().programDays;
 for(let d=1;d<=7;d++){
 const b=document.createElement("button");b.className="dayBtn";b.type="button";
 b.setAttribute("aria-pressed",String(d===currentProgramDay));
 b.innerHTML=`${tr("day")} ${d}<small>${done.includes(d)?tr("done"):tr("notDone")}</small>`;
-b.addEventListener("click",()=>loadProgram(d));
-root.append(b);
-}
-}
+b.addEventListener("click",()=>loadProgram(d));root.append(b);
+}}
 async function loadProgram(day){
-currentProgramDay=Math.max(1,Math.min(7,Number(day)||1));
-renderProgramDays();
+currentProgramDay=Math.max(1,Math.min(7,Number(day)||1));renderProgramDays();
 try{
 programData=await fetchJSON(`/api/program?lang=${encodeURIComponent(lang)}&day=${currentProgramDay}`);
 const a=programData.activity||{};
@@ -719,12 +570,9 @@ $("programDescriptionText").textContent=programData.goal||programData.descriptio
 $("programActivityText").textContent=a.title?`${a.title} — ${a.description||""}`:"";
 $("startProgram").disabled=!a.id;
 }catch(e){
-$("programTitleText").textContent=tr("noProgram");
-$("programDescriptionText").textContent=tr("loadError");
-$("programActivityText").textContent="";
-$("startProgram").disabled=true;
-}
-}
+$("programTitleText").textContent=tr("noProgram");$("programDescriptionText").textContent=tr("loadError");
+$("programActivityText").textContent="";$("startProgram").disabled=true;
+}}
 function startProgram(){
 if(!programData?.activity)return;
 const a=activities.find(x=>x.id===programData.activity.id)||programData.activity;
@@ -763,10 +611,7 @@ stopVoiceSchedule();
 });
 refreshVoiceList();
 if("speechSynthesis"in window)speechSynthesis.addEventListener("voiceschanged",refreshVoiceList);
-renderRatings();
-applyLanguage();
-renderProgress();
-renderProgramDays();
+renderRatings();applyLanguage();renderProgress();renderProgramDays();
 $("timer").textContent="03:00";
 loadActivities().then(()=>loadProgram(1));
 if(!("speechSynthesis"in window))updateVoiceStatus();
