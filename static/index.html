@@ -172,6 +172,7 @@ eyebrow:"A moment for you",heroTitle:"Simple wellbeing, at your pace.",heroDesc:
 let lang="es",minutes=3,activities=[],current=null,currentProgramDay=1,programData=null,detailSection="calm",lastSection="calm";
 let running=false,paused=false,sessionDone=false,sessionSaved=false,seconds=180,totalSeconds=180,stepIndex=0,clockId=null,imageId=null,lastTick=0,activeElapsed=0,sessionStart=null,programMode=false;
 let imageDeck=[],imagePointer=0,voiceEnabled=true,beforeRating=null,afterRating=null;
+let voiceTimerId=null,voiceTurn=0,voiceQueue=[],voiceQueueIndex=0,spokenPhrases=new Set(),voiceRunToken=0,voiceList=[];
 const CATEGORY_NAMES={plants:{es:"Plantas y naturaleza",en:"Plants and nature"},movement:{es:"Movimiento suave",en:"Gentle movement"},calm:{es:"Calma y atención",en:"Calm and attention"},coach:{es:"Coach y planificación",en:"Coaching and planning"}};
 const PLANT_IDS=["mint","chamomile","rosemary"];
 const IMG_BANK=Array.from({length:72},(_,i)=>`https://picsum.photos/seed/wellnesscoach${String(i+1).padStart(3,"0")}/1000/750`);
@@ -197,15 +198,28 @@ renderProgress();
 async function setLang(next){
 if(!LANGS.includes(next)||next===lang)return;
 if(running&&!confirm(tr("confirmAnother")))return;
+const wasRunning=running&&!paused;
+stopVoiceSchedule();
+if("speechSynthesis"in window)speechSynthesis.cancel();
 lang=next;
 $("langES").setAttribute("aria-pressed",String(lang==="es"));
 $("langEN").setAttribute("aria-pressed",String(lang==="en"));
 applyLanguage();
 await loadActivities();
-if(current){const updated=activities.find(a=>a.id===current.id);if(updated){current=updated;$("sessionTitle").textContent=current.title||tr("noTitle");$("sessionDescription").textContent=current.description||"";renderCurrentStep()}}
+if(current){
+const updated=activities.find(a=>a.id===current.id);
+if(updated)current=updated;
+$("sessionTitle").textContent=current.title||tr("noTitle");
+$("sessionDescription").textContent=current.description||"";
+renderCurrentStep();
+}
 if(!$("detailPanel").classList.contains("hidden"))renderActivities();
 await loadProgram(currentProgramDay);
 updateVoiceStatus();
+if(wasRunning&&voiceEnabled){
+buildVoiceQueue(true);
+startVoiceSchedule();
+}
 }
 async function loadActivities(){
 try{
@@ -220,11 +234,16 @@ return activities;
 }
 }
 function hidePanels(){["detailPanel","sessionPanel"].forEach(id=>$(id).classList.add("hidden"))}
+function stopVoiceSchedule(){
+if(voiceTimerId){clearTimeout(voiceTimerId);voiceTimerId=null}
+voiceRunToken++;
+if("speechSynthesis"in window)speechSynthesis.cancel();
+}
 function stopClock(){
 if(clockId){clearInterval(clockId);clockId=null}
 running=false;
 paused=false;
-if("speechSynthesis"in window)speechSynthesis.cancel();
+stopVoiceSchedule();
 if(imageId){clearInterval(imageId);imageId=null}
 if($("pauseClock"))$("pauseClock").classList.add("hidden");
 if($("resumeClock"))$("resumeClock").classList.add("hidden");
@@ -271,7 +290,7 @@ if(section==="plants"&&term)list=list.filter(a=>(a.title||"").toLocaleLowerCase(
 const root=$("activityList");
 root.innerHTML="";
 if(section==="plants")renderPlantProfiles(root,term);
-if(!list.length&&!(section==="plants"&&term&&PLANT_IDS.some(id=>id.includes(term)))){
+if(!list.length&&!(section==="plants"&&term&&PLANT_IDS.some(id=>id.includes(term))){
 const empty=document.createElement("div");empty.className="activityCard";const p=document.createElement("p");p.textContent=tr("empty");empty.append(p);root.append(empty);
 }else{
 for(const a of list){
@@ -385,6 +404,10 @@ sessionSaved=false;
 beforeRating=null;
 afterRating=null;
 voiceEnabled=true;
+voiceTurn=0;
+voiceQueue=[];
+voiceQueueIndex=0;
+spokenPhrases.clear();
 $("sessionTitle").textContent=activity.title||tr("noTitle");
 $("sessionDescription").textContent=activity.description||"";
 $("timer").textContent=formatTime(seconds);
@@ -418,18 +441,98 @@ function formatTime(s){
 s=Math.max(0,Math.ceil(s));
 return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
 }
-function speakCurrent(){
-if(!voiceEnabled)return;
+function normalizePhrase(text){
+return String(text||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
+}
+function refreshVoiceList(){
+if(!("speechSynthesis"in window))return;
+voiceList=speechSynthesis.getVoices()||[];
+}
+function getPreferredVoice(){
+refreshVoiceList();
+const wanted=lang==="es"?"es":"en";
+return voiceList.find(v=>v.lang&&v.lang.toLowerCase()=== (lang==="es"?"es-es":"en-us"))
+||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted+"-"))
+||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted))
+||null;
+}
+function buildVoiceQueue(fromCurrent=false){
 const steps=getSteps();
+const source=fromCurrent?steps.slice(stepIndex):steps;
+const queue=[];
+const seen=new Set();
+for(const step of source){
+const parts=String(step||"").match(/[^.!?。！？\n]+[.!?。！？]?/g)||[];
+for(const part of parts){
+const phrase=part.trim();
+const key=normalizePhrase(phrase);
+if(!key||seen.has(key)||spokenPhrases.has(key))continue;
+seen.add(key);
+queue.push({text:phrase,key});
+}
+}
+voiceQueue=queue;
+voiceQueueIndex=0;
+}
+function scheduleNextVoice(token){
+if(token!==voiceRunToken||!running||paused||sessionDone||!voiceEnabled)return;
+if(voiceTimerId)clearTimeout(voiceTimerId);
+const delay=voiceTurn%2===0?4000:5000;
+voiceTurn++;
+voiceTimerId=setTimeout(()=>{voiceTimerId=null;speakNextVoiceChunk(token)},delay);
+}
+function speakNextVoiceChunk(token){
+if(token!==voiceRunToken||!running||paused||sessionDone||!voiceEnabled)return;
 if(!("speechSynthesis"in window)){updateVoiceStatus();return}
-speechSynthesis.cancel();
-const u=new SpeechSynthesisUtterance(steps[stepIndex]||"");
+while(voiceQueueIndex<voiceQueue.length&&spokenPhrases.has(voiceQueue[voiceQueueIndex].key))voiceQueueIndex++;
+if(voiceQueueIndex>=voiceQueue.length){
+buildVoiceQueue(false);
+if(!voiceQueue.length){updateVoiceStatus();return}
+while(voiceQueueIndex<voiceQueue.length&&spokenPhrases.has(voiceQueue[voiceQueueIndex].key))voiceQueueIndex++;
+if(voiceQueueIndex>=voiceQueue.length){updateVoiceStatus();return}
+}
+const item=voiceQueue[voiceQueueIndex++];
+if(spokenPhrases.has(item.key)){scheduleNextVoice(token);return}
+spokenPhrases.add(item.key);
+const u=new SpeechSynthesisUtterance(item.text);
 u.lang=lang==="es"?"es-ES":"en-US";
 u.rate=.91;
 u.pitch=1;
-u.onstart=()=>{$("voiceStatus").textContent=tr("voiceSpeaking")};
-u.onend=()=>{if(!sessionDone)updateVoiceStatus()};
-u.onerror=()=>updateVoiceStatus();
+const voice=getPreferredVoice();
+if(voice)u.voice=voice;
+u.onstart=()=>{if(token===voiceRunToken)$("voiceStatus").textContent=tr("voiceSpeaking")};
+u.onend=()=>{if(token!==voiceRunToken)return;if(running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token);else updateVoiceStatus()};
+u.onerror=()=>{if(token!==voiceRunToken)return;if(running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token);else updateVoiceStatus()};
+speechSynthesis.speak(u);
+}
+function startVoiceSchedule(){
+if(!voiceEnabled||!current||!running||paused||sessionDone||!("speechSynthesis"in window)){updateVoiceStatus();return}
+stopVoiceSchedule();
+const token=voiceRunToken;
+if(!voiceQueue.length||voiceQueueIndex>=voiceQueue.length)buildVoiceQueue(false);
+speakNextVoiceChunk(token);
+}
+function speakCurrent(){
+if(!voiceEnabled)return;
+if(!("speechSynthesis"in window)){updateVoiceStatus();return}
+if(voiceTimerId){clearTimeout(voiceTimerId);voiceTimerId=null}
+if(running)stopVoiceSchedule();
+else speechSynthesis.cancel();
+const steps=getSteps();
+const phrase=String(steps[stepIndex]||"").trim();
+if(!phrase){updateVoiceStatus();return}
+const key=normalizePhrase(phrase);
+spokenPhrases.add(key);
+const u=new SpeechSynthesisUtterance(phrase);
+u.lang=lang==="es"?"es-ES":"en-US";
+u.rate=.91;
+u.pitch=1;
+const voice=getPreferredVoice();
+if(voice)u.voice=voice;
+const token=voiceRunToken;
+u.onstart=()=>{if(token===voiceRunToken)$("voiceStatus").textContent=tr("voiceSpeaking")};
+u.onend=()=>{if(token!==voiceRunToken)return;if(running&&!paused&&!sessionDone&&voiceEnabled){buildVoiceQueue(true);startVoiceSchedule()}else updateVoiceStatus()};
+u.onerror=()=>{if(token===voiceRunToken)updateVoiceStatus()};
 speechSynthesis.speak(u);
 }
 function updateVoiceStatus(){
@@ -446,7 +549,8 @@ $("startClock").classList.add("hidden");
 $("pauseClock").classList.remove("hidden");
 $("resumeClock").classList.add("hidden");
 $("voiceStatus").textContent=tr("sessionRunning");
-speakCurrent();
+if(!voiceQueue.length)buildVoiceQueue(false);
+startVoiceSchedule();
 if(clockId)clearInterval(clockId);
 clockId=setInterval(tick,200);
 }
@@ -463,7 +567,7 @@ $("progressFill").style.width=pct+"%";
 $("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
 const steps=getSteps();
 const newIndex=Math.min(steps.length-1,Math.floor(activeElapsed/totalSeconds*steps.length));
-if(newIndex!==stepIndex){stepIndex=newIndex;renderCurrentStep();speakCurrent()}
+if(newIndex!==stepIndex){stepIndex=newIndex;renderCurrentStep()}
 if(seconds<=0)finishSession();
 }
 function pauseClock(){
@@ -473,7 +577,7 @@ if(sessionDone)return;
 running=false;
 paused=true;
 if(clockId){clearInterval(clockId);clockId=null}
-if("speechSynthesis"in window)speechSynthesis.cancel();
+stopVoiceSchedule();
 $("pauseClock").classList.add("hidden");
 $("resumeClock").classList.remove("hidden");
 $("voiceStatus").textContent=tr("sessionPaused");
@@ -490,7 +594,7 @@ seconds=0;
 if(clockId){clearInterval(clockId);clockId=null}
 running=false;
 paused=false;
-if("speechSynthesis"in window)speechSynthesis.cancel();
+stopVoiceSchedule();
 if(imageId){clearInterval(imageId);imageId=null}
 sessionDone=true;
 stepIndex=getSteps().length-1;
@@ -505,7 +609,11 @@ $("resumeClock").classList.add("hidden");
 $("voiceStatus").textContent=tr("sessionDone");
 if(programMode)markProgramDay(currentProgramDay);
 if(voiceEnabled&&"speechSynthesis"in window){
-const u=new SpeechSynthesisUtterance(tr("sessionDone"));u.lang=lang==="es"?"es-ES":"en-US";speechSynthesis.speak(u);
+const u=new SpeechSynthesisUtterance(tr("sessionDone"));
+u.lang=lang==="es"?"es-ES":"en-US";
+const voice=getPreferredVoice();
+if(voice)u.voice=voice;
+speechSynthesis.speak(u);
 }
 }
 function resetSession(){
@@ -636,7 +744,7 @@ $("startClock").addEventListener("click",startClock);
 $("pauseClock").addEventListener("click",pauseClock);
 $("resumeClock").addEventListener("click",resumeClock);
 $("repeatVoice").addEventListener("click",()=>{voiceEnabled=true;speakCurrent()});
-$("stopVoice").addEventListener("click",()=>{voiceEnabled=false;if("speechSynthesis"in window)speechSynthesis.cancel();updateVoiceStatus()});
+$("stopVoice").addEventListener("click",()=>{voiceEnabled=false;stopVoiceSchedule();updateVoiceStatus()});
 $("restartSession").addEventListener("click",()=>{
 if(!current)return;
 if(running&&!confirm(tr("confirmAnother")))return;
@@ -651,8 +759,10 @@ $("startProgram").addEventListener("click",startProgram);
 window.addEventListener("beforeunload",()=>{
 if(clockId)clearInterval(clockId);
 if(imageId)clearInterval(imageId);
-if("speechSynthesis"in window)speechSynthesis.cancel();
+stopVoiceSchedule();
 });
+refreshVoiceList();
+if("speechSynthesis"in window)speechSynthesis.addEventListener("voiceschanged",refreshVoiceList);
 renderRatings();
 applyLanguage();
 renderProgress();
