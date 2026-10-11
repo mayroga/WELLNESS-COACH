@@ -1,342 +1,360 @@
+from __future__ import annotations
+import os,random,time,datetime,hashlib,threading
 from copy import deepcopy
-import random
-import math
 
-VERSION="5.0.1"
+VERSION="5.0.0"
+APP_NAME="WELLNESS COACH"
+COMPANY="May Roga LLC"
 PROMPT_INTERVAL_SECONDS=4.5
-MINUTES_MIN=3
-MINUTES_MAX=10
+MINUTES_ALLOWED=(3,5,10)
+LANGUAGES=("es","en")
+SECTIONS=("plants","movement","calm","coach")
+_lock=threading.RLock()
+_rng=random.SystemRandom()
 
-SECTIONS={
-"plants":{"es":"Plantas y naturaleza","en":"Plants and nature"},
-"movement":{"es":"Energía y movimiento","en":"Energy and movement"},
-"calm":{"es":"Calma y atención","en":"Calm and mindfulness"},
-"coach":{"es":"Mi coach de bienestar","en":"My wellness coach"}}
+# Actividades de bienestar general. No son tratamientos ni diagnósticos.
+PLANTS={
+"p01":{"name":{"es":"Manzanilla","en":"Chamomile"},"scientific":"Matricaria chamomilla","use":{"es":"Planta aromática utilizada tradicionalmente en infusiones.","en":"An aromatic plant traditionally used in infusions."},"observation":{"es":"Observa los detalles de una flor sin arrancarla.","en":"Notice the details of a flower without picking it."},"precautions":{"es":"Puede causar alergias. No ingieras aceites esenciales.","en":"It may cause allergies. Do not ingest essential oils."}},
+"p02":{"name":{"es":"Menta","en":"Mint"},"scientific":"Mentha spp.","use":{"es":"Hierba aromática utilizada en alimentos y jardinería.","en":"An aromatic herb used in food and gardening."},"observation":{"es":"Observa la forma de sus hojas y, si es apropiado, su aroma.","en":"Notice the shape of its leaves and, if appropriate, its scent."},"precautions":{"es":"Puede empeorar el reflujo en algunas personas. No ingieras aceites esenciales.","en":"It may worsen reflux for some people. Do not ingest essential oils."}},
+"p03":{"name":{"es":"Lavanda","en":"Lavender"},"scientific":"Lavandula spp.","use":{"es":"Planta aromática cultivada en jardines.","en":"An aromatic plant grown in gardens."},"observation":{"es":"Observa el color y la disposición de sus flores.","en":"Notice the color and arrangement of its flowers."},"precautions":{"es":"Evita el contacto con los ojos y no ingieras aceites esenciales.","en":"Avoid eye contact and do not ingest essential oils."}},
+"p04":{"name":{"es":"Romero","en":"Rosemary"},"scientific":"Salvia rosmarinus","use":{"es":"Hierba aromática utilizada en cocina y jardinería.","en":"An aromatic herb used in cooking and gardening."},"observation":{"es":"Observa sus hojas estrechas y su estructura.","en":"Notice its narrow leaves and structure."},"precautions":{"es":"No ingieras aceite esencial y evita el contacto con los ojos.","en":"Do not ingest essential oil and avoid eye contact."}},
+"p05":{"name":{"es":"Albahaca","en":"Basil"},"scientific":"Ocimum basilicum","use":{"es":"Hierba aromática común en huertos y cocinas.","en":"An aromatic herb commonly grown in gardens and kitchens."},"observation":{"es":"Compara el tamaño y la forma de dos hojas.","en":"Compare the size and shape of two leaves."},"precautions":{"es":"No ingieras aceites esenciales sin indicación profesional.","en":"Do not ingest essential oils without professional guidance."}},
+"p06":{"name":{"es":"Aloe vera","en":"Aloe vera"},"scientific":"Aloe vera","use":{"es":"Planta suculenta cultivada en interiores y exteriores.","en":"A succulent plant grown indoors and outdoors."},"observation":{"es":"Observa sus hojas carnosas sin cortarlas.","en":"Notice its fleshy leaves without cutting them."},"precautions":{"es":"No ingieras la planta ni apliques productos sin conocer su seguridad.","en":"Do not ingest the plant or apply products without knowing their safety."}},
+"p07":{"name":{"es":"Helecho","en":"Fern"},"scientific":"Polypodiopsida","use":{"es":"Grupo de plantas ornamentales de ambientes diversos.","en":"A group of ornamental plants found in varied environments."},"observation":{"es":"Sigue con la mirada la forma de una fronda.","en":"Follow the shape of a frond with your eyes."},"precautions":{"es":"No consumas plantas silvestres o desconocidas.","en":"Do not consume wild or unidentified plants."}},
+"p08":{"name":{"es":"Suculenta","en":"Succulent"},"scientific":"Succulentae","use":{"es":"Plantas que almacenan agua en sus tejidos.","en":"Plants that store water in their tissues."},"observation":{"es":"Observa cómo se distribuyen sus hojas.","en":"Notice how its leaves are arranged."},"precautions":{"es":"Comprueba las necesidades de cuidado de cada especie.","en":"Check the care requirements of each species."}},
+"p09":{"name":{"es":"Girasol","en":"Sunflower"},"scientific":"Helianthus annuus","use":{"es":"Planta conocida por sus flores grandes.","en":"A plant known for its large flowers."},"observation":{"es":"Observa los patrones del centro de la flor.","en":"Notice the patterns at the center of the flower."},"precautions":{"es":"Evita consumir semillas si tienes alergias relevantes.","en":"Avoid eating seeds if you have relevant allergies."}},
+"p10":{"name":{"es":"Caléndula","en":"Calendula"},"scientific":"Calendula officinalis","use":{"es":"Planta ornamental de flores amarillas o anaranjadas.","en":"An ornamental plant with yellow or orange flowers."},"observation":{"es":"Compara los tonos de sus pétalos.","en":"Compare the shades of its petals."},"precautions":{"es":"Puede causar reacciones alérgicas en algunas personas.","en":"It may cause allergic reactions in some people."}},
+"p11":{"name":{"es":"Tomillo","en":"Thyme"},"scientific":"Thymus vulgaris","use":{"es":"Hierba aromática utilizada en cocina.","en":"An aromatic herb used in cooking."},"observation":{"es":"Observa el tamaño de sus hojas pequeñas.","en":"Notice the size of its small leaves."},"precautions":{"es":"No ingieras aceites esenciales ni preparados desconocidos.","en":"Do not ingest essential oils or unknown preparations."}},
+"p12":{"name":{"es":"Cilantro","en":"Cilantro"},"scientific":"Coriandrum sativum","use":{"es":"Hierba comestible utilizada en distintas cocinas.","en":"An edible herb used in different cuisines."},"observation":{"es":"Observa la forma de sus hojas.","en":"Notice the shape of its leaves."},"precautions":{"es":"Lava adecuadamente las hierbas destinadas al consumo.","en":"Wash herbs intended for consumption properly."}},
+"p13":{"name":{"es":"Poto","en":"Pothos"},"scientific":"Epipremnum aureum","use":{"es":"Planta ornamental común en interiores.","en":"An ornamental plant commonly grown indoors."},"observation":{"es":"Sigue con la mirada el recorrido de una hoja.","en":"Follow the outline of a leaf with your eyes."},"precautions":{"es":"Puede ser tóxica si la ingieren mascotas o personas; mantenla fuera de su alcance.","en":"It may be toxic if eaten by people or pets; keep it out of reach."}},
+"p14":{"name":{"es":"Monstera","en":"Monstera"},"scientific":"Monstera deliciosa","use":{"es":"Planta ornamental de hojas grandes.","en":"An ornamental plant with large leaves."},"observation":{"es":"Observa las divisiones y el contorno de sus hojas.","en":"Notice the divisions and outline of its leaves."},"precautions":{"es":"No ingieras sus hojas; mantenlas fuera del alcance de niños y mascotas.","en":"Do not eat its leaves; keep them away from children and pets."}},
+"p15":{"name":{"es":"Orquídea","en":"Orchid"},"scientific":"Orchidaceae","use":{"es":"Familia de plantas con flores muy variadas.","en":"A family of plants with varied flowers."},"observation":{"es":"Identifica dos formas diferentes en una flor.","en":"Identify two different shapes in a flower."},"precautions":{"es":"Respeta las necesidades específicas de cada especie.","en":"Respect the specific needs of each species."}},
+"p16":{"name":{"es":"Cactus","en":"Cactus"},"scientific":"Cactaceae","use":{"es":"Grupo de plantas adaptadas a almacenar agua.","en":"A group of plants adapted to storing water."},"observation":{"es":"Observa su forma sin tocar las espinas.","en":"Notice its shape without touching its spines."},"precautions":{"es":"Mantén distancia de las espinas y usa protección al manipularlo.","en":"Keep clear of spines and use protection when handling it."}},
+"p17":{"name":{"es":"Hiedra","en":"Ivy"},"scientific":"Hedera spp.","use":{"es":"Planta trepadora utilizada como ornamental.","en":"A climbing plant used ornamentally."},"observation":{"es":"Observa cómo se extienden sus tallos.","en":"Notice how its stems spread."},"precautions":{"es":"Puede ser tóxica al ingerirse y causar irritación.","en":"It may be toxic if eaten and may cause irritation."}},
+"p18":{"name":{"es":"Pino","en":"Pine"},"scientific":"Pinus spp.","use":{"es":"Árbol perenne presente en muchos paisajes.","en":"An evergreen tree found in many landscapes."},"observation":{"es":"Observa la disposición de sus agujas o ramas.","en":"Notice the arrangement of its needles or branches."},"precautions":{"es":"No consumas agujas, resinas ni preparados de especie desconocida.","en":"Do not consume needles, resin, or preparations from unidentified species."}},
+"p19":{"name":{"es":"Bambú","en":"Bamboo"},"scientific":"Bambusoideae","use":{"es":"Grupo de plantas de tallos característicos.","en":"A group of plants with distinctive stems."},"observation":{"es":"Observa los segmentos y líneas del tallo.","en":"Notice the segments and lines along the stem."},"precautions":{"es":"No consumas una planta sin identificarla correctamente.","en":"Do not consume a plant without identifying it correctly."}},
+"p20":{"name":{"es":"Planta de interior","en":"Houseplant"},"scientific":"Planta ornamental","use":{"es":"Una planta puede servir como objeto de observación cotidiana.","en":"A plant can serve as an everyday object for observation."},"observation":{"es":"Elige una hoja y observa tres detalles diferentes.","en":"Choose a leaf and notice three different details."},"precautions":{"es":"Evita ingerir plantas desconocidas y lávate las manos tras manipularlas.","en":"Avoid eating unknown plants and wash your hands after handling them."}}
+}
 
-# id, categoría, título ES, título EN, enfoque ES, enfoque EN
-ACTIVITY_DEFS=[
-("p01","plants","Mira una planta con atención","Observe a plant closely","una planta","a plant"),
-("p02","plants","Descubre una hierba aromática","Discover an aromatic herb","una hierba aromática","an aromatic herb"),
-("p03","plants","Una ventana hacia la naturaleza","A window into nature","el paisaje exterior","the outdoor view"),
-("p04","plants","Colores que te rodean","Colors around you","los colores del entorno","the colors around you"),
-("p05","plants","Escucha el paisaje","Listen to the landscape","los sonidos del entorno","the sounds around you"),
-("p06","plants","Pequeño rincón verde","A small green corner","un rincón natural","a natural corner"),
-("p07","plants","Formas de las hojas","Leaf shapes","las formas de las hojas","leaf shapes"),
-("p08","plants","Detalles de una flor","Details of a flower","los detalles de una flor","the details of a flower"),
-("p09","plants","Observa las ramas","Observe the branches","las ramas de un árbol","tree branches"),
-("p10","plants","Luz y sombra natural","Natural light and shadow","la luz y la sombra","light and shadow"),
-("p11","plants","Nubes en movimiento","Moving clouds","las nubes","the clouds"),
-("p12","plants","Texturas de la naturaleza","Textures in nature","las texturas naturales","natural textures"),
-("p13","plants","Un jardín imaginado","An imagined garden","un jardín imaginario","an imagined garden"),
-("p14","plants","Pequeños cambios del paisaje","Small changes in the landscape","los cambios del paisaje","changes in the landscape"),
-("p15","plants","El color del cielo","The color of the sky","el color del cielo","the color of the sky"),
-("p16","plants","Agua y reflejos","Water and reflections","el agua y sus reflejos","water and its reflections"),
-("p17","plants","Un árbol cercano","A nearby tree","un árbol cercano","a nearby tree"),
-("p18","plants","Naturaleza en una fotografía","Nature in a photograph","una fotografía natural","a nature photograph"),
-("p19","plants","Cuida una planta con seguridad","Care for a plant safely","el cuidado de una planta","plant care"),
-("p20","plants","Encuentra un detalle natural","Find a natural detail","un detalle natural","a natural detail"),
-("m01","movement","Despierta los hombros","Wake up your shoulders","los hombros","the shoulders"),
-("m02","movement","Manos más despiertas","Wake up your hands","las manos","the hands"),
-("m03","movement","Activa los tobillos","Move your ankles","los tobillos","the ankles"),
-("m04","movement","Cambia de postura","Change your posture","la postura","posture"),
-("m05","movement","Paseo consciente y seguro","A mindful, safe walk","un paseo seguro","a safe walk"),
-("m06","movement","Estiramiento de brazos adaptable","An adaptable arm stretch","los brazos","the arms"),
-("m07","movement","Abre y relaja las manos","Open and relax your hands","las manos abiertas","open hands"),
-("m08","movement","Descansa la espalda","Give your back a rest","la espalda","the back"),
-("m09","movement","Movimiento suave de cuello","Gentle neck movement","el cuello","the neck"),
-("m10","movement","Eleva suavemente los talones","Gently lift your heels","los talones","the heels"),
-("m11","movement","Extiende una pierna sentado","Extend one leg while seated","una pierna sentado","one leg while seated"),
-("m12","movement","Activa los dedos de los pies","Move your toes","los dedos de los pies","the toes"),
-("m13","movement","Coordina manos y mirada","Coordinate hands and eyes","las manos y la mirada","hands and eyes"),
-("m14","movement","Balanceo cómodo de brazos","Comfortable arm swings","el balanceo de brazos","arm swings"),
-("m15","movement","Pausa para cambiar de posición","A posture-change break","el cambio de posición","a posture change"),
-("m16","movement","Movimiento lateral de manos","Move your hands sideways","las manos hacia los lados","hands moving sideways"),
-("m17","movement","Despierta los dedos","Wake up your fingers","los dedos","the fingers"),
-("m18","movement","Marcha suave sentado","Gentle seated marching","la marcha sentado","seated marching"),
-("m19","movement","Estira sin forzar","Stretch without forcing","un estiramiento suave","a gentle stretch"),
-("m20","movement","Termina en una postura cómoda","Finish in a comfortable posture","una postura cómoda","a comfortable posture"),
-("c01","calm","Una pausa sin exigencias","A pause without demands","una pausa tranquila","a quiet pause"),
-("c02","calm","Los cinco sentidos","The five senses","los sentidos","the senses"),
-("c03","calm","Reconoce algo que valoras","Notice something you value","algo cotidiano que valoras","something you value"),
-("c04","calm","Imagina un lugar agradable","Picture a pleasant place","un lugar agradable","a pleasant place"),
-("c05","calm","Suelta una tarea de la mente","Set one task aside","una tarea pendiente","a pending task"),
-("c06","calm","Escucha una canción con atención","Listen to a song attentively","una canción","a song"),
-("c07","calm","Observa sin juzgar","Observe without judging","lo que tienes delante","what is in front of you"),
-("c08","calm","Regresa al momento presente","Return to the present","el momento presente","the present moment"),
-("c09","calm","Descanso para la mirada","A rest for your eyes","la mirada","your gaze"),
-("c10","calm","Un sonido a la vez","One sound at a time","un sonido","one sound"),
-("c11","calm","Respiración natural","Natural breathing","la respiración natural","natural breathing"),
-("c12","calm","Siente el apoyo de la silla","Feel the chair supporting you","el apoyo de la silla","the support of the chair"),
-("c13","calm","Ordena el espacio visual","Organize your visual space","el espacio que ves","the space you see"),
-("c14","calm","Una imagen de tranquilidad","An image of calm","una imagen tranquila","a calm image"),
-("c15","calm","Haz una pausa sensorial","Take a sensory pause","una pausa sensorial","a sensory pause"),
-("c16","calm","Observa cómo cambia la luz","Notice changing light","los cambios de luz","changes in light"),
-("c17","calm","Deja pasar un pensamiento","Let a thought pass","un pensamiento","a thought"),
-("c18","calm","Elige un detalle agradable","Choose a pleasant detail","un detalle agradable","a pleasant detail"),
-("c19","calm","Baja el ritmo sin prisa","Slow down without rushing","un ritmo más tranquilo","a calmer pace"),
-("c20","calm","Cierra la pausa a tu manera","End the pause your way","el cierre de la pausa","the end of the pause"),
-("w01","coach","Elige tu prioridad de hoy","Choose today's priority","tu prioridad de hoy","today's priority"),
-("w02","coach","Revisa lo que ya lograste","Notice what you have already done","un logro real","a real accomplishment"),
-("w03","coach","Prepara un plan sencillo","Make a simple plan","un plan sencillo","a simple plan"),
-("w04","coach","Practica una decisión pequeña","Practice a small decision","una decisión cotidiana","an everyday decision"),
-("w05","coach","Protege un espacio para ti","Protect a little time for yourself","un espacio para ti","time for yourself"),
-("w06","coach","Háblate con respeto","Speak to yourself with respect","un mensaje respetuoso","a respectful message"),
-("w07","coach","Divide una tarea en pasos","Break a task into steps","una tarea grande","a large task"),
-("w08","coach","Define qué significa terminar","Define what finished means","el resultado esperado","the expected result"),
-("w09","coach","Prepara lo que necesitas","Prepare what you need","los recursos necesarios","the resources you need"),
-("w10","coach","Elige un primer paso posible","Choose a possible first step","el primer paso","the first step"),
-("w11","coach","Revisa tu tiempo disponible","Review your available time","el tiempo disponible","the time available"),
-("w12","coach","Pide ayuda concreta si hace falta","Ask for specific help if needed","una ayuda concreta","specific help"),
-("w13","coach","Aprende de una experiencia","Learn from an experience","una experiencia reciente","a recent experience"),
-("w14","coach","Reconoce una habilidad propia","Recognize a skill you have","una habilidad propia","a skill you have"),
-("w15","coach","Haz espacio para descansar","Make room for rest","un descanso posible","a possible break"),
-("w16","coach","Simplifica una elección","Simplify a choice","una elección difícil","a difficult choice"),
-("w17","coach","Revisa lo que puedes controlar","Review what you can control","lo que puedes controlar","what you can control"),
-("w18","coach","Elige una acción realista","Choose a realistic action","una acción realista","a realistic action"),
-("w19","coach","Prepara el siguiente momento","Prepare for the next moment","el siguiente momento","the next moment"),
-("w20","coach","Reconoce tu esfuerzo de hoy","Recognize today's effort","tu esfuerzo de hoy","your effort today")
-]
-
-# Cada sección contiene directamente las listas ES y EN.
-# Cada lista contiene 20 indicaciones.
-PROMPT_TEMPLATES={
-"plants":{
+# Cada banco tiene 20 indicaciones distintas por idioma.
+STEPS={
+"calm":{
 "es":[
-"Observa {f} durante unos segundos.","Busca una forma que destaque en {f}.","Encuentra un detalle pequeño en {f}.","Compara dos partes de {f}.","Nota un cambio de color en {f}.","Mira {f} desde otro ángulo seguro.","Elige una parte de {f} y descríbela.","Busca una línea o curva en {f}.","Identifica una zona clara en {f}.","Encuentra una zona oscura en {f}.","Observa qué queda cerca de {f}.","Fíjate en el fondo que rodea {f}.","Elige una palabra para describir {f}.","Mira {f} sin apresurarte.","Descubre algo nuevo en {f}.","Compara lo grande y lo pequeño en {f}.","Observa la luz que alcanza {f}.","Escoge tu detalle favorito de {f}.","Recuerda un detalle que viste en {f}.","Vuelve a mirar {f} una última vez."
+"Apoya los pies donde te resulte cómodo.",
+"Observa tres objetos que estén cerca.",
+"Nota un color que no habías mirado.",
+"Relaja las manos sin forzarlas.",
+"Escucha un sonido del entorno.",
+"Deja que los hombros encuentren una posición cómoda.",
+"Mira un punto fijo durante unos segundos.",
+"Identifica una superficie lisa o rugosa.",
+"Permite que la respiración siga su ritmo natural.",
+"Observa la luz que hay en la habitación.",
+"Nombra mentalmente algo que ves.",
+"Nota el apoyo de la silla o del suelo.",
+"Deja pasar un pensamiento sin resolverlo ahora.",
+"Mira algo que tenga una forma interesante.",
+"Comprueba si puedes aflojar la mandíbula.",
+"Escucha si hay un sonido cercano y otro lejano.",
+"Elige un detalle del entorno y descríbelo mentalmente.",
+"Date permiso para hacer esta pausa a tu ritmo.",
+"Vuelve la atención a los pies y las manos.",
+"Decide qué pequeño paso te gustaría dar después."
 ],
 "en":[
-"Observe {f} for a few seconds.","Find a shape that stands out in {f}.","Notice one small detail in {f}.","Compare two parts of {f}.","Notice a color change in {f}.","View {f} from another safe angle.","Choose one part of {f} and describe it.","Find a line or curve in {f}.","Identify a bright area in {f}.","Find a darker area in {f}.","Notice what is near {f}.","Look at the background around {f}.","Choose one word to describe {f}.","Look at {f} without rushing.","Discover something new in {f}.","Compare large and small details in {f}.","Notice the light reaching {f}.","Choose your favorite detail in {f}.","Recall one detail you saw in {f}.","Take one final look at {f}."
+"Place your feet in a comfortable position.",
+"Notice three objects nearby.",
+"Notice a color you had not looked at.",
+"Relax your hands without forcing them.",
+"Listen to a sound in your surroundings.",
+"Let your shoulders settle comfortably.",
+"Look at one steady point for a few seconds.",
+"Notice a smooth or rough surface.",
+"Let your breathing keep its natural rhythm.",
+"Notice the light in the room.",
+"Silently name something you can see.",
+"Notice the support of your chair or the floor.",
+"Let one thought pass without solving it now.",
+"Look at something with an interesting shape.",
+"Check whether you can soften your jaw.",
+"Listen for one nearby sound and one distant sound.",
+"Choose a detail and describe it silently.",
+"Allow yourself to take this pause at your own pace.",
+"Bring your attention back to your feet and hands.",
+"Choose one small step you would like to take next."
 ]},
 "movement":{
 "es":[
-"Busca una postura estable antes de mover {f}.","Haz un movimiento pequeño con {f}, si resulta cómodo.","Reduce el recorrido de {f} si lo necesitas.","Mueve {f} despacio y sin rebotes.","Haz una pausa y relaja {f}.","Comprueba si {f} está cómodo.","Cambia suavemente la posición de {f}.","Deja que {f} descanse un momento.","Repite el movimiento solo si te resulta cómodo.","Mantén el movimiento dentro de un rango natural.","Evita forzar {f}.","Respira con normalidad mientras mueves {f}.","Detente si aparece dolor o mareo.","Busca apoyo estable antes de continuar.","Haz el movimiento más pequeño si lo prefieres.","Regresa lentamente a la posición inicial.","Compara cómo se siente {f} al descansar.","Elige la opción más cómoda para {f}.","Termina el movimiento sin prisa.","Quédate en una postura segura y cómoda."
+"Comprueba que tienes espacio suficiente para moverte.",
+"Siéntate o ponte de pie en una posición estable.",
+"Mueve lentamente los dedos de las manos.",
+"Abre y cierra las manos sin apretar.",
+"Haz un círculo pequeño con los hombros si te resulta cómodo.",
+"Vuelve los hombros a una posición natural.",
+"Mueve los tobillos suavemente si puedes hacerlo con comodidad.",
+"Alterna el apoyo de los pies sin perder estabilidad.",
+"Estira los dedos de las manos sin llegar al dolor.",
+"Deja los brazos descansar a los lados.",
+"Gira la cabeza solo un poco si no causa molestias.",
+"Regresa la cabeza al centro con suavidad.",
+"Estira la espalda sin arquearla en exceso.",
+"Cambia de postura lentamente si lo necesitas.",
+"Relaja las manos y los antebrazos.",
+"Nota qué movimiento te resulta más cómodo.",
+"Descansa si aparece dolor, mareo o malestar.",
+"Comprueba que puedes mantener una postura estable.",
+"Deja que el cuerpo vuelva a una posición cómoda.",
+"Elige un movimiento pequeño para repetir más tarde."
 ],
 "en":[
-"Find a stable position before moving {f}.","Make a small movement with {f}, if comfortable.","Use a smaller range for {f} if needed.","Move {f} slowly, without bouncing.","Pause and relax {f}.","Check whether {f} feels comfortable.","Gently change the position of {f}.","Let {f} rest for a moment.","Repeat only if the movement feels comfortable.","Keep the movement within a natural range.","Do not force {f}.","Breathe normally while moving {f}.","Stop if you feel pain or dizziness.","Find stable support before continuing.","Make the movement smaller if you prefer.","Slowly return to the starting position.","Notice how {f} feels while resting.","Choose the most comfortable option for {f}.","Finish the movement without rushing.","Stay in a safe, comfortable position."
+"Check that you have enough room to move.",
+"Sit or stand in a stable position.",
+"Slowly move your fingers.",
+"Open and close your hands without squeezing.",
+"Make a small shoulder circle if comfortable.",
+"Return your shoulders to a natural position.",
+"Gently move your ankles if comfortable.",
+"Shift your foot support without losing stability.",
+"Stretch your fingers without reaching pain.",
+"Let your arms rest at your sides.",
+"Turn your head slightly only if comfortable.",
+"Gently bring your head back to center.",
+"Lengthen your back without over-arching.",
+"Change position slowly if needed.",
+"Relax your hands and forearms.",
+"Notice which movement feels most comfortable.",
+"Rest if you experience pain, dizziness, or discomfort.",
+"Check that you can maintain a stable posture.",
+"Let your body return to a comfortable position.",
+"Choose one small movement to repeat later."
 ]},
-"calm":{
+"plants":{
 "es":[
-"Dirige suavemente la atención hacia {f}.","Observa {f} sin intentar cambiarlo.","Nombra mentalmente un detalle de {f}.","Permite que {f} esté como está.","Vuelve a {f} cuando te distraigas.","No necesitas hacerlo perfectamente con {f}.","Dedica unos segundos a {f}.","Nota qué es sencillo de reconocer en {f}.","Deja pasar cualquier pensamiento y vuelve a {f}.","Elige una palabra neutral para {f}.","Mira o escucha {f} a tu propio ritmo.","Relaja la mandíbula si te resulta cómodo.","Deja caer los hombros sin forzarlos.","Respira como lo haces normalmente.","Siente el apoyo de la superficie bajo tu cuerpo.","Observa un detalle presente en {f}.","No hace falta sentir algo especial con {f}.","Permite que la atención vuelva a {f}.","Agradece este breve momento de pausa.","Termina observando {f} una vez más."
+"Elige una planta o una imagen de una planta.",
+"Observa su forma general antes de mirar los detalles.",
+"Busca una diferencia entre dos hojas.",
+"Fíjate en un tono claro y otro oscuro.",
+"Observa si los bordes son lisos o irregulares.",
+"Sigue visualmente una línea o una nervadura.",
+"Compara el tamaño de dos partes.",
+"Busca dónde termina una hoja y comienza otra.",
+"Observa cómo la luz cambia su apariencia.",
+"Nota si la planta crece hacia arriba o hacia los lados.",
+"Busca una sombra cercana a la planta.",
+"Observa la textura sin tocar si no estás seguro.",
+"Cuenta mentalmente tres detalles visibles.",
+"Identifica una parte que no habías observado.",
+"Compara la planta con el fondo que la rodea.",
+"Busca una forma repetida en sus hojas.",
+"Observa si hay partes nuevas o antiguas.",
+"Describe mentalmente la planta con tres palabras.",
+"Recuerda que observar no requiere arrancar ni probar nada.",
+"Elige un detalle natural que quieras volver a mirar."
 ],
 "en":[
-"Direct your attention gently toward {f}.","Notice {f} without trying to change it.","Silently name one detail of {f}.","Allow {f} to be just as it is.","Return to {f} when your mind wanders.","You do not need to do {f} perfectly.","Spend a few seconds with {f}.","Notice what is easy to recognize in {f}.","Let a thought pass, then return to {f}.","Choose a neutral word for {f}.","Look at or listen to {f} at your own pace.","Relax your jaw if that feels comfortable.","Let your shoulders drop without forcing them.","Breathe in your usual, natural way.","Feel the surface supporting your body.","Notice one detail present in {f}.","You do not need to feel anything special about {f}.","Allow your attention to return to {f}.","Appreciate this brief moment of pause.","Finish by noticing {f} one more time."
+"Choose a plant or an image of a plant.",
+"Notice its overall shape before looking at details.",
+"Find one difference between two leaves.",
+"Notice one light shade and one dark shade.",
+"Notice whether the edges are smooth or uneven.",
+"Follow a line or vein with your eyes.",
+"Compare the size of two parts.",
+"Notice where one leaf ends and another begins.",
+"Notice how light changes its appearance.",
+"Notice whether the plant grows upward or sideways.",
+"Look for a shadow near the plant.",
+"Notice the texture without touching if unsure.",
+"Silently count three visible details.",
+"Identify one part you had not noticed before.",
+"Compare the plant with its background.",
+"Look for a repeated shape among its leaves.",
+"Notice whether some parts look newer or older.",
+"Describe the plant silently using three words.",
+"Remember that observing does not require picking or tasting anything.",
+"Choose one natural detail to look at again."
 ]},
 "coach":{
 "es":[
-"Define un resultado concreto para {f}.","Identifica el primer paso de {f}.","Piensa qué necesitas preparar para {f}.","Reduce {f} a una acción que puedas explicar.","Decide cuándo revisarás {f}.","Elige una opción realista para {f}.","Separa lo urgente de lo que puede esperar en {f}.","Nombra un obstáculo práctico de {f}.","Busca una forma sencilla de facilitar {f}.","Comprueba si el tiempo para {f} es realista.","Decide qué significa completar {f}.","Elige un recurso que ayude con {f}.","Si hace falta, piensa a quién pedir ayuda con {f}.","Evita intentar resolver todo {f} a la vez.","Haz que el primer paso de {f} sea pequeño.","Revisa qué parte de {f} depende de ti.","Escoge una fecha o momento para {f}.","Imagina cómo comprobarás el avance de {f}.","Ajusta {f} si las circunstancias cambian.","Resume tu siguiente acción para {f}."
+"Piensa en una sola tarea que tengas pendiente.",
+"Define qué significaría avanzar un poco.",
+"Divide la tarea en un primer paso pequeño.",
+"Comprueba si necesitas algún material antes de empezar.",
+"Elige un momento realista para comenzar.",
+"Retira una distracción que puedas controlar.",
+"Decide qué puede esperar hasta otro momento.",
+"Escribe mentalmente la acción más sencilla.",
+"Comprueba si el paso elegido cabe en unos minutos.",
+"Piensa qué ayuda práctica podrías necesitar.",
+"Elige entre empezar ahora o programarlo.",
+"Si no puedes hacerlo hoy, decide cuándo revisarlo.",
+"Reduce el objetivo si te parece demasiado grande.",
+"Identifica una cosa que ya esté resuelta.",
+"Deja espacio para imprevistos razonables.",
+"Comprueba que tu plan depende de acciones posibles.",
+"Elige una señal que te recuerde el siguiente paso.",
+"Decide qué harás si aparece un obstáculo.",
+"Resume tu plan en una frase sencilla.",
+"Elige cuándo revisarás tu avance."
 ],
 "en":[
-"Define a concrete result for {f}.","Identify the first step for {f}.","Think about what you need to prepare for {f}.","Reduce {f} to an action you can explain.","Decide when you will review {f}.","Choose a realistic option for {f}.","Separate urgent parts from what can wait in {f}.","Name one practical obstacle to {f}.","Find a simple way to make {f} easier.","Check whether the time for {f} is realistic.","Decide what completing {f} means.","Choose a resource that can help with {f}.","If needed, decide whom to ask for help with {f}.","Avoid trying to solve all of {f} at once.","Make the first step for {f} small.","Review which part of {f} you can control.","Choose a date or time for {f}.","Picture how you will check progress on {f}.","Adjust {f} if circumstances change.","Summarize your next action for {f}."
-]}}
+"Think of one task you need to do.",
+"Define what making a little progress would mean.",
+"Break the task into one small first step.",
+"Check whether you need any materials before starting.",
+"Choose a realistic time to begin.",
+"Remove one distraction you can control.",
+"Decide what can wait until later.",
+"Silently name the simplest action.",
+"Check whether the step fits into a few minutes.",
+"Think of practical help you might need.",
+"Choose whether to start now or schedule it.",
+"If today is not possible, decide when to revisit it.",
+"Reduce the goal if it feels too large.",
+"Identify one thing that is already handled.",
+"Leave room for reasonable interruptions.",
+"Check that your plan depends on possible actions.",
+"Choose a reminder for your next step.",
+"Decide what you will do if an obstacle appears.",
+"Summarize your plan in one simple sentence.",
+"Choose when you will review your progress."
+]}
+}
 
-# Comprueba la estructura antes de generar el catálogo.
-for _section in SECTIONS:
-    if _section not in PROMPT_TEMPLATES:
-        raise ValueError(f"Falta la sección de plantillas: {_section}")
-    for _lang in ("es","en"):
-        if _lang not in PROMPT_TEMPLATES[_section]:
-            raise ValueError(f"Falta el idioma {_lang} en {_section}")
-        if len(PROMPT_TEMPLATES[_section][_lang])!=20:
-            raise ValueError(f"La sección {_section}, idioma {_lang}, debe tener 20 plantillas")
-        if any("{f}" not in _template for _template in PROMPT_TEMPLATES[_section][_lang]):
-            raise ValueError(f"Hay una plantilla sin el marcador {{f}} en {_section}/{_lang}")
-
-def _make_steps(section,focus_es,focus_en,lang):
-    lang=lang if lang in ("es","en") else "es"
-    focus=focus_es if lang=="es" else focus_en
-    templates=PROMPT_TEMPLATES[section][lang]
-    return [template.format(f=focus) for template in templates]
-
-def _description(section,focus_es,focus_en,lang):
-    focus=focus_es if lang=="es" else focus_en
-    if section=="plants":
-        return (f"Observa {focus} con curiosidad y sin prisa. Puedes usar algo real o una imagen; no necesitas tocar ni ingerir ninguna planta." if lang=="es" else f"Observe {focus} with curiosity and without rushing. Use a real object or a picture; you do not need to touch or ingest any plant.")
-    if section=="movement":
-        return (f"Una actividad adaptable centrada en {focus}. Haz únicamente los movimientos que te resulten cómodos y seguros; puedes permanecer sentado." if lang=="es" else f"An adaptable activity focused on {focus}. Do only movements that feel comfortable and safe; you can remain seated.")
-    if section=="calm":
-        return (f"Una pausa breve para prestar atención a {focus}, sin exigirte un resultado ni cambiar cómo te sientes." if lang=="es" else f"A short pause to pay attention to {focus}, without demanding a result or trying to change how you feel.")
-    return (f"Una práctica concreta para organizar {focus} en pasos sencillos, realistas y manejables." if lang=="es" else f"A practical exercise to organize {focus} into simple, realistic, manageable steps.")
-
-# RAW conserva la estructura de ocho elementos.
-RAW=[]
-for aid,section,title_es,title_en,focus_es,focus_en in ACTIVITY_DEFS:
-    desc_es=_description(section,focus_es,focus_en,"es")
-    desc_en=_description(section,focus_es,focus_en,"en")
-    steps_es=_make_steps(section,focus_es,focus_en,"es")
-    steps_en=_make_steps(section,focus_es,focus_en,"en")
-    RAW.append((aid,section,title_es,title_en,desc_es,desc_en,steps_es,steps_en))
-
-RAW_BY_ID={item[0]:item for item in RAW}
-SECTION_KIND={"plants":"nature","movement":"energy","calm":"calm","coach":"coach"}
-
-def _normalize_lang(lang):
-    return lang if lang in ("es","en") else "es"
-
-def _normalize_minutes(minutes,default=3):
-    try:
-        value=int(minutes)
-    except (TypeError,ValueError,OverflowError):
-        value=default
-    return max(MINUTES_MIN,min(MINUTES_MAX,value))
-
-def _activity(raw,lang="es"):
-    lang=_normalize_lang(lang)
-    aid,section,title_es,title_en,desc_es,desc_en,steps_es,steps_en=raw
-    return {
-        "id":aid,
-        "section":section,
-        "kind":SECTION_KIND[section],
-        "minutes":5,
-        "title":title_es if lang=="es" else title_en,
-        "description":desc_es if lang=="es" else desc_en,
-        "steps":deepcopy(steps_es if lang=="es" else steps_en),
-        "language":lang,
-        "step_count":20,
-        "prompt_interval_seconds":PROMPT_INTERVAL_SECONDS
-    }
-
-def get_catalog():
-    return [
-        {"id":key,"title":value["es"],"title_en":value["en"],
-         "count":sum(1 for activity in RAW if activity[1]==key)}
-        for key,value in SECTIONS.items()
-    ]
-
-def get_activities(lang="es",section="all"):
-    lang=_normalize_lang(lang)
-    valid_sections=set(SECTIONS)|{"all"}
-    section=section if section in valid_sections else "all"
-    return [_activity(a,lang) for a in RAW if section=="all" or a[1]==section]
-
-def _session_pool(base,lang):
-    section=base[1]
-    same_section=[a for a in RAW if a[1]==section and a[0]!=base[0]]
-    random.SystemRandom().shuffle(same_section)
-    selected=[base]+same_section[:6]
-    pool=[]
-    for raw in selected:
-        activity=_activity(raw,lang)
-        for index,phrase in enumerate(activity["steps"]):
-            pool.append({
-                "text":phrase,
-                "activity_id":raw[0],
-                "activity_title":activity["title"],
-                "prompt_number":index+1
-            })
-    unique={}
-    for prompt in pool:
-        key=" ".join(prompt["text"].casefold().split())
-        if key not in unique:
-            unique[key]=prompt
-    result=list(unique.values())
-    random.SystemRandom().shuffle(result)
-    return result,selected
-
-def get_session(lang="es",kind="pause",minutes=3):
-    lang=_normalize_lang(lang)
-    minutes=_normalize_minutes(minutes)
-    mapping={
-        "pause":"c01","energy":"m01","calm":"c02",
-        "nature":"p01","coach":"w01","program":"w02"
-    }
-    base=RAW_BY_ID[mapping.get(kind,"c01")]
-    pool,selected=_session_pool(base,lang)
-    target=max(1,math.ceil(minutes*60/PROMPT_INTERVAL_SECONDS))
-    steps=[p["text"] for p in pool[:target]]
-    if len(steps)<target:
-        used=set(steps)
-        remaining=[p["text"] for p in pool if p["text"] not in used]
-        steps.extend(remaining[:target-len(steps)])
-    activity=_activity(base,lang)
-    activity.update({
-        "minutes":minutes,
-        "steps":steps,
-        "step_count":len(steps),
-        "prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,
-        "unique_prompts":len(set(steps))==len(steps),
-        "session_activities":[
-            {"id":a[0],"title":a[2] if lang=="es" else a[3]}
-            for a in selected
-        ],
-        "session_mode":"guided",
-        "measurement":{
-            "tracks_active_time":True,
-            "tracks_completed_sessions":True,
-            "tracks_prompt_count":True,
-            "tracks_user_rating":True,
-            "uses_physical_sensors":False
-        }
-    })
-    return activity
-
-PLANTS={
-"mint":{
-"es":("Menta","Mentha spp.","Hierba aromática utilizada en alimentos e infusiones.","Observa la forma y el aroma sin ingerirla.","Puede empeorar el reflujo en algunas personas. No ingieras aceites esenciales."),
-"en":("Mint","Mentha spp.","An aromatic herb used in foods and infusions.","Observe its shape and scent without ingesting it.","It may worsen reflux for some people. Do not ingest essential oils.")
+# Variaciones de títulos y descripciones para crear 20 actividades por sección.
+TITLES={
+"calm":{"es":["Pausa consciente","Atención a los sentidos","Un momento de quietud","Escucha tu entorno","Descanso visual","Pausa entre tareas","Atención tranquila","Observar sin prisa","Regresar al presente","Un minuto para ti","Mirada serena","Pausa de manos","Escucha cercana","Pausa en tu espacio","Atención a los detalles","Descanso cotidiano","Un momento sencillo","Pausa al mediodía","Atención sin presión","Cierre tranquilo"],"en":["Mindful pause","Notice your senses","A quiet moment","Listen to your surroundings","Visual rest","Pause between tasks","Quiet attention","Observe without rushing","Return to the present","A moment for yourself","A calm gaze","Hand pause","Nearby sounds","Pause in your space","Notice the details","Everyday rest","A simple moment","Midday pause","Pressure-free attention","A calm finish"]},
+"movement":{"es":["Movimiento amable","Pausa de hombros","Manos en movimiento","Cambiar de postura","Movimiento sentado","Pausa de tobillos","Estiramiento suave","Despertar las manos","Postura cómoda","Pequeños movimientos","Pausa corporal","Movimiento consciente","Descanso de brazos","Equilibrio y apoyo","Pausa de espalda","Movilidad tranquila","Movimiento a tu ritmo","Soltar tensión postural","Pausa activa","Cierre corporal"],"en":["Gentle movement","Shoulder pause","Hands in motion","Change position","Seated movement","Ankle pause","Gentle stretch","Wake up your hands","Comfortable posture","Small movements","Body pause","Mindful movement","Arm rest","Balance and support","Back pause","Easy mobility","Movement at your pace","Release postural strain","Active pause","Body reset"]},
+"plants":{"es":["Mirar una planta","Detalles de hojas","Colores naturales","Formas en la naturaleza","Observación botánica","Luz y hojas","Pequeños patrones","Una pausa verde","Curiosidad natural","Mirada de jardinero","Formas y texturas","Descubrir un detalle","Observar sin tocar","Hojas y sombras","Una planta cercana","Patrones repetidos","Naturaleza cotidiana","Mirar con curiosidad","Tres detalles verdes","Cierre en la naturaleza"],"en":["Look at a plant","Leaf details","Natural colors","Shapes in nature","Botanical observation","Light and leaves","Small patterns","A green pause","Natural curiosity","A gardener's gaze","Shapes and textures","Discover a detail","Observe without touching","Leaves and shadows","A nearby plant","Repeated patterns","Everyday nature","Look with curiosity","Three natural details","Finish with nature"]},
+"coach":{"es":["Un paso posible","Ordena tu prioridad","Plan sencillo","Preparar el comienzo","Decidir con calma","Una tarea a la vez","Pequeños avances","Organizar el día","Elegir qué importa","Reducir una tarea","Plan de pocos minutos","Preparación práctica","Una decisión útil","Retomar una tarea","Plan realista","Orden sin presión","Definir el siguiente paso","Preparar una pausa","Revisar el día","Cierre y continuidad"],"en":["One possible step","Set your priority","A simple plan","Prepare to begin","Decide calmly","One task at a time","Small progress","Organize your day","Choose what matters","Make a task smaller","A few-minute plan","Practical preparation","One useful decision","Return to a task","A realistic plan","Order without pressure","Define the next step","Plan a pause","Review your day","Finish and continue"]}
+}
+DESCRIPTIONS={
+"es":{
+"plants":"Observación sencilla de plantas y detalles naturales, sin necesidad de experiencia.",
+"movement":"Movimientos opcionales y adaptables. Haz solo lo que te resulte cómodo.",
+"calm":"Una práctica cotidiana para observar el entorno y hacer una pausa sin forzar la respiración.",
+"coach":"Organiza una acción cotidiana en pasos pequeños y realistas."
 },
-"chamomile":{
-"es":("Manzanilla","Matricaria chamomilla","Se consume tradicionalmente como infusión.","Observa los detalles de una flor.","Puede provocar alergias, especialmente en personas sensibles a la familia Asteraceae."),
-"en":("Chamomile","Matricaria chamomilla","Traditionally consumed as an infusion.","Notice the details of a flower.","It may cause allergies, especially in people sensitive to Asteraceae plants.")
-},
-"rosemary":{
-"es":("Romero","Salvia rosmarinus","Hierba aromática utilizada en cocina y jardinería.","Observa sus hojas y su forma.","No ingieras aceite esencial y evita el contacto con los ojos."),
-"en":("Rosemary","Salvia rosmarinus","An aromatic herb used in cooking and gardening.","Observe its leaves and shape.","Do not ingest essential oil and avoid eye contact.")
+"en":{
+"plants":"Simple observation of plants and natural details, with no experience required.",
+"movement":"Optional, adaptable movements. Do only what feels comfortable.",
+"calm":"An everyday practice to notice your surroundings and pause without forcing your breathing.",
+"coach":"Organize an everyday action into small, realistic steps."
 }}
 
-def get_plant(plant_id,lang="es"):
-    lang=_normalize_lang(lang)
-    if plant_id not in PLANTS:
-        return None
-    p=PLANTS[plant_id][lang]
-    return {
-        "id":plant_id,
-        "name":p[0],
-        "scientific":p[1],
-        "traditional":p[2],
-        "activity":p[3],
-        "caution":p[4],
-        "language":lang
-    }
+def _lang(value):
+    return "en" if str(value or "es").lower().startswith("en") else "es"
 
-PROGRAM=[
-("Comienza con una pausa","Begin with a pause","c01",3),
-("Observa la naturaleza","Observe nature","p03",5),
-("Mueve el cuerpo con suavidad","Move gently","m01",3),
-("Vuelve al presente","Return to the present","c02",5),
-("Descubre una planta","Discover a plant","p02",5),
-("Elige una prioridad","Choose a priority","w01",3),
-("Repasa lo que te resultó útil","Review what helped","w02",5)
-]
+def _section(value):
+    value=str(value or "all").strip().lower()
+    aliases={"plant":"plants","nature":"plants","energía":"movement","energia":"movement","movimiento":"movement","calma":"calm","atencion":"calm","atención":"calm","coach":"coach","all":"all","todos":"all","todas":"all"}
+    value=aliases.get(value,value)
+    return value if value in SECTIONS or value=="all" else "all"
+
+def _build_catalog():
+    result=[]
+    for section in SECTIONS:
+        for i in range(20):
+            if section=="plants":
+                pid=list(PLANTS.keys())[i]
+                plant=PLANTS[pid]
+                title={l:plant["name"][l] if i<3 else TITLES[section][l][i] for l in LANGUAGES}
+                title["es"]="Naturaleza: "+title["es"]
+                title["en"]="Nature: "+title["en"]
+                steps={l:list(STEPS[section][l]) for l in LANGUAGES}
+                if i<3:
+                    steps["es"][0]="Observa la planta: "+plant["name"]["es"]+"."
+                    steps["en"][0]="Observe the plant: "+plant["name"]["en"]+"."
+                item={"id":pid,"section":section,"plant_id":pid,"title":title,"description":{l:DESCRIPTIONS[l][section] for l in LANGUAGES},"steps":steps}
+            else:
+                aid={"movement":"m","calm":"c","coach":"w"}[section]+str(i+1).zfill(2)
+                item={"id":aid,"section":section,"title":{l:TITLES[section][l][i] for l in LANGUAGES},"description":{l:DESCRIPTIONS[l][section] for l in LANGUAGES},"steps":{l:list(STEPS[section][l]) for l in LANGUAGES}}
+            result.append(item)
+    return result
+
+_CATALOG=_build_catalog()
+_BY_ID={a["id"]:a for a in _CATALOG}
+
+def _public_activity(item,lang="es",minutes=None):
+    language=_lang(lang)
+    out={"id":item["id"],"section":item["section"],"title":item["title"][language],"description":item["description"][language],"steps":list(item["steps"][language])}
+    if item.get("plant_id"):
+        out["plant_id"]=item["plant_id"]
+    if minutes is not None:
+        out["minutes"]=max(1,min(10,int(minutes)))
+    return out
+
+def get_catalog(lang="es"):
+    language=_lang(lang)
+    return {"version":VERSION,"name":APP_NAME,"company":COMPANY,"languages":list(LANGUAGES),"sections":list(SECTIONS),"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,"activities":[_public_activity(a,language) for a in _CATALOG]}
+
+def get_activities(lang="es",section="all"):
+    language=_lang(lang)
+    wanted=_section(section)
+    return [_public_activity(a,language) for a in _CATALOG if wanted=="all" or a["section"]==wanted]
+
+def get_activity(activity_id,lang="es",minutes=None):
+    item=_BY_ID.get(str(activity_id or "").strip())
+    if not item:
+        return None
+    return _public_activity(item,lang,minutes)
+
+def get_session(activity_id=None,minutes=3,lang="es",activity=None):
+    language=_lang(lang)
+    try:
+        duration=int(minutes)
+    except (ValueError,TypeError):
+        duration=3
+    if duration not in MINUTES_ALLOWED:
+        duration=3
+    item=activity if isinstance(activity,dict) else _BY_ID.get(str(activity_id or ""))
+    if not item:
+        item=_rng.choice(_CATALOG)
+    out=_public_activity(item,language,duration)
+    out.update({"duration_seconds":duration*60,"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,"steps_count":len(out["steps"]),"generated_at":datetime.datetime.now(datetime.timezone.utc).isoformat()})
+    return out
+
+def get_plant(plant_id,lang="es"):
+    language=_lang(lang)
+    pid=str(plant_id or "").strip()
+    p=PLANTS.get(pid)
+    if not p:
+        return None
+    return {"id":pid,"name":p["name"][language],"scientific_name":p["scientific"],"traditional_use":p["use"][language],"observation":p["observation"][language],"precautions":p["precautions"][language],"disclaimer":{"es":"Información general; no sustituye orientación profesional. No ingieras plantas desconocidas ni aceites esenciales.","en":"General information; not a substitute for professional guidance. Do not ingest unknown plants or essential oils."}[language]}
 
 def get_program_day(lang="es",day=1):
-    lang=_normalize_lang(lang)
+    language=_lang(lang)
     try:
-        day=int(day)
-    except (TypeError,ValueError,OverflowError):
-        day=1
-    day=max(1,min(7,day))
-    title_es,title_en,activity_id,minutes=PROGRAM[day-1]
-    activity=_activity(RAW_BY_ID[activity_id],lang)
-    activity["minutes"]=minutes
-    return {
-        "day":day,
-        "title":title_es if lang=="es" else title_en,
-        "goal":activity["description"],
-        "kind":activity["kind"],
-        "minutes":minutes,
-        "activity":activity
-    }
+        number=int(day)
+    except (ValueError,TypeError):
+        number=1
+    number=max(1,min(7,number))
+    plan=[
+        ("calm",1,3),("plants",0,5),("movement",2,3),("calm",8,5),
+        ("plants",3,5),("coach",5,3),("coach",18,5)
+    ]
+    section,index,mins=plan[number-1]
+    pool=[a for a in _CATALOG if a["section"]==section]
+    item=pool[index%len(pool)]
+    names={"es":["Comienza con una pausa","Observa la naturaleza","Muévete suavemente","Vuelve al presente","Descubre una planta","Elige una prioridad","Repasa lo que te ayudó"],"en":["Begin with a pause","Observe nature","Move gently","Return to the present","Discover a plant","Choose a priority","Review what helped"]}
+    desc={"es":["Empieza con una pausa y descubre qué práctica te resulta útil.","Dedica unos minutos a observar un detalle natural.","Prueba movimientos pequeños dentro de tus posibilidades.","Utiliza los sentidos para observar tu entorno.","Conoce una planta y respeta sus precauciones.","Convierte una tarea en un primer paso manejable.","Repasa una práctica y decide qué quieres mantener."],"en":["Start with a pause and notice which practice is useful to you.","Spend a few minutes noticing a natural detail.","Try small movements within your abilities.","Use your senses to notice your surroundings.","Learn about a plant and respect its precautions.","Turn a task into one manageable first step.","Review one practice and decide what to keep."]}
+    return {"day":number,"title":names[language][number-1],"description":desc[language][number-1],"minutes":mins,"activity":_public_activity(item,language,mins),"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS}
 
-def get_metrics():
-    return {
-        "engine_version":VERSION,
-        "total_activities":len(RAW),
-        "activities_by_section":{
-            section:sum(1 for item in RAW if item[1]==section)
-            for section in SECTIONS
-        },
-        "languages":["es","en"],
-        "steps_per_activity":20,
-        "prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,
-        "max_session_minutes":MINUTES_MAX
-    }
+def get_health():
+    return {"status":"ok","engine":APP_NAME,"version":VERSION,"activities":len(_CATALOG),"activities_per_section":{s:sum(1 for a in _CATALOG if a["section"]==s) for s in SECTIONS},"languages":list(LANGUAGES),"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS}
+
+def get_config(lang="es"):
+    language=_lang(lang)
+    return {"name":APP_NAME,"company":COMPANY,"version":VERSION,"language":language,"languages":list(LANGUAGES),"sections":list(SECTIONS),"minutes":list(MINUTES_ALLOWED),"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,"disclaimer":{"es":"Actividades generales de bienestar, no tratamientos ni diagnósticos.","en":"General wellness activities, not treatments or diagnoses."}[language]}
+
+def create_session_id(activity_id,minutes=3):
+    raw=f"{activity_id}|{minutes}|{time.time_ns()}|{_rng.random()}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:24]
+
+# Alias para mantener compatibilidad con llamadas anteriores.
+catalog=get_catalog
+activities=get_activities
+session=get_session
+plant=get_plant
+program_day=get_program_day
+health=get_health
+config=get_config
