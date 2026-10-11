@@ -1,210 +1,347 @@
 from __future__ import annotations
-import copy
-import random
+import os,random,time,datetime,hashlib,threading
+from copy import deepcopy
 
-VERSION="4.0.0"
+VERSION="6.0.0"
+APP_NAME="WELLNESS COACH"
+COMPANY="May Roga LLC"
+PROMPT_INTERVAL_SECONDS=10
+MINUTES_ALLOWED=(3,5,10)
 LANGUAGES=("es","en")
 SECTIONS=("plants","movement","calm","coach")
-DURATIONS=(3,5,10)
+_LOCK=threading.RLock()
+_RNG=random.SystemRandom()
 
-CATALOG={
-"es":[
-{"id":"plants","title":"Plantas y naturaleza","description":"Observación, curiosidad y conexión con el entorno."},
-{"id":"movement","title":"Energía y movimiento","description":"Pausas adaptables y movimientos suaves."},
-{"id":"calm","title":"Calma y atención","description":"Observación del presente y pausas cotidianas."},
-{"id":"coach","title":"Mi coach de bienestar","description":"Organización práctica y pequeños pasos para el día."}
+def _b(es,en,lang="es"):
+    return en if lang=="en" else es
+
+# PLANTAS: información botánica general y actividades de observación.
+# Las precauciones no sustituyen la identificación profesional de una planta.
+_PLANT_ROWS=[
+("Manzanilla","Chamomile","Matricaria chamomilla","aromatic","Flores pequeñas blancas y centro amarillo; aroma suave.","Small white flowers with yellow centers; gentle aroma.","Observar los pétalos, el centro y el contraste de colores.","Observe the petals, center and color contrast.","No ingerir ni usar preparados sin revisar alergias e interacciones; puede causar alergia en personas sensibles a las asteráceas.","Do not ingest or use preparations without checking allergies and interactions; may trigger allergies in people sensitive to Asteraceae."),
+("Menta","Mint","Mentha spicata","aromatic","Hojas verdes aromáticas y tallos que se extienden con facilidad.","Aromatic green leaves and spreading stems.","Comparar la forma, el borde y la disposición de las hojas.","Compare leaf shape, edges and arrangement.","No confundir especies; el aceite concentrado no equivale a una hoja y puede ser peligroso.","Do not confuse species; concentrated oil is not equivalent to a leaf and may be hazardous."),
+("Lavanda","Lavender","Lavandula angustifolia","aromatic","Hojas estrechas y espigas de flores generalmente violetas.","Narrow leaves and spikes of usually purple flowers.","Mirar las espigas y contar lentamente sus grupos de flores.","Look at the flower spikes and slowly count their clusters.","El aroma puede molestar a personas sensibles; no ingerir aceites esenciales.","The scent may bother sensitive people; do not ingest essential oils."),
+("Romero","Rosemary","Salvia rosmarinus","aromatic","Arbusto de hojas estrechas, firmes y muy aromáticas.","Shrub with narrow, firm, strongly aromatic leaves.","Observar cómo las hojas estrechas se distribuyen sobre el tallo.","Notice how narrow leaves are arranged along the stem.","No ingerir preparados concentrados sin orientación profesional; evitar aceites esenciales por vía oral.","Do not ingest concentrated preparations without professional guidance; avoid oral essential oils."),
+("Albahaca","Basil","Ocimum basilicum","herb","Hojas suaves y verdes; planta aromática de clima cálido.","Soft green leaves; an aromatic warm-weather plant.","Comparar dos hojas y describir sus diferencias visibles.","Compare two leaves and describe visible differences.","Identificar correctamente la especie; no usar aceites concentrados como alimento o remedio.","Identify the species correctly; do not use concentrated oils as food or remedies."),
+("Sábila o aloe vera","Aloe vera","Aloe vera","succulent","Hojas carnosas en roseta con bordes dentados.","Fleshy rosette leaves with toothed edges.","Observar la roseta y el patrón de los bordes sin cortar la hoja.","Observe the rosette and leaf-edge pattern without cutting the leaf.","El látex amarillo puede ser irritante y peligroso si se ingiere; no consumir productos caseros.","Yellow latex can be irritating and dangerous if swallowed; do not consume homemade products."),
+("Helecho","Fern","Nephrolepis exaltata","fern","Frondas divididas en numerosos foliolos; suele preferir humedad.","Divided fronds with many leaflets; often prefers humidity.","Seguir visualmente una fronda desde la base hasta la punta.","Trace one frond visually from base to tip.","Las especies varían; no ingerir ni asumir que una planta silvestre es segura.","Species vary; do not ingest or assume a wild plant is safe."),
+("Suculenta","Succulent","Echeveria elegans","succulent","Hojas gruesas que suelen formar una roseta compacta.","Thick leaves that often form a compact rosette.","Contar las capas visibles de la roseta.","Count the visible layers of the rosette.","Confirmar la especie antes de tocar o ingerir; algunas suculentas ornamentales son tóxicas.","Confirm the species before touching or ingesting; some ornamental succulents are toxic."),
+("Girasol","Sunflower","Helianthus annuus","flower","Flor grande con centro prominente y hojas ásperas.","Large flower with a prominent center and rough leaves.","Observar el centro y la disposición de los pétalos.","Observe the center and arrangement of the petals.","Puede provocar alergias; no consumir semillas de plantas tratadas con químicos no aptos para alimentos.","May cause allergies; do not eat seeds from plants treated with non-food chemicals."),
+("Caléndula","Calendula","Calendula officinalis","flower","Flores amarillas o anaranjadas con numerosos pétalos.","Yellow or orange flowers with many petals.","Comparar tonos, pétalos y simetría de la flor.","Compare shades, petals and flower symmetry.","Puede causar reacciones alérgicas; no sustituye tratamientos médicos.","May cause allergic reactions; it does not replace medical treatment."),
+("Tomillo","Thyme","Thymus vulgaris","aromatic","Planta baja con hojas pequeñas y tallos leñosos.","Low-growing plant with small leaves and woody stems.","Observar el tamaño de las hojas y la estructura del tallo.","Observe leaf size and stem structure.","No ingerir aceites concentrados; las preparaciones pueden interactuar con medicamentos.","Do not ingest concentrated oils; preparations may interact with medicines."),
+("Cilantro","Cilantro","Coriandrum sativum","herb","Hojas finamente divididas y flores pequeñas en grupos.","Finely divided leaves and small clustered flowers.","Comparar hojas jóvenes y maduras si ambas están presentes.","Compare young and mature leaves if both are present.","Puede causar alergias; identifica la planta antes de usarla como alimento.","May cause allergies; identify the plant before using it as food."),
+("Poto","Golden pothos","Epipremnum aureum","toxic","Enredadera de hojas brillantes, a menudo con manchas amarillas.","Vining plant with glossy leaves, often marked with yellow.","Seguir visualmente la dirección de crecimiento de una hoja a otra.","Trace the growth direction visually from leaf to leaf.","Tóxica si se ingiere y puede irritar la boca y la piel; mantener lejos de niños y mascotas.","Toxic if swallowed and may irritate the mouth and skin; keep away from children and pets."),
+("Costilla de Adán","Monstera","Monstera deliciosa","toxic","Hojas grandes que desarrollan cortes y perforaciones.","Large leaves that develop splits and holes.","Observar las perforaciones sin arrancar ninguna hoja.","Observe the holes without removing any leaves.","Contiene cristales irritantes; no ingerir hojas ni frutos sin identificación y preparación especializada.","Contains irritating crystals; do not eat leaves or fruit without expert identification and preparation."),
+("Orquídea","Orchid","Phalaenopsis spp.","flower","Flores simétricas y raíces adaptadas a su modo de crecimiento.","Symmetrical flowers and roots adapted to their growing conditions.","Observar la simetría de la flor y la forma de sus pétalos.","Observe the flower symmetry and petal shapes.","Las necesidades cambian por especie; no aplicar productos concentrados sin comprobar su seguridad.","Needs vary by species; do not apply concentrated products without checking safety."),
+("Cactus","Cactus","Cactaceae","succulent","Tallo adaptado a almacenar agua; muchas especies tienen espinas.","Water-storing stem; many species have spines.","Observar las espinas desde una distancia segura.","Observe the spines from a safe distance.","Las espinas pueden causar lesiones; no tocar ni ingerir especies desconocidas.","Spines can injure; do not touch or ingest unknown species."),
+("Hiedra común","English ivy","Hedera helix","toxic","Enredadera con hojas lobuladas y crecimiento trepador.","Climbing vine with lobed leaves.","Identificar visualmente la forma de las hojas y su patrón.","Identify the leaf shape and pattern visually.","Puede ser tóxica si se ingiere y causar irritación; evitar contacto con savia.","May be toxic if swallowed and cause irritation; avoid contact with sap."),
+("Pino","Pine","Pinus spp.","tree","Árbol con hojas aciculares y, en muchas especies, conos.","Tree with needle-like leaves and, in many species, cones.","Distinguir agujas, ramas y conos sin recoger material desconocido.","Distinguish needles, branches and cones without collecting unknown material.","No preparar infusiones con pinos no identificados; existen especies parecidas con riesgos distintos.","Do not make infusions from unidentified pines; similar-looking species can carry different risks."),
+("Bambú","Bamboo","Bambusoideae","foliage","Tallos segmentados y hojas estrechas de crecimiento variable.","Segmented stems and narrow leaves with varied growth patterns.","Contar los segmentos visibles del tallo.","Count the visible stem segments.","La seguridad depende de la especie y del procesamiento; no consumir brotes silvestres sin identificación.","Safety depends on species and processing; do not eat wild shoots without identification."),
+("Planta de interior","Houseplant","Planta ornamental diversa","foliage","La forma, el color y la textura dependen de la especie.","Shape, color and texture depend on the species.","Elegir tres rasgos visibles y describirlos sin juzgarlos.","Choose three visible traits and describe them without judgment.","Identificar la especie antes de tocar, podar o ingerir cualquier parte.","Identify the species before touching, pruning or ingesting any part."),
+("Jazmín","Jasmine","Jasminum spp.","flower","Enredadera o arbusto con flores claras en muchas especies.","Vine or shrub with pale flowers in many species.","Observar la forma de la flor y su ubicación en la planta.","Observe flower shape and where it grows on the plant.","No todas las especies tienen el mismo uso; no ingerir flores de identificación incierta.","Not all species have the same uses; do not eat flowers of uncertain identity."),
+("Rosa","Rose","Rosa spp.","flower","Flores de numerosos pétalos y tallos que pueden tener espinas.","Flowers with many petals and stems that may have thorns.","Comparar el número y la disposición de los pétalos.","Compare petal count and arrangement.","Las espinas pueden pinchar; flores comerciales pueden llevar pesticidas.","Thorns can prick; commercial flowers may carry pesticides."),
+("Hibisco","Hibiscus","Hibiscus rosa-sinensis","flower","Flor grande con estambres destacados y colores vivos.","Large flower with prominent stamens and vivid colors.","Observar el centro de la flor y los cambios de color.","Observe the flower center and color variations.","Las especies y preparaciones varían; no consumir sin identificar la planta y revisar seguridad.","Species and preparations vary; do not consume without identification and safety checks."),
+("Gardenia","Gardenia","Gardenia jasminoides","flower","Hojas verdes brillantes y flores blancas perfumadas.","Glossy green leaves and fragrant white flowers.","Comparar el brillo de las hojas con la textura de la flor.","Compare leaf gloss with flower texture.","Puede causar irritación en personas sensibles; no ingerir plantas ornamentales.","May irritate sensitive people; do not ingest ornamental plants."),
+("Violeta africana","African violet","Streptocarpus ionanthus","flower","Hojas suaves y redondeadas con flores de varios tonos.","Soft rounded leaves with flowers in varied shades.","Observar la textura de las hojas sin frotarlas.","Observe leaf texture without rubbing them.","Evitar tratamientos químicos no etiquetados para plantas de interior.","Avoid chemical treatments not labeled for houseplants."),
+("Begonia","Begonia","Begonia spp.","flower","Hojas asimétricas y flores que varían según la especie.","Asymmetrical leaves and flowers that vary by species.","Buscar la asimetría de las hojas y comparar sus bordes.","Look for leaf asymmetry and compare edges.","Muchas begonias son irritantes o tóxicas al ingerirse, especialmente para mascotas.","Many begonias are irritating or toxic if swallowed, especially for pets."),
+("Geranio","Geranium","Pelargonium spp.","flower","Hojas redondeadas y flores agrupadas en tonos diversos.","Rounded leaves and clustered flowers in varied colors.","Observar cómo se agrupan las flores en el tallo.","Notice how flowers cluster along the stem.","Puede provocar sensibilidad cutánea; no ingerir aceites ni preparados caseros.","May cause skin sensitivity; do not ingest oils or homemade preparations."),
+("Petunia","Petunia","Petunia × hybrida","flower","Flores en forma de embudo con amplia variedad de colores.","Funnel-shaped flowers in a wide range of colors.","Observar la transición del color hacia el centro de la flor.","Observe how color changes toward the flower center.","No consumir plantas ornamentales ni productos tratados con pesticidas.","Do not eat ornamental plants or plants treated with pesticides."),
+("Dalia","Dahlia","Dahlia spp.","flower","Flores con múltiples capas y formas variadas.","Flowers with multiple layers and varied forms.","Contar las capas de pétalos visibles sin arrancarlos.","Count visible petal layers without removing them.","Identificar la especie y evitar ingerir partes ornamentales.","Identify the species and avoid eating ornamental parts."),
+("Zinnia","Zinnia","Zinnia elegans","flower","Flores coloridas con discos centrales y pétalos ordenados.","Colorful flowers with central disks and orderly petals.","Buscar patrones repetidos entre pétalos.","Look for repeated patterns among petals.","Puede causar sensibilidad en algunas personas; no ingerir plantas de jardín sin confirmar su identidad.","May cause sensitivity in some people; do not eat garden plants without confirming identity."),
+("Lirio de la paz","Peace lily","Spathiphyllum spp.","toxic","Hojas alargadas y una estructura blanca que rodea la espádice.","Long leaves and a white structure surrounding the spadix.","Observar la diferencia entre la hoja y la estructura floral blanca.","Observe the difference between the leaf and the white flower-like structure.","Contiene cristales irritantes; tóxico para mascotas y personas si se ingiere.","Contains irritating crystals; toxic to pets and people if swallowed."),
+("Sansevieria","Snake plant","Dracaena trifasciata","succulent","Hojas verticales y firmes con bandas o bordes contrastantes.","Upright firm leaves with bands or contrasting edges.","Seguir las líneas y bandas de una hoja.","Trace the lines and bands on one leaf.","Puede causar molestias digestivas si se ingiere; mantener fuera del alcance de mascotas.","May cause digestive upset if swallowed; keep away from pets."),
+("Árbol de jade","Jade plant","Crassula ovata","succulent","Hojas gruesas y ovaladas en tallos ramificados.","Thick oval leaves on branching stems.","Observar la forma ovalada y la distribución de las hojas.","Observe the oval shape and leaf arrangement.","Puede ser tóxico para mascotas si se ingiere; no consumir.","May be toxic to pets if swallowed; do not eat."),
+("Echeveria","Echeveria","Echeveria spp.","succulent","Rosetas geométricas de hojas carnosas.","Geometric rosettes of fleshy leaves.","Observar la simetría radial de la roseta.","Observe the radial symmetry of the rosette.","Identificar la especie antes de tocar o ingerir; evitar productos no etiquetados.","Identify the species before touching or ingesting; avoid unlabeled products."),
+("Haworthia","Haworthia","Haworthiopsis attenuata","succulent","Hojas cortas agrupadas en rosetas, a veces con bandas blancas.","Short rosette leaves, sometimes with white bands.","Comparar las marcas y las puntas de las hojas.","Compare leaf markings and tips.","No asumir que una suculenta es comestible; identificar antes de usar.","Do not assume a succulent is edible; identify it before use."),
+("Árbol del dinero","Money tree","Pachira aquatica","foliage","Hojas palmeadas que parten de un punto común.","Palmate leaves that radiate from one point.","Contar los foliolos que salen de un mismo punto.","Count the leaflets that radiate from one point.","Evitar ingerir partes de plantas ornamentales sin identificación segura.","Avoid eating parts of ornamental plants without reliable identification."),
+("Ficus","Rubber fig","Ficus elastica","foliage","Hojas grandes, brillantes y de textura firme.","Large glossy leaves with a firm texture.","Observar reflejos y nervaduras principales.","Observe reflections and main veins.","La savia puede irritar la piel y los ojos; mantener lejos de mascotas que mordisquean plantas.","Sap may irritate skin and eyes; keep away from pets that chew plants."),
+("Filodendro","Philodendron","Philodendron spp.","toxic","Hojas de formas variadas y crecimiento trepador o erguido.","Leaves of varied shapes and climbing or upright growth.","Comparar el contorno de las hojas de una misma planta.","Compare leaf outlines on the same plant.","Muchas especies contienen cristales irritantes; no ingerir y mantener fuera del alcance de niños y mascotas.","Many species contain irritating crystals; do not ingest and keep away from children and pets."),
+("Calatea","Calathea","Goeppertia spp.","foliage","Hojas con dibujos, franjas y contrastes visibles.","Leaves with visible patterns, stripes and contrasts.","Describir el patrón de una hoja en tres palabras.","Describe one leaf pattern in three words.","Las necesidades de cuidado varían; evita pesticidas sin instrucciones claras.","Care needs vary; avoid pesticides without clear instructions."),
+("Maranta","Prayer plant","Maranta leuconeura","foliage","Hojas estampadas que pueden cambiar de posición a lo largo del día.","Patterned leaves that may change position through the day.","Observar la posición de las hojas sin intentar moverlas.","Observe leaf positions without trying to move them.","No ingerir preparados caseros; comprobar la identidad de cualquier planta.","Do not ingest homemade preparations; verify any plant's identity."),
+("Drácena","Dracaena","Dracaena spp.","foliage","Hojas alargadas y crecimiento vertical o en roseta.","Long leaves with upright or rosette growth.","Comparar hojas altas y bajas, si las hay.","Compare upper and lower leaves, if present.","Varias especies son tóxicas para mascotas; no ingerir.","Several species are toxic to pets; do not ingest."),
+("Palmera areca","Areca palm","Dypsis lutescens","foliage","Frondas arqueadas con numerosos foliolos estrechos.","Arching fronds with many narrow leaflets.","Seguir una fronda y observar cómo se divide.","Follow a frond and notice how it branches.","No consumir partes de plantas ornamentales sin identificación y evaluación de seguridad.","Do not eat ornamental plant parts without identification and safety assessment."),
+("Palma de salón","Parlor palm","Chamaedorea elegans","foliage","Palma compacta con frondas finas y arqueadas.","Compact palm with fine arching fronds.","Observar el ritmo de las hojas que salen del tallo.","Notice the rhythm of leaves emerging from the stem.","Evitar el uso de productos químicos no etiquetados en interiores.","Avoid using chemicals not labeled for indoor plants."),
+("Árbol de caucho","Rubber tree","Hevea brasiliensis","tree","Árbol tropical asociado a la producción de látex.","Tropical tree associated with latex production.","Comparar la forma del árbol con otras plantas de hoja ancha.","Compare the tree's form with other broad-leaved plants.","El látex puede provocar reacciones alérgicas; no tocar la savia.","Latex can trigger allergic reactions; do not touch sap."),
+("Olivo","Olive tree","Olea europaea","tree","Hojas estrechas, verde grisáceas, con envés más claro.","Narrow gray-green leaves with a lighter underside.","Comparar la cara superior e inferior de una hoja caída.","Compare the upper and lower sides of a fallen leaf.","No ingerir hojas ni extractos como tratamiento sin orientación profesional.","Do not ingest leaves or extracts as treatment without professional guidance."),
+("Limón","Lemon tree","Citrus limon","tree","Hojas aromáticas, flores claras y frutos amarillos cuando madura.","Aromatic leaves, pale flowers and yellow fruit when ripe.","Observar hojas, flores o frutos según la estación.","Observe leaves, flowers or fruit depending on the season.","La savia y algunos aceites cítricos pueden irritar la piel; el contacto con ciertos cítricos y sol puede causar reacciones.","Sap and some citrus oils may irritate skin; contact with some citrus plants and sunlight can cause reactions."),
+("Naranjo","Orange tree","Citrus sinensis","tree","Hojas verdes y brillantes, flores blancas y frutos anaranjados.","Glossy green leaves, white flowers and orange fruit.","Buscar el contraste entre hojas y frutos si están presentes.","Look for contrast between leaves and fruit if present.","No consumir plantas tratadas con productos no aptos para alimentos.","Do not eat plants treated with products not approved for food."),
+("Mango","Mango tree","Mangifera indica","tree","Hojas largas que pueden cambiar de color al crecer.","Long leaves that may change color as they mature.","Observar diferencias de color entre hojas nuevas y maduras.","Observe color differences between new and mature leaves.","La savia y la piel del fruto pueden irritar a personas sensibles; evitar contacto si existe alergia.","Sap and fruit skin may irritate sensitive people; avoid contact if allergic."),
+("Guayaba","Guava tree","Psidium guajava","tree","Hojas con nervaduras marcadas y textura algo rugosa.","Leaves with pronounced veins and a somewhat rough texture.","Seguir una nervadura principal desde la base hacia la punta.","Trace a main vein from base to tip.","No utilizar extractos caseros como sustituto de atención médica.","Do not use homemade extracts as a substitute for medical care."),
+("Aguacate","Avocado tree","Persea americana","tree","Hojas elípticas y copa frondosa en árboles maduros.","Elliptical leaves and a leafy crown on mature trees.","Observar el contorno elíptico y el tamaño de las hojas.","Observe the elliptical outline and leaf size.","Partes de la planta pueden ser tóxicas para algunos animales; no usar semillas ni hojas como remedio casero.","Parts of the plant can be toxic to some animals; do not use seeds or leaves as home remedies."),
+("Plátano","Banana plant","Musa spp.","foliage","Hojas muy grandes que se despliegan desde un tallo aparente.","Very large leaves unfurling from a pseudostem.","Observar las líneas paralelas y la anchura de la hoja.","Observe the parallel lines and width of the leaf.","Las hojas pueden rasgarse con facilidad; no trepar ni manipular tallos inestables.","Leaves tear easily; do not climb or handle unstable stems."),
+("Bambú de la suerte","Lucky bamboo","Dracaena sanderiana","foliage","Tallos verdes segmentados, a menudo cultivados en agua.","Green segmented stems, often grown in water.","Contar los segmentos visibles y observar su dirección.","Count visible segments and observe their direction.","No es bambú verdadero y puede ser tóxico para mascotas si se ingiere.","It is not true bamboo and may be toxic to pets if swallowed."),
+("Hiedra sueca","Swedish ivy","Plectranthus verticillatus","foliage","Hojas redondeadas y tallos que cuelgan o se extienden.","Rounded leaves and stems that trail or spread.","Observar el patrón repetido de hojas a lo largo del tallo.","Observe the repeating leaf pattern along the stem.","No ingerir; identificar la especie antes de aplicar preparados.","Do not ingest; identify the species before applying preparations."),
+("Tradescantia","Spiderwort","Tradescantia zebrina","foliage","Hojas con bandas de colores y tallos rastreros.","Striped leaves and trailing stems.","Comparar las bandas de color entre hojas.","Compare color bands between leaves.","La savia puede irritar la piel de algunas personas; mantener fuera del alcance de mascotas.","Sap may irritate some people's skin; keep away from pets."),
+("Coleo","Coleus","Coleus scutellarioides","foliage","Hojas muy coloridas con bordes y patrones variables.","Highly colorful leaves with varied edges and patterns.","Identificar dos colores y un patrón de una hoja.","Identify two colors and one pattern on a leaf.","No ingerir plantas ornamentales; algunas variedades pueden ser tóxicas para mascotas.","Do not eat ornamental plants; some varieties may be toxic to pets."),
+("Croton","Croton","Codiaeum variegatum","toxic","Hojas firmes con combinaciones de verde, amarillo, rojo o naranja.","Firm leaves combining green, yellow, red or orange.","Observar las combinaciones de color sin tocar la savia.","Observe color combinations without touching the sap.","La savia es irritante y la planta puede ser tóxica si se ingiere.","Sap is irritating and the plant may be toxic if swallowed."),
+("Poinsettia","Poinsettia","Euphorbia pulcherrima","toxic","Brácteas coloridas rodean pequeñas flores centrales.","Colorful bracts surround small central flowers.","Distinguir las brácteas de las flores pequeñas.","Distinguish the bracts from the small flowers.","La savia puede irritar; no ingerir y mantener fuera del alcance de niños y mascotas.","Sap may irritate; do not ingest and keep away from children and pets."),
+("Narciso","Daffodil","Narcissus spp.","toxic","Flores con una corona central característica.","Flowers with a distinctive central trumpet.","Observar la corona central y la simetría de la flor.","Observe the central trumpet and flower symmetry.","Todas las partes pueden ser tóxicas si se ingieren, especialmente el bulbo.","All parts may be toxic if swallowed, especially the bulb."),
+("Tulipán","Tulip","Tulipa spp.","flower","Flores en forma de copa y hojas alargadas.","Cup-shaped flowers and long leaves.","Observar la forma de copa y el contorno de las hojas.","Observe the cup shape and leaf outlines.","Los bulbos son tóxicos si se ingieren; pueden irritar la piel.","Bulbs are toxic if swallowed and may irritate skin."),
+("Crisantemo","Chrysanthemum","Chrysanthemum spp.","flower","Flores con numerosas capas y formas diversas.","Flowers with many layers and varied forms.","Observar la repetición de pétalos alrededor del centro.","Observe petal repetition around the center.","Puede causar alergia; algunas especies son tóxicas para mascotas.","May cause allergies; some species are toxic to pets."),
+("Diente de león","Dandelion","Taraxacum officinale","flower","Flor amarilla que puede formar una esfera de semillas.","Yellow flower that may form a spherical seed head.","Comparar la flor amarilla con la esfera de semillas si existe.","Compare the yellow flower with the seed head if present.","No consumir plantas silvestres de áreas tratadas o contaminadas; confirmar identidad.","Do not eat wild plants from treated or contaminated areas; confirm identity."),
+("Trébol","Clover","Trifolium spp.","herb","Hojas que suelen aparecer en grupos de tres foliolos.","Leaves that often appear in groups of three leaflets.","Contar los foliolos y observar su forma.","Count the leaflets and observe their shape.","No ingerir plantas silvestres sin identificación y revisión de seguridad.","Do not eat wild plants without identification and safety review."),
+("Hierbabuena","Spearmint","Mentha spicata","aromatic","Hojas dentadas y aroma fresco característico.","Toothed leaves and a characteristic fresh aroma.","Comparar la forma de las hojas con las de otras plantas aromáticas.","Compare leaf shape with other aromatic plants.","Identificar la especie; los aceites concentrados no deben ingerirse sin indicación profesional.","Identify the species; concentrated oils should not be ingested without professional guidance."),
+("Salvia","Sage","Salvia officinalis","aromatic","Hojas gris verdosas con textura aterciopelada.","Gray-green leaves with a velvety texture.","Observar la textura y el tono mate de las hojas.","Observe leaf texture and muted color.","Algunas preparaciones concentradas pueden ser riesgosas; evitar aceites esenciales por vía oral.","Some concentrated preparations can be risky; avoid oral essential oils."),
+("Orégano","Oregano","Origanum vulgare","aromatic","Hojas pequeñas y tallos ramificados con aroma intenso.","Small leaves and branching stems with a strong aroma.","Observar las hojas en pares y el patrón de ramificación.","Observe paired leaves and branching patterns.","No ingerir aceites esenciales; las plantas ornamentales pueden haber recibido químicos.","Do not ingest essential oils; ornamental plants may have been treated with chemicals."),
+("Toronjil","Lemon balm","Melissa officinalis","aromatic","Hojas verdes dentadas con aroma cítrico suave.","Toothed green leaves with a mild citrus aroma.","Describir el borde de la hoja y observar el tallo.","Describe the leaf edge and observe the stem.","Puede interactuar con medicamentos; no usar preparados como tratamiento sin orientación profesional.","May interact with medicines; do not use preparations as treatment without professional guidance."),
+("Hierba limón","Lemongrass","Cymbopogon citratus","aromatic","Hojas largas, estrechas y arqueadas, con aroma cítrico.","Long narrow arching leaves with a citrus scent.","Seguir la dirección de las hojas largas desde la base.","Trace the long leaves from the base.","Puede irritar la piel; los aceites concentrados no deben ingerirse.","May irritate skin; concentrated oils should not be ingested."),
+("Jengibre","Ginger","Zingiber officinale","herb","Hojas largas; la parte subterránea forma un rizoma.","Long leaves; the underground part forms a rhizome.","Observar la disposición de las hojas y aprender qué es un rizoma.","Observe leaf arrangement and learn what a rhizome is.","Los suplementos pueden interactuar con medicamentos; no usar para sustituir atención médica.","Supplements may interact with medicines; do not use to replace medical care."),
+("Cúrcuma","Turmeric","Curcuma longa","herb","Hojas amplias y rizoma de color intenso.","Broad leaves and a strongly colored rhizome.","Observar el tamaño de las hojas y la forma de crecimiento.","Observe leaf size and growth pattern.","Los suplementos concentrados pueden tener riesgos e interacciones; no aplicar polvo en ojos o heridas.","Concentrated supplements may carry risks and interactions; do not apply powder to eyes or wounds."),
+("Perejil","Parsley","Petroselinum crispum","herb","Hojas verdes divididas y tallos finos.","Divided green leaves and slender stems.","Comparar la división de las hojas con una hoja simple.","Compare divided leaves with a simple leaf.","No confundir con especies silvestres parecidas; las cantidades culinarias no equivalen a extractos concentrados.","Do not confuse it with similar wild species; culinary amounts are not equivalent to concentrated extracts."),
+("Eneldo","Dill","Anethum graveolens","herb","Hojas muy finas y plumosas; flores agrupadas en umbelas.","Very fine feathery leaves; flowers clustered in umbels.","Observar el aspecto plumoso y la estructura de las agrupaciones.","Observe the feathery appearance and cluster structure.","Puede causar alergia; identificar la planta antes de consumirla.","May cause allergies; identify the plant before consuming it."),
+("Hinojo","Fennel","Foeniculum vulgare","herb","Hojas finamente divididas y tallos erectos.","Finely divided leaves and upright stems.","Comparar la estructura de las hojas con un pequeño abanico.","Compare leaf structure with a small fan.","Puede causar alergias e interacciones; no consumir plantas silvestres de identidad incierta.","May cause allergies and interactions; do not eat wild plants of uncertain identity."),
+("Flor de pascua silvestre","Wild poinsettia","Euphorbia heterophylla","toxic","Hojas de forma variable y pequeñas estructuras florales.","Variable-shaped leaves and small floral structures.","Observar diferencias entre hojas de una misma planta.","Observe differences between leaves on the same plant.","La savia de muchas euforbias es irritante; no tocar ni ingerir.","Sap from many spurges is irritating; do not touch or ingest."),
+("Ave del paraíso","Bird of paradise","Strelitzia reginae","flower","Hojas grandes y flores de aspecto escultórico.","Large leaves and sculptural-looking flowers.","Observar la forma de las hojas y la estructura de la flor.","Observe leaf shapes and the flower structure.","Puede ser tóxica para mascotas si se ingiere; no consumir partes ornamentales.","May be toxic to pets if swallowed; do not eat ornamental parts."),
+("Anturio","Anthurium","Anthurium andraeanum","toxic","Bráctea brillante y espádice central, con hojas lustrosas.","Glossy spathe and central spadix, with shiny leaves.","Distinguir la bráctea coloreada del espádice central.","Distinguish the colored spathe from the central spadix.","Contiene cristales irritantes; tóxico si se ingiere.","Contains irritating crystals; toxic if swallowed."),
+("Vinca","Periwinkle","Catharanthus roseus","toxic","Flores simples de cinco pétalos y hojas brillantes.","Simple five-petaled flowers and glossy leaves.","Contar los pétalos visibles y observar la forma de la flor.","Count visible petals and observe flower shape.","Contiene alcaloides potentes; no ingerir ni preparar remedios caseros.","Contains potent alkaloids; do not ingest or make home remedies."),
+("Adelfa","Oleander","Nerium oleander","toxic","Arbusto con hojas estrechas y flores agrupadas.","Shrub with narrow leaves and clustered flowers.","Observar desde lejos la forma de las hojas y flores.","Observe leaf and flower shapes from a distance.","Extremadamente tóxica si se ingiere; no tocar, quemar ni usar como remedio.","Extremely toxic if swallowed; do not touch, burn or use as a remedy."),
+("Dedalera","Foxglove","Digitalis purpurea","toxic","Espigas florales con flores tubulares colgantes.","Flower spikes with hanging tubular flowers.","Observar la forma tubular desde una distancia segura.","Observe the tubular shape from a safe distance.","Extremadamente tóxica y puede afectar el corazón; no tocar ni ingerir.","Extremely toxic and can affect the heart; do not touch or ingest."),
+("Cala","Calla lily","Zantedeschia aethiopica","toxic","Estructura floral en forma de embudo y hojas anchas.","Funnel-shaped floral structure and broad leaves.","Observar la curva de la estructura floral blanca.","Observe the curve of the white floral structure.","Contiene cristales irritantes; no ingerir ni manipular la savia.","Contains irritating crystals; do not ingest or handle sap."),
+("Cinta o mala madre","Spider plant","Chlorophytum comosum","foliage","Hojas arqueadas con franjas y brotes colgantes.","Arching striped leaves and hanging plantlets.","Seguir una hoja hasta donde nace y observar los brotes.","Trace a leaf to its base and observe the plantlets.","Generalmente se cultiva como ornamental; no consumir plantas tratadas con químicos.","Commonly grown as an ornamental; do not eat plants treated with chemicals."),
+("Aspidistra","Cast-iron plant","Aspidistra elatior","foliage","Hojas largas y firmes que nacen desde la base.","Long firm leaves emerging from the base.","Observar cómo las hojas salen directamente del suelo.","Observe how leaves emerge directly from the soil.","No ingerir plantas ornamentales sin identificación y revisión de seguridad.","Do not eat ornamental plants without identification and safety review."),
+("Árbol de magnolia","Magnolia","Magnolia grandiflora","tree","Hojas coriáceas y flores grandes en algunas estaciones.","Leathery leaves and large flowers in some seasons.","Observar la textura y el contorno de las hojas.","Observe leaf texture and outlines.","No usar corteza, hojas o flores como remedio sin orientación profesional.","Do not use bark, leaves or flowers as remedies without professional guidance."),
+("Jacaranda","Jacaranda","Jacaranda mimosifolia","tree","Hojas finamente divididas y floración violeta llamativa.","Finely divided leaves and striking violet blooms.","Observar el patrón de las hojas y el contraste de color.","Observe leaf patterns and color contrast.","No ingerir partes del árbol; observar desde una distancia segura.","Do not ingest tree parts; observe from a safe distance.")
+]
+
+def _plant_records():
+    records={}
+    for i,row in enumerate(_PLANT_ROWS,1):
+        es,en,scientific,group,feature_es,feature_en,observe_es,observe_en,caution_es,caution_en=row
+        pid=f"p{i:02d}"
+        records[pid]={"id":pid,"name":{"es":es,"en":en},"scientific_name":scientific,"group":group,"characteristics":{"es":feature_es,"en":feature_en},"wellness_relation":{"es":"Actividad de atención plena: observar la forma, los colores y los detalles sin necesidad de hacer nada más.","en":"Mindful observation: notice shape, colors and details without needing to do anything else."},"observation":{"es":observe_es,"en":observe_en},"precautions":{"es":caution_es,"en":caution_en},"activity":{"es":f"Observa {es.lower()} durante unos minutos","en":f"Observe {en.lower()} for a few minutes"}}
+    return records
+
+PLANTS=_plant_records()
+
+# Veinte guiones por categoría. Cada actividad obtiene una secuencia propia
+# de veinte instrucciones, en ambos idiomas.
+_STEPS={
+"calm":[
+("Apoya los pies y nota el contacto con el suelo.","Place your feet down and notice their contact with the floor."),
+("Mira un punto cómodo delante de ti.","Look at a comfortable point in front of you."),
+("Suelta los hombros solo hasta donde resulte natural.","Let your shoulders soften only as much as feels natural."),
+("Inhala con suavidad, sin forzar el aire.","Breathe in gently without forcing the air."),
+("Deja que la exhalación siga su propio ritmo.","Let the exhale follow its own rhythm."),
+("Nota tres cosas que puedes ver.","Notice three things you can see."),
+("Escucha un sonido cercano y otro lejano.","Listen for one nearby sound and one distant sound."),
+("Relaja las manos si te resulta cómodo.","Relax your hands if comfortable."),
+("Observa el apoyo de la espalda o del asiento.","Notice the support of your back or seat."),
+("Permite que la respiración sea normal.","Allow your breathing to remain natural."),
+("Mira cómo cambia la luz en tu entorno.","Notice how light changes in your surroundings."),
+("Nombra mentalmente un detalle agradable o neutral.","Silently name one pleasant or neutral detail."),
+("Afloja la mandíbula sin apretar los dientes.","Unclench your jaw without pressing your teeth together."),
+("Nota la temperatura del aire en la piel.","Notice the air temperature on your skin."),
+("Deja pasar un pensamiento sin tener que resolverlo ahora.","Let a thought pass without needing to solve it now."),
+("Vuelve con atención a los pies.","Bring your attention back to your feet."),
+("Elige una palabra sencilla para este momento.","Choose a simple word for this moment."),
+("Haz una pausa breve antes del siguiente movimiento.","Pause briefly before your next movement."),
+("Observa cómo te encuentras sin juzgarte.","Notice how you feel without judging yourself."),
+("Decide cuál será tu siguiente paso pequeño.","Choose your next small step.")
 ],
-"en":[
-{"id":"plants","title":"Plants and nature","description":"Observation, curiosity, and connection with your surroundings."},
-{"id":"movement","title":"Energy and movement","description":"Adaptable breaks and gentle movement."},
-{"id":"calm","title":"Calm and mindfulness","description":"Noticing the present and taking everyday pauses."},
-{"id":"coach","title":"My wellness coach","description":"Practical planning and small steps for the day."}
+"movement":[
+("Siéntate o ponte de pie de forma estable.","Sit or stand in a stable position."),
+("Comprueba que tienes espacio a tu alrededor.","Check that you have space around you."),
+("Mueve lentamente los dedos de las manos.","Slowly move your fingers."),
+("Haz círculos pequeños con los hombros si te resulta cómodo.","Make small shoulder circles if comfortable."),
+("Mira a un lado y luego al centro, sin forzar el cuello.","Look to one side and then center without straining your neck."),
+("Abre y cierra las manos con suavidad.","Gently open and close your hands."),
+("Estira los dedos y después suéltalos.","Stretch your fingers and then release."),
+("Mueve los tobillos dentro de un rango cómodo.","Move your ankles within a comfortable range."),
+("Si estás sentado, cambia suavemente el apoyo de los pies.","If seated, gently shift how your feet rest."),
+("Si estás de pie, reparte el peso sin perder estabilidad.","If standing, distribute your weight while staying stable."),
+("Alarga la columna sin arquear la espalda.","Lengthen your spine without arching your back."),
+("Deja que los brazos descansen antes del siguiente movimiento.","Let your arms rest before the next movement."),
+("Realiza una elevación pequeña de talones si es seguro.","Raise your heels slightly if safe."),
+("Vuelve a una postura cómoda.","Return to a comfortable posture."),
+("Haz un movimiento lento que te resulte fácil.","Make one slow movement that feels easy."),
+("Detente si aparece dolor, mareo o malestar.","Stop if pain, dizziness or discomfort appears."),
+("Comprueba que puedes respirar con normalidad.","Check that you can breathe normally."),
+("Reduce el recorrido si lo necesitas.","Reduce the range if needed."),
+("Relaja las partes del cuerpo que no estás moviendo.","Relax body parts you are not moving."),
+("Termina con una postura estable y cómoda.","Finish in a stable, comfortable posture.")
+],
+"plants":[
+("Mira la planta completa antes de elegir un detalle.","Look at the whole plant before choosing one detail."),
+("Observa la forma general de sus hojas.","Notice the overall shape of its leaves."),
+("Busca un borde, una línea o una curva.","Find an edge, line or curve."),
+("Compara dos tonos visibles.","Compare two visible shades."),
+("Fíjate en cómo se distribuyen las hojas.","Notice how the leaves are arranged."),
+("Observa la dirección en la que crece el tallo.","Notice the direction in which the stem grows."),
+("Busca un patrón que se repita.","Look for a repeating pattern."),
+("Observa las zonas iluminadas y las zonas en sombra.","Notice the lit areas and the shaded areas."),
+("Mira una textura sin tocarla.","Notice a texture without touching it."),
+("Cuenta lentamente tres detalles de la planta.","Slowly count three details of the plant."),
+("Compara una hoja grande con una pequeña, si las hay.","Compare a large leaf with a small one, if present."),
+("Observa cómo se relaciona la planta con su maceta o entorno.","Notice how the plant relates to its pot or surroundings."),
+("Busca un detalle que no habías notado al principio.","Find a detail you did not notice at first."),
+("Describe mentalmente la planta con tres palabras.","Describe the plant silently in three words."),
+("Observa sin arrancar hojas ni flores.","Observe without removing leaves or flowers."),
+("Recuerda que la identificación importa antes de tocar una planta desconocida.","Remember that identification matters before touching an unknown plant."),
+("Mira el conjunto una vez más.","Look at the whole plant once more."),
+("Elige el detalle que más llamó tu atención.","Choose the detail that caught your attention most."),
+("Haz una respiración natural mientras observas.","Breathe naturally as you observe."),
+("Termina agradeciendo este momento de atención.","Finish by appreciating this moment of attention.")
+],
+"coach":[
+("Elige una sola cosa que quieras atender ahora.","Choose one thing you want to focus on now."),
+("Describe el objetivo con palabras sencillas.","Describe the goal in simple words."),
+("Distingue lo que puedes hacer de lo que no controlas.","Separate what you can do from what you cannot control."),
+("Divide la tarea en un paso pequeño.","Break the task into one small step."),
+("Piensa qué necesitas tener a mano.","Consider what you need to have ready."),
+("Calcula un tiempo realista para empezar.","Estimate a realistic time to begin."),
+("Retira una distracción si está a tu alcance.","Remove one distraction if you can."),
+("Decide qué significa terminar ese primer paso.","Decide what finishing the first step means."),
+("Piensa en una dificultad posible sin anticipar todas las demás.","Consider one possible difficulty without anticipating every other one."),
+("Elige una alternativa sencilla si aparece esa dificultad.","Choose a simple alternative if that difficulty appears."),
+("Haz una pausa para revisar tu plan.","Pause to review your plan."),
+("Comprueba si tu primer paso sigue siendo realista.","Check whether your first step is still realistic."),
+("Reduce el objetivo si ahora parece demasiado grande.","Scale down the goal if it feels too large now."),
+("Piensa qué información necesitas y dónde verificarla.","Consider what information you need and where to verify it."),
+("Elige cuándo comenzar, aunque sea por poco tiempo.","Choose when to begin, even briefly."),
+("Decide cómo recordarás el siguiente paso.","Decide how you will remember the next step."),
+("Reconoce el esfuerzo de organizarte.","Acknowledge the effort of getting organized."),
+("Evita exigirte resolverlo todo en este momento.","Avoid demanding that you solve everything right now."),
+("Resume tu plan en una frase.","Summarize your plan in one sentence."),
+("Elige una acción concreta para después de esta sesión.","Choose one concrete action for after this session.")
 ]}
 
-PLANTS={
-"p01":{
-"es":{"id":"p01","name":"Manzanilla","scientific_name":"Matricaria chamomilla","traditional_use":"Se consume tradicionalmente como infusión.","observation":"Observa los detalles de una flor y sus formas.","precautions":"Puede provocar alergias, especialmente en personas sensibles a plantas de la familia Asteraceae. Si tomas medicamentos, estás embarazada o tienes dudas, consulta a un profesional sanitario antes de consumirla."},
-"en":{"id":"p01","name":"Chamomile","scientific_name":"Matricaria chamomilla","traditional_use":"Traditionally consumed as an infusion.","observation":"Notice the details and shapes of a flower.","precautions":"It may cause allergies, especially in people sensitive to Asteraceae plants. If you take medication, are pregnant, or have concerns, consult a healthcare professional before consuming it."}},
-"p02":{
-"es":{"id":"p02","name":"Menta","scientific_name":"Mentha spp.","traditional_use":"Hierba aromática utilizada en alimentos e infusiones.","observation":"Observa la forma de sus hojas y, si lo deseas, percibe suavemente su aroma.","precautions":"Puede empeorar el reflujo en algunas personas. No ingieras aceites esenciales ni utilices preparados concentrados sin orientación profesional."},
-"en":{"id":"p02","name":"Mint","scientific_name":"Mentha spp.","traditional_use":"An aromatic herb used in foods and infusions.","observation":"Notice the shape of its leaves and, if you wish, gently notice its scent.","precautions":"It may worsen reflux in some people. Do not ingest essential oils or use concentrated preparations without professional guidance."}},
-"p03":{
-"es":{"id":"p03","name":"Albahaca","scientific_name":"Ocimum basilicum","traditional_use":"Hierba aromática utilizada en la cocina y en jardines.","observation":"Observa el color, la forma y la disposición de sus hojas.","precautions":"No consumas una planta silvestre si no puedes identificarla con seguridad. Lava las hierbas destinadas a la alimentación."},
-"en":{"id":"p03","name":"Basil","scientific_name":"Ocimum basilicum","traditional_use":"An aromatic herb used in cooking and gardens.","observation":"Notice the color, shape, and arrangement of its leaves.","precautions":"Do not consume a wild plant unless you can identify it with certainty. Wash herbs intended for food."}},
-"p04":{
-"es":{"id":"p04","name":"Romero","scientific_name":"Salvia rosmarinus","traditional_use":"Hierba aromática utilizada en cocina y jardinería.","observation":"Observa sus hojas estrechas, su color y la forma de sus ramas.","precautions":"No ingieras aceite esencial de romero. Evita el contacto de aceites concentrados con los ojos y consulta a un profesional antes de usar preparados medicinales."},
-"en":{"id":"p04","name":"Rosemary","scientific_name":"Salvia rosmarinus","traditional_use":"An aromatic herb used in cooking and gardening.","observation":"Notice its narrow leaves, color, and branch shapes.","precautions":"Do not ingest rosemary essential oil. Avoid contact between concentrated oils and your eyes, and consult a professional before using medicinal preparations."}}
-}
+_TITLES={
+"calm":[("Pausa consciente","Mindful pause"),("Respirar sin prisa","Unhurried breathing"),("Atención al presente","Attention to the present"),("Un minuto de quietud","A moment of stillness"),("Escucha tranquila","Quiet listening"),("Soltar tensión cotidiana","Release everyday tension"),("Volver al momento","Return to the moment"),("Pausa de los sentidos","Sensory pause"),("Descanso de atención","Attention break"),("Un espacio de calma","A space for calm"),("Respiración natural","Natural breathing"),("Observar sin juzgar","Observe without judgment"),("Pausa de los hombros","Shoulder pause"),("Escucha del entorno","Listening to your surroundings"),("Atención amable","Gentle attention"),("Descanso breve","Short rest"),("Punto de apoyo","A point of support"),("Pausa entre tareas","Pause between tasks"),("Un momento para ti","A moment for yourself"),("Cerrar con calma","Finish calmly")],
+"movement":[("Movimiento suave","Gentle movement"),("Despertar las manos","Wake up your hands"),("Hombros cómodos","Comfortable shoulders"),("Movilidad de tobillos","Ankle mobility"),("Pausa activa","Active break"),("Cambiar de postura","Change posture"),("Estiramiento ligero","Light stretching"),("Movimiento sentado","Seated movement"),("Movimiento de pie","Standing movement"),("Soltar las manos","Release your hands"),("Postura estable","Stable posture"),("Pequeños movimientos","Small movements"),("Activar el cuerpo con suavidad","Gently activate your body"),("Descanso del escritorio","Desk break"),("Movimiento consciente","Mindful movement"),("Movilidad sin prisa","Unhurried mobility"),("Pausa para el cuerpo","A pause for your body"),("Movimiento accesible","Accessible movement"),("Volver a una postura cómoda","Return to a comfortable posture"),("Terminar con equilibrio","Finish with balance")],
+"plants":[("Mirar con atención","Observe with attention"),("Detalles de la naturaleza","Nature's details"),("Pausa verde","Green pause"),("Observar formas","Observe shapes"),("Colores naturales","Natural colors"),("Patrones de hojas","Leaf patterns"),("Pequeños detalles","Small details"),("Un momento con una planta","A moment with a plant"),("Texturas a la vista","Textures to notice"),("La forma de crecer","The shape of growth"),("Observar sin prisa","Observe unhurriedly"),("Luz y sombra","Light and shadow"),("Una mirada nueva","A fresh look"),("Geometría natural","Natural geometry"),("Atención al entorno","Attention to surroundings"),("La planta y su espacio","The plant and its space"),("Detalles que se repiten","Repeating details"),("Mirada tranquila","Quiet observation"),("Un detalle diferente","A different detail"),("Cerrar observando","Finish by observing")],
+"coach":[("Plan de un paso","One-step plan"),("Organizar sin prisa","Organize without rushing"),("Elegir una prioridad","Choose a priority"),("Preparar el siguiente paso","Prepare the next step"),("Reducir una tarea","Make a task smaller"),("Claridad para empezar","Clarity to begin"),("Resolver una cosa","Handle one thing"),("Tiempo realista","Realistic timing"),("Plan sencillo","Simple plan"),("Preparación práctica","Practical preparation"),("Enfoque amable","Gentle focus"),("Revisar opciones","Review options"),("Un objetivo posible","An achievable goal"),("Pausa para decidir","Pause to decide"),("Ordenar las ideas","Organize your thoughts"),("Preparar el entorno","Prepare your surroundings"),("Elegir qué sigue","Choose what comes next"),("Menos pasos, más claridad","Fewer steps, more clarity"),("Un comienzo concreto","A concrete start"),("Cerrar con una decisión","Finish with a decision")]}
 
-RAW=[
-{"id":"p01","section":"plants","es":{"title":"Observar una flor","description":"Una práctica de observación natural que puedes hacer en casa o al aire libre.","steps":["Busca una flor, una fotografía o una planta que puedas observar cómodamente.","Mira sus formas y sus colores sin necesidad de identificarla.","Observa un detalle pequeño que no habías notado antes.","Si te resulta agradable, dedica un momento a observar sus hojas o pétalos.","Termina eligiendo un detalle natural que te gustaría volver a observar." ]},"en":{"title":"Notice a flower","description":"A nature observation practice you can do at home or outdoors.","steps":["Find a flower, a photograph, or a plant you can observe comfortably.","Look at its shapes and colors without needing to identify it.","Notice one small detail you had not seen before.","If you enjoy it, spend a moment looking at its leaves or petals.","Finish by choosing one natural detail you would like to notice again."]}},
-{"id":"p02","section":"plants","es":{"title":"Explorar la menta","description":"Observa una hierba aromática sin necesidad de consumirla.","steps":["Busca una planta de menta o una fotografía clara de sus hojas.","Observa la forma y el borde de una hoja.","Fíjate en las diferencias de color entre las hojas.","Si tienes una planta segura y te apetece, percibe suavemente su aroma sin ingerirla.","Termina recordando que observar la naturaleza también puede ser una actividad sencilla." ]},"en":{"title":"Explore mint","description":"Observe an aromatic herb without needing to consume it.","steps":["Find a mint plant or a clear photograph of its leaves.","Notice the shape and edge of one leaf.","Look for differences in color between leaves.","If you have a safe plant and wish to, gently notice its scent without ingesting it.","Finish by remembering that observing nature can be a simple activity."]}},
-{"id":"p03","section":"plants","es":{"title":"Una pequeña hoja","description":"Descubre detalles de una hoja y de su entorno.","steps":["Elige una hoja de una planta conocida o una fotografía.","Observa su tamaño y su forma general.","Fíjate en las líneas que recorren la hoja.","Mira cómo cambia la luz sobre su superficie.","Cierra la práctica escogiendo el detalle que más te llamó la atención." ]},"en":{"title":"A small leaf","description":"Discover details in a leaf and its surroundings.","steps":["Choose a leaf from a known plant or a photograph.","Notice its size and overall shape.","Look at the lines running across the leaf.","Notice how light changes across its surface.","Finish by choosing the detail that caught your attention most."]}},
-{"id":"p04","section":"plants","es":{"title":"Descubrir el romero","description":"Una actividad de observación de una hierba aromática común.","steps":["Busca una planta de romero o una fotografía.","Observa sus hojas estrechas y la disposición de sus ramas.","Compara dos hojas y encuentra una semejanza.","Observa su color y la textura visible sin tocarla si no lo deseas.","Termina identificando un detalle que puedas describir con tus propias palabras." ]},"en":{"title":"Discover rosemary","description":"An observation activity featuring a common aromatic herb.","steps":["Find a rosemary plant or a photograph.","Notice its narrow leaves and the arrangement of its branches.","Compare two leaves and find one similarity.","Notice its color and visible texture without touching it if you prefer.","Finish by identifying one detail you can describe in your own words."]}},
-{"id":"m01","section":"movement","es":{"title":"Movimiento sentado","description":"Movimientos suaves que puedes adaptar o realizar sentado.","steps":["Busca una posición estable y cómoda, con los pies apoyados si es posible.","Mueve lentamente los dedos de las manos y después relájalos.","Rota suavemente los hombros solo hasta donde te resulte cómodo.","Estira una pierna ligeramente si puedes hacerlo sin dolor; después cambia de lado.","Termina quedándote en una postura cómoda y observa cómo te encuentras." ]},"en":{"title":"Seated movement","description":"Gentle movements you can adapt or do while seated.","steps":["Find a stable, comfortable position, with your feet supported if possible.","Slowly move your fingers and then relax them.","Gently roll your shoulders only as far as feels comfortable.","Slightly extend one leg if you can do so without pain; then switch sides.","Finish in a comfortable position and notice how you feel."]}},
-{"id":"m02","section":"movement","es":{"title":"Pausa para cambiar de postura","description":"Una pausa para interrumpir un periodo prolongado en la misma posición.","steps":["Observa cuánto tiempo llevas en la misma postura.","Si es seguro, cambia suavemente la posición de los pies y la espalda.","Mueve las manos y los brazos sin hacer fuerza.","Si te resulta cómodo y estable, ponte de pie lentamente; también puedes permanecer sentado.","Elige una postura cómoda para continuar con tu día." ]},"en":{"title":"A posture break","description":"A short break from staying in the same position for a long time.","steps":["Notice how long you have been in the same position.","If safe, gently adjust the position of your feet and back.","Move your hands and arms without straining.","If comfortable and stable, stand up slowly; you may also remain seated.","Choose a comfortable posture for the rest of your day."]}},
-{"id":"m03","section":"movement","es":{"title":"Despertar las manos","description":"Una actividad sencilla para mover las manos y los dedos sin forzarlos.","steps":["Apoya las manos en una superficie o déjalas descansar cómodamente.","Abre los dedos suavemente y después relájalos.","Mueve cada muñeca despacio dentro de un rango cómodo.","Acerca y separa los dedos sin apretar ni provocar dolor.","Descansa las manos y continúa solo si te resulta agradable." ]},"en":{"title":"Wake up your hands","description":"A simple activity for moving your hands and fingers without straining.","steps":["Rest your hands on a surface or let them sit comfortably.","Gently spread your fingers and then relax them.","Slowly move each wrist within a comfortable range.","Bring your fingers together and apart without squeezing or causing pain.","Rest your hands and continue only if it feels comfortable."]}},
-{"id":"c01","section":"calm","es":{"title":"Volver al presente","description":"Observa lo que te rodea sin intentar cambiar nada.","steps":["Busca una posición cómoda y permite que tus hombros descansen.","Nombra mentalmente tres cosas que puedes ver.","Identifica dos sonidos que puedas escuchar sin buscarlos con esfuerzo.","Nota el contacto de tus pies con el suelo o de tu cuerpo con el asiento.","Elige una cosa sencilla de tu entorno a la que quieras prestar atención." ]},"en":{"title":"Return to the present","description":"Notice your surroundings without trying to change anything.","steps":["Find a comfortable position and let your shoulders rest.","Silently name three things you can see.","Notice two sounds you can hear without searching for them.","Notice the contact of your feet with the floor or your body with the seat.","Choose one simple thing around you to pay attention to."]}},
-{"id":"c02","section":"calm","es":{"title":"Un minuto de atención","description":"Una práctica breve de observación que no requiere controlar la respiración.","steps":["Elige un objeto cercano que puedas mirar cómodamente.","Observa su color y su forma.","Fíjate en una parte del objeto que normalmente pasas por alto.","Si aparecen otras ideas, puedes dejarlas pasar y volver a mirar el objeto.","Termina cuando quieras y continúa con tu día sin exigirte nada." ]},"en":{"title":"A moment of attention","description":"A brief observation practice that does not require controlling your breathing.","steps":["Choose a nearby object you can look at comfortably.","Notice its color and shape.","Look for one part of the object you might usually overlook.","If other thoughts appear, let them pass and return your attention to the object.","Finish whenever you wish and continue your day without putting pressure on yourself."]}},
-{"id":"c03","section":"calm","es":{"title":"Pausa con los sentidos","description":"Utiliza los sentidos para observar tu entorno a tu propio ritmo.","steps":["Mira a tu alrededor y elige un color que te agrade.","Escucha los sonidos cercanos sin intentar clasificarlos.","Observa si percibes una textura a través de tus manos o de la ropa.","Nota la temperatura del ambiente sin tener que cambiarla.","Escoge el detalle más agradable o interesante de esta pausa." ]},"en":{"title":"A pause for the senses","description":"Use your senses to notice your surroundings at your own pace.","steps":["Look around and choose a color you enjoy.","Listen to nearby sounds without trying to classify them.","Notice a texture through your hands or clothing if you wish.","Notice the temperature of the surroundings without needing to change it.","Choose the most pleasant or interesting detail from this pause."]}},
-{"id":"w01","section":"coach","es":{"title":"Elegir una prioridad","description":"Organiza el siguiente paso de tu día sin intentar resolverlo todo a la vez.","steps":["Piensa en las tareas que tienes delante, sin necesidad de escribirlas todas.","Elige una tarea pequeña que sea útil atender hoy.","Divide esa tarea en un primer paso que puedas explicar en una frase.","Decide cuándo o dónde podrías comenzar ese paso.","Termina recordando que avanzar una cosa cada vez también es avanzar." ]},"en":{"title":"Choose one priority","description":"Plan your next step without trying to solve everything at once.","steps":["Think about the tasks ahead without needing to write them all down.","Choose one small task that would be useful to address today.","Break it into a first step you can describe in one sentence.","Decide when or where you could begin that step.","Finish by remembering that doing one thing at a time is still progress."]}},
-{"id":"w02","section":"coach","es":{"title":"Preparar una pausa","description":"Encuentra un momento realista para una actividad breve de bienestar general.","steps":["Piensa en una parte de tu día en la que suelas tener unos minutos libres.","Elige una actividad sencilla que puedas hacer en ese momento.","Comprueba que el lugar sea cómodo y seguro para esa actividad.","Decide cuánto tiempo quieres dedicarle, sin convertirlo en una obligación.","Termina eligiendo una señal sencilla que te recuerde hacer la pausa." ]},"en":{"title":"Plan a short break","description":"Find a realistic moment for a brief general wellness activity.","steps":["Think of a part of your day when you usually have a few free minutes.","Choose a simple activity you could do then.","Make sure the place is comfortable and safe for that activity.","Choose how much time you would like to spend, without turning it into an obligation.","Finish by choosing a simple reminder for your break."]}}
-]
+_DESCRIPTIONS={
+"plants":{"es":"Actividad de observación de la naturaleza. No requiere tocar, cortar ni ingerir la planta.","en":"A nature-observation activity. No touching, cutting or eating the plant is required."},
+"movement":{"es":"Movimiento cotidiano suave y adaptable. Haz solo lo que resulte cómodo y seguro.","en":"Gentle, adaptable everyday movement. Do only what feels comfortable and safe."},
+"calm":{"es":"Una pausa general de atención al presente, sin promesas médicas ni necesidad de cambiar la respiración.","en":"A general present-moment pause, with no medical promises or need to change your breathing."},
+"coach":{"es":"Una actividad sencilla para organizar prioridades y elegir un siguiente paso práctico.","en":"A simple activity to organize priorities and choose a practical next step."}}
 
-PROGRAM=[
-{"day":1,"activity_id":"c01","minutes":3},
-{"day":2,"activity_id":"p01","minutes":5},
-{"day":3,"activity_id":"m01","minutes":3},
-{"day":4,"activity_id":"c03","minutes":5},
-{"day":5,"activity_id":"p04","minutes":5},
-{"day":6,"activity_id":"w01","minutes":3},
-{"day":7,"activity_id":"c02","minutes":5}
-]
+def _steps_for(section,index,lang="es",plant=None):
+    base=_STEPS[section]
+    shift=(index*3)%len(base)
+    ordered=base[shift:]+base[:shift]
+    result=[_b(a,b,lang) for a,b in ordered]
+    if section=="plants" and plant:
+        custom=_b(plant["observation"]["es"],plant["observation"]["en"],lang)
+        result[0]=custom
+        result[1]=_b(plant["characteristics"]["es"],plant["characteristics"]["en"],lang)
+        result[2]=_b(plant["wellness_relation"]["es"],plant["wellness_relation"]["en"],lang)
+        result[3]=_b(plant["precautions"]["es"],plant["precautions"]["en"],lang)
+    return result
 
-def _language(lang:str)->str:
+def _build_catalog():
+    catalog=[]
+    for section in ("movement","calm","coach"):
+        for i,(title_es,title_en) in enumerate(_TITLES[section]):
+            aid=f"{section}_{i+1:02d}"
+            catalog.append({"id":aid,"section":section,"title":{"es":title_es,"en":title_en},"description":_DESCRIPTIONS[section],"steps":_steps_for(section,i),"plant_id":None,"index":i})
+    for i,(pid,plant) in enumerate(PLANTS.items()):
+        catalog.append({"id":f"plant_{pid}","section":"plants","title":{"es":plant["activity"]["es"],"en":plant["activity"]["en"]},"description":_DESCRIPTIONS["plants"],"steps":_steps_for("plants",i,plant=plant),"plant_id":pid,"index":i})
+    return catalog
+
+_CATALOG=_build_catalog()
+_BY_ID={item["id"]:item for item in _CATALOG}
+
+def _valid_lang(lang):
     return lang if lang in LANGUAGES else "es"
 
-def _duration(minutes:int)->int:
-    try:
-        n=int(minutes)
-    except (TypeError,ValueError):
-        n=3
-    return n if n in DURATIONS else min(DURATIONS,key=lambda x:abs(x-n))
+def _public_activity(item,lang="es",minutes=None):
+    lang=_valid_lang(lang)
+    data={"id":item["id"],"section":item["section"],"title":_b(item["title"]["es"],item["title"]["en"],lang),"description":_b(item["description"]["es"],item["description"]["en"],lang),"steps":list(item["steps"] if isinstance(item["steps"],list) and item["steps"] and isinstance(item["steps"][0],str) else [_b(a,b,lang) for a,b in item["steps"]]),"plant_id":item.get("plant_id"),"step_count":20}
+    if minutes is not None:data["minutes"]=int(minutes)
+    if item.get("plant_id") in PLANTS:
+        p=PLANTS[item["plant_id"]]
+        data["plant"]={"id":p["id"],"name":_b(p["name"]["es"],p["name"]["en"],lang),"scientific_name":p["scientific_name"],"characteristics":_b(p["characteristics"]["es"],p["characteristics"]["en"],lang),"wellness_relation":_b(p["wellness_relation"]["es"],p["wellness_relation"]["en"],lang),"precautions":_b(p["precautions"]["es"],p["precautions"]["en"],lang)}
+    return data
 
-def _raw_activity(activity_id:str,lang:str="es")->dict|None:
-    language=_language(lang)
-    for item in RAW:
-        if item["id"]==activity_id:
-            text=item[language]
-            return {
-                "id":item["id"],
-                "section":item["section"],
-                "title":text["title"],
-                "description":text["description"],
-                "steps":list(text["steps"]),
-                "language":language
-            }
-    return None
+def get_catalog(lang="es"):
+    lang=_valid_lang(lang)
+    counts={s:len([a for a in _CATALOG if a["section"]==s]) for s in SECTIONS}
+    return {"app":APP_NAME,"version":VERSION,"language":lang,"sections":[{"id":s,"name":_b({"plants":"Plantas y naturaleza","movement":"Movimiento suave","calm":"Calma y atención","coach":"Coach y planificación"}[s],{"plants":"Plants and nature","movement":"Gentle movement","calm":"Calm and attention","coach":"Coaching and planning"}[s],lang),"count":counts[s]} for s in SECTIONS],"activities":[_public_activity(a,lang) for a in _CATALOG],"plant_count":len(PLANTS),"durations":list(MINUTES_ALLOWED)}
 
-def get_catalog(lang:str="es")->list:
-    return copy.deepcopy(CATALOG[_language(lang)])
+def get_activities(lang="es",section="all"):
+    lang=_valid_lang(lang)
+    section=section if section in (*SECTIONS,"all") else "all"
+    return [_public_activity(a,lang) for a in _CATALOG if section=="all" or a["section"]==section]
 
-def get_activities(lang:str="es",section:str="all")->list:
-    language=_language(lang)
-    selected=section if section in (*SECTIONS,"all") else "all"
-    result=[]
-    for item in RAW:
-        if selected!="all" and item["section"]!=selected:
-            continue
-        activity=_raw_activity(item["id"],language)
-        if activity:
-            result.append(activity)
-    return copy.deepcopy(result)
+def get_activity(activity_id,lang="es"):
+    if not activity_id:return None
+    item=_BY_ID.get(str(activity_id))
+    if not item:return None
+    return _public_activity(item,_valid_lang(lang))
 
-def get_activity(activity_id:str,lang:str="es")->dict|None:
-    activity=_raw_activity(str(activity_id),lang)
-    return copy.deepcopy(activity) if activity else None
+def get_plant(plant_id,lang="es"):
+    lang=_valid_lang(lang)
+    p=PLANTS.get(str(plant_id))
+    if not p:return None
+    return {"id":p["id"],"name":_b(p["name"]["es"],p["name"]["en"],lang),"scientific_name":p["scientific_name"],"group":p["group"],"characteristics":_b(p["characteristics"]["es"],p["characteristics"]["en"],lang),"wellness_relation":_b(p["wellness_relation"]["es"],p["wellness_relation"]["en"],lang),"observation":_b(p["observation"]["es"],p["observation"]["en"],lang),"precautions":_b(p["precautions"]["es"],p["precautions"]["en"],lang),"activity":_b(p["activity"]["es"],p["activity"]["en"],lang),"disclaimer":_b("Información botánica general y actividad de observación; no es consejo médico ni recomendación para ingerir o aplicar plantas.","General botanical information and an observation activity; not medical advice or a recommendation to ingest or apply plants.",lang)}
 
-def get_session(lang:str="es",kind:str="pause",minutes:int=3)->dict:
-    language=_language(lang)
-    duration=_duration(minutes)
-    kinds={
-        "pause":("calm","c01"),
-        "energy":("movement","m01"),
-        "calm":("calm","c02"),
-        "nature":("plants","p01"),
-        "coach":("coach","w01"),
-        "program":("calm","c01")
-    }
-    section,default_id=kinds.get(kind,("calm","c01"))
-    candidates=[x for x in RAW if x["section"]==section]
-    item=next((x for x in candidates if x["id"]==default_id),None)
-    if item is None and candidates:
-        item=candidates[0]
-    activity=_raw_activity(item["id"],language) if item else None
-    return {
-        "language":language,
-        "kind":kind if kind in kinds else "pause",
-        "minutes":duration,
-        "activity":activity,
-        "title":activity["title"] if activity else "",
-        "description":activity["description"] if activity else "",
-        "steps":activity["steps"] if activity else []
-    }
+def _section_for_kind(kind):
+    kind=str(kind or "pause").lower()
+    return {"pause":"calm","energy":"movement","calm":"calm","nature":"plants","plants":"plants","movement":"movement","coach":"coach","program":"all"}.get(kind,"calm")
 
-def get_plant(plant_id:str,lang:str="es")->dict|None:
-    language=_language(lang)
-    item=PLANTS.get(str(plant_id).lower())
-    if not item:
-        return None
-    return copy.deepcopy(item[language])
+def _duration(value):
+    try:value=int(value)
+    except (TypeError,ValueError):value=3
+    return value if value in MINUTES_ALLOWED else min(MINUTES_ALLOWED,key=lambda x:abs(x-value))
 
-def get_program_day(lang:str="es",day:int=1)->dict:
-    language=_language(lang)
-    try:
-        number=int(day)
-    except (TypeError,ValueError):
-        number=1
-    number=max(1,min(7,number))
-    plan=PROGRAM[number-1]
-    activity=_raw_activity(plan["activity_id"],language)
-    names={
-        "es":[
-            "Comienza con una pausa",
-            "Observa la naturaleza",
-            "Muévete suavemente",
-            "Vuelve al presente",
-            "Descubre una planta",
-            "Elige una prioridad",
-            "Repasa lo que te ayudó"
-        ],
-        "en":[
-            "Begin with a pause",
-            "Observe nature",
-            "Move gently",
-            "Return to the present",
-            "Discover a plant",
-            "Choose a priority",
-            "Review what helped"
-        ]
-    }
-    descriptions={
-        "es":[
-            "Empieza con una pausa y descubre qué práctica te resulta útil.",
-            "Dedica unos minutos a observar un detalle natural.",
-            "Prueba movimientos pequeños dentro de tus posibilidades.",
-            "Utiliza los sentidos para observar tu entorno.",
-            "Observa una hierba aromática y conoce sus precauciones.",
-            "Convierte una tarea en un primer paso manejable.",
-            "Repasa una práctica y decide qué quieres mantener."
-        ],
-        "en":[
-            "Start with a pause and discover which practice is useful to you.",
-            "Spend a few minutes noticing a natural detail.",
-            "Try small movements within your abilities.",
-            "Use your senses to notice your surroundings.",
-            "Observe an aromatic herb and learn about its precautions.",
-            "Turn a task into one manageable first step.",
-            "Review one practice and decide what to keep."
-        ]
-    }
-    return {
-        "day":number,
-        "total_days":7,
-        "language":language,
-        "title":names[language][number-1],
-        "description":descriptions[language][number-1],
-        "minutes":plan["minutes"],
-        "activity":copy.deepcopy(activity)
-    }
+def get_session(activity_id=None,minutes=3,lang="es",activity=None,kind=None):
+    # Compatibilidad con la llamada antigua main.py:
+    # get_session(lang, kind, minutes)
+    if activity_id in LANGUAGES and isinstance(minutes,str) and str(lang).isdigit():
+        old_lang=activity_id
+        old_kind=minutes
+        old_minutes=int(lang)
+        lang=old_lang
+        minutes=old_minutes
+        activity_id=None
+        kind=old_kind
+    lang=_valid_lang(lang)
+    minutes=_duration(minutes)
+    if isinstance(activity,dict):
+        activity_id=activity.get("id",activity_id)
+    item=_BY_ID.get(str(activity_id)) if activity_id else None
+    if item is None:
+        section=_section_for_kind(kind or activity_id)
+        pool=[x for x in _CATALOG if section=="all" or x["section"]==section]
+        if not pool:pool=[x for x in _CATALOG if x["section"]=="calm"]
+        item=_RNG.choice(pool)
+    result=_public_activity(item,lang,minutes)
+    result.update({"app":APP_NAME,"version":VERSION,"language":lang,"duration_seconds":minutes*60,"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,"session_id":create_session_id(item["id"],minutes),"instructions":result["steps"],"total_steps":len(result["steps"])})
+    return result
 
-def health_check()->dict:
-    return {
-        "status":"ok",
-        "version":VERSION,
-        "languages":list(LANGUAGES),
-        "sections":list(SECTIONS),
-        "activities":len(RAW),
-        "plants":len(PLANTS),
-        "program_days":len(PROGRAM)
-    }
+def get_program_day(lang="es",day=1):
+    lang=_valid_lang(lang)
+    try:day=int(day)
+    except (TypeError,ValueError):day=1
+    day=max(1,min(7,day))
+    sequence=("calm","plants","movement","coach","calm","plants","coach")
+    section=sequence[day-1]
+    pool=[x for x in _CATALOG if x["section"]==section]
+    item=pool[(day*7-7)%len(pool)]
+    titles_es=["Comenzar con calma","Observar la naturaleza","Moverse suavemente","Organizar un paso","Volver al presente","Descubrir detalles verdes","Elegir el siguiente paso"]
+    titles_en=["Begin calmly","Observe nature","Move gently","Organize one step","Return to the present","Discover green details","Choose the next step"]
+    descriptions_es=["Una pausa sencilla para empezar.","Observa detalles naturales con curiosidad.","Prueba movimientos suaves y cómodos.","Elige una prioridad pequeña y realista.","Dedica unos minutos a notar tu entorno.","Observa una planta sin prisa.","Termina la semana con una acción concreta."]
+    descriptions_en=["A simple pause to begin.","Notice natural details with curiosity.","Try gentle, comfortable movements.","Choose one small, realistic priority.","Spend a few minutes noticing your surroundings.","Observe a plant without rushing.","Finish the week with one concrete action."]
+    mins=(3,5,3,5,10,5,10)[day-1]
+    return {"day":day,"title":_b(titles_es[day-1],titles_en[day-1],lang),"description":_b(descriptions_es[day-1],descriptions_en[day-1],lang),"minutes":mins,"activity":_public_activity(item,lang,mins),"section":section,"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS}
+
+def get_health():
+    return {"status":"ok","app":APP_NAME,"version":VERSION,"activities":len(_CATALOG),"plants":len(PLANTS),"durations":list(MINUTES_ALLOWED),"languages":list(LANGUAGES)}
+
+def get_config():
+    return {"name":APP_NAME,"company":COMPANY,"version":VERSION,"languages":list(LANGUAGES),"durations":list(MINUTES_ALLOWED),"sections":list(SECTIONS),"activity_count":len(_CATALOG),"plant_count":len(PLANTS),"program_days":7,"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS}
+
+def create_session_id(activity_id="",minutes=3):
+    raw=f"{activity_id}|{minutes}|{time.time_ns()}|{_RNG.random()}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:24]
+
+# Alias de compatibilidad para otros módulos.
+catalog=get_catalog
+activities=get_activities
+session=get_session
+plant=get_plant
+program_day=get_program_day
+health=get_health
+config=get_config
