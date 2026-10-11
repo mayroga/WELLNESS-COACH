@@ -217,18 +217,21 @@ _DESCRIPTIONS={
 "calm":{"es":"Una pausa general de atención al presente, sin promesas médicas ni necesidad de cambiar la respiración.","en":"A general present-moment pause, with no medical promises or need to change your breathing."},
 "coach":{"es":"Una actividad sencilla para organizar prioridades y elegir un siguiente paso práctico.","en":"A simple activity to organize priorities and choose a practical next step."}}
 
-def _steps_for(section,index,lang="es",plant=None):
+
+def _steps_for(section,index,lang=None,plant=None):
     base=_STEPS[section]
     shift=(index*3)%len(base)
     ordered=base[shift:]+base[:shift]
-    result=[_b(a,b,lang) for a,b in ordered]
     if section=="plants" and plant:
-        custom=_b(plant["observation"]["es"],plant["observation"]["en"],lang)
-        result[0]=custom
-        result[1]=_b(plant["characteristics"]["es"],plant["characteristics"]["en"],lang)
-        result[2]=_b(plant["wellness_relation"]["es"],plant["wellness_relation"]["en"],lang)
-        result[3]=_b(plant["precautions"]["es"],plant["precautions"]["en"],lang)
-    return result
+        ordered=list(ordered)
+        ordered[0]=(plant["observation"]["es"],plant["observation"]["en"])
+        ordered[1]=(plant["characteristics"]["es"],plant["characteristics"]["en"])
+        ordered[2]=(plant["wellness_relation"]["es"],plant["wellness_relation"]["en"])
+        ordered[3]=(plant["precautions"]["es"],plant["precautions"]["en"])
+    if lang is None:
+        return list(ordered)
+    lang=_valid_lang(lang)
+    return [_b(es,en,lang) for es,en in ordered]
 
 def _build_catalog():
     catalog=[]
@@ -248,11 +251,20 @@ def _valid_lang(lang):
 
 def _public_activity(item,lang="es",minutes=None):
     lang=_valid_lang(lang)
-    data={"id":item["id"],"section":item["section"],"title":_b(item["title"]["es"],item["title"]["en"],lang),"description":_b(item["description"]["es"],item["description"]["en"],lang),"steps":list(item["steps"] if isinstance(item["steps"],list) and item["steps"] and isinstance(item["steps"][0],str) else [_b(a,b,lang) for a,b in item["steps"]]),"plant_id":item.get("plant_id"),"step_count":20}
-    if minutes is not None:data["minutes"]=int(minutes)
+    localized_steps=[]
+    for step in item.get("steps",[]):
+        if isinstance(step,(tuple,list)) and len(step)>=2:
+            localized_steps.append(_b(str(step[0]),str(step[1]),lang))
+        elif isinstance(step,dict):
+            localized_steps.append(str(step.get(lang) or step.get("es") or step.get("en") or ""))
+        else:
+            localized_steps.append(str(step))
+    data={"id":item["id"],"section":item["section"],"title":_b(item["title"]["es"],item["title"]["en"],lang),"description":_b(item["description"]["es"],item["description"]["en"],lang),"steps":localized_steps,"plant_id":item.get("plant_id"),"step_count":len(localized_steps)}
+    if minutes is not None:
+        data["minutes"]=int(minutes)
     if item.get("plant_id") in PLANTS:
         p=PLANTS[item["plant_id"]]
-        data["plant"]={"id":p["id"],"name":_b(p["name"]["es"],p["name"]["en"],lang),"scientific_name":p["scientific_name"],"characteristics":_b(p["characteristics"]["es"],p["characteristics"]["en"],lang),"wellness_relation":_b(p["wellness_relation"]["es"],p["wellness_relation"]["en"],lang),"precautions":_b(p["precautions"]["es"],p["precautions"]["en"],lang)}
+        data["plant"]={"id":p["id"],"name":_b(p["name"]["es"],p["name"]["en"],lang),"scientific_name":p["scientific_name"],"characteristics":_b(p["characteristics"]["es"],p["characteristics"]["en"],lang),"wellness_relation":_b(p["wellness_relation"]["es"],p["wellness_relation"]["en"],lang),"observation":_b(p["observation"]["es"],p["observation"]["en"],lang),"precautions":_b(p["precautions"]["es"],p["precautions"]["en"],lang)}
     return data
 
 def get_catalog(lang="es"):
