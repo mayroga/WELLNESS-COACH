@@ -108,12 +108,12 @@ footer a{color:var(--green)}
 <h1 data-i="heroTitle">Bienestar sencillo, a tu ritmo.</h1>
 <p class="muted" data-i="heroDesc">Elige una actividad breve de movimiento suave, atención o planificación. No necesitas experiencia previa.</p>
 <div class="btnrow"><button class="primary" id="goQuick" data-i="begin" type="button">Comenzar</button><span class="pill" data-i="minutesBadge">3, 5 o 10 minutos</span></div>
-</div><div class="heroImage"><img id="heroImg" src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&q=85" alt="Espacio tranquilo rodeado de naturaleza" loading="eager"></div></section>
+</div><div class="heroImage"><img id="heroImg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/A_tranquil_lake_in_Canada.jpg/1280px-A_tranquil_lake_in_Canada.jpg" alt="Espacio tranquilo rodeado de naturaleza" loading="eager"></div></section>
 <div class="sectionHead"><div><h2 data-i="chooseCategory">Elige lo que necesitas hoy</h2><p data-i="categoryDesc">Tres formas sencillas de hacer una pausa.</p></div></div>
 <section class="grid" id="categories">
-<button class="category" data-section="movement" type="button"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">🧘</span><h3 data-i="movementTitle">Movimiento suave</h3><p data-i="movementDesc">Movimientos cotidianos y cómodos.</p></div></button>
-<button class="category" data-section="calm" type="button"><img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">🍃</span><h3 data-i="calmTitle">Calma y atención</h3><p data-i="calmDesc">Volver al momento presente.</p></div></button>
-<button class="category" data-section="coach" type="button"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">📝</span><h3 data-i="coachTitle">Coach y planificación</h3><p data-i="coachDesc">Organizar un siguiente paso.</p></div></button>
+<button class="category" data-section="movement" type="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tai_Chi_in_the_park.jpg/800px-Tai_Chi_in_the_park.jpg" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">🧘</span><h3 data-i="movementTitle">Movimiento suave</h3><p data-i="movementDesc">Movimientos cotidianos y cómodos.</p></div></button>
+<button class="category" data-section="calm" type="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Forest_path_in_spring.jpg/800px-Forest_path_in_spring.jpg" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">🍃</span><h3 data-i="calmTitle">Calma y atención</h3><p data-i="calmDesc">Volver al momento presente.</p></div></button>
+<button class="category" data-section="coach" type="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Writing_in_notebook_pen.jpg/800px-Writing_in_notebook_pen.jpg" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">📝</span><h3 data-i="coachTitle">Coach y planificación</h3><p data-i="coachDesc">Organizar un siguiente paso.</p></div></button>
 </section>
 <div class="sectionHead"><div><h2 data-i="quickTitle">Sesión rápida</h2><p data-i="quickDesc">Elige la duración y empieza cuando estés preparado.</p></div></div>
 <section class="panel quick" id="quickPanel">
@@ -129,7 +129,7 @@ footer a{color:var(--green)}
 <div class="progressTrack" role="progressbar" aria-label="Progreso de la sesión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="progressFill" id="progressFill"></div></div>
 <div class="sessionLayout">
 <div class="sessionVisual">
-<img id="sessionImage" src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=85" alt="Paisaje tranquilo" loading="eager">
+<img id="sessionImage" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Forest_path_in_spring.jpg/1280px-Forest_path_in_spring.jpg" alt="Paisaje tranquilo" loading="eager">
 <span class="imageCaption" id="imageCaption">Una pausa a tu ritmo</span>
 </div>
 <p class="muted" id="imageHint" data-i="imageHint">La fotografía acompaña la instrucción y cambia de forma tranquila durante la sesión.</p>
@@ -168,34 +168,25 @@ eyebrow:"Um momento para você",heroTitle:"Bem-estar simples, no seu ritmo.",her
 const CATEGORY_NAMES={movement:{es:"Movimiento suave",en:"Gentle movement",pt:"Movimento suave"},calm:{es:"Calma y atención",en:"Calm and attention",pt:"Calma e atenção"},coach:{es:"Coach y planificación",en:"Coaching and planning",pt:"Orientação e planejamento"}};
 const PHOTO_BANK={
 movement:[
-{url:"https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1400&q=85",alt:{es:"Persona realizando movimiento suave",en:"Person doing gentle movement",pt:"Pessoa fazendo movimento suave"}},
-{url:"https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1400&q=85",alt:{es:"Persona haciendo un estiramiento",en:"Person stretching",pt:"Pessoa fazendo alongamento"}},
-{url:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1400&q=85",alt:{es:"Actividad física suave",en:"Gentle physical activity",pt:"Atividade física suave"}},
-{url:"https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1400&q=85",alt:{es:"Persona caminando al aire libre",en:"Person walking outdoors",pt:"Pessoa caminhando ao ar livre"}},
-{url:"https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1400&q=85",alt:{es:"Persona en postura tranquila",en:"Person in a calm posture",pt:"Pessoa em postura tranquila"}}
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tai_Chi_in_the_park.jpg/1280px-Tai_Chi_in_the_park.jpg",alt:{es:"Persona realizando movimiento suave",en:"Person doing gentle movement",pt:"Pessoa fazendo movimento suave"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Stretching_in_nature.jpg/1280px-Stretching_in_nature.jpg",alt:{es:"Persona haciendo un estiramiento",en:"Person stretching",pt:"Pessoa fazendo alongamento"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Walking_in_the_park.jpg/1280px-Walking_in_the_park.jpg",alt:{es:"Persona caminando al aire libre",en:"Person walking outdoors",pt:"Pessoa caminhando ao ar livre"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Yoga_posture_outdoors.jpg/1280px-Yoga_posture_outdoors.jpg",alt:{es:"Persona en postura tranquila",en:"Person in a calm posture",pt:"Pessoa em postura tranquila"}}
 ],
 calm:[
-{url:"https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1400&q=85",alt:{es:"Paisaje de campo al amanecer",en:"Countryside landscape at sunrise",pt:"Paisagem rural ao nascer do sol"}},
-{url:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85",alt:{es:"Paisaje natural abierto",en:"Open natural landscape",pt:"Paisagem natural aberta"}},
-{url:"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1400&q=85",alt:{es:"Lago rodeado de montañas",en:"Lake surrounded by mountains",pt:"Lago cercado por montanhas"}},
-{url:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1400&q=85",alt:{es:"Sendero entre árboles",en:"Path through trees",pt:"Caminho entre árvores"}},
-{url:"https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=85",alt:{es:"Montañas y lago en un paisaje tranquilo",en:"Mountains and lake in a peaceful landscape",pt:"Montanhas e lago em uma paisagem tranquila"}},
-{url:"https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1400&q=85",alt:{es:"Naturaleza y vida silvestre",en:"Nature and wildlife",pt:"Natureza e vida selvagem"}},
-{url:"https://images.unsplash.com/photo-1439853949127-fa647821eba0?auto=format&fit=crop&w=1400&q=85",alt:{es:"Paisaje natural junto al agua",en:"Natural landscape beside water",pt:"Paisagem natural junto à água"}},
-{url:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=85",alt:{es:"Montañas bajo el cielo abierto",en:"Mountains beneath an open sky",pt:"Montanhas sob o céu aberto"}}
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Forest_path_in_spring.jpg/1280px-Forest_path_in_spring.jpg",alt:{es:"Sendero entre árboles",en:"Path through trees",pt:"Caminho entre árvores"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/A_tranquil_lake_in_Canada.jpg/1280px-A_tranquil_lake_in_Canada.jpg",alt:{es:"Lago rodeado de montañas",en:"Lake surrounded by mountains",pt:"Lago cercado por montanhas"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Moraine_Lake_17092005.jpg/1280px-Moraine_Lake_17092005.jpg",alt:{es:"Montañas y lago en un paisaje tranquilo",en:"Mountains and lake in a peaceful landscape",pt:"Montanhas e lago em uma paisagem tranquila"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Sunrise_over_mountains.jpg/1280px-Sunrise_over_mountains.jpg",alt:{es:"Paisaje al amanecer",en:"Landscape at sunrise",pt:"Paisagem ao nascer do sol"}}
 ],
 plants:[
-{url:"https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1400&q=85",alt:{es:"Hojas verdes en una planta",en:"Green leaves on a plant",pt:"Folhas verdes em uma planta"}},
-{url:"https://images.unsplash.com/photo-1483794344563-d27a8d18014e?auto=format&fit=crop&w=1400&q=85",alt:{es:"Plantas y hojas naturales",en:"Plants and natural leaves",pt:"Plantas e folhas naturais"}},
-{url:"https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1400&q=85",alt:{es:"Planta verde creciendo",en:"Green plant growing",pt:"Planta verde crescendo"}},
-{url:"https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1400&q=85",alt:{es:"Plantas en un jardín",en:"Plants in a garden",pt:"Plantas em um jardim"}},
-{url:"https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=1400&q=85",alt:{es:"Vegetación en un entorno natural",en:"Vegetation in a natural setting",pt:"Vegetação em ambiente natural"}}
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Green_leaves_macro.jpg/1280px-Green_leaves_macro.jpg",alt:{es:"Hojas verdes en una planta",en:"Green leaves on a plant",pt:"Folhas verdes em uma planta"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Garden_plants_growing.jpg/1280px-Garden_plants_growing.jpg",alt:{es:"Plantas en un jardín",en:"Plants in a garden",pt:"Plantas em um jardim"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Green_nature_leaf.jpg/1280px-Green_nature_leaf.jpg",alt:{es:"Vegetación en un entorno natural",en:"Vegetation in a natural setting",pt:"Vegetação em ambiente natural"}}
 ],
 coach:[
-{url:"https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=85",alt:{es:"Persona escribiendo en un cuaderno",en:"Person writing in a notebook",pt:"Pessoa escrevendo em um caderno"}},
-{url:"https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1400&q=85",alt:{es:"Cuaderno para organizar ideas",en:"Notebook for organizing ideas",pt:"Caderno para organizar ideias"}},
-{url:"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=85",alt:{es:"Espacio tranquilo para organizar una tarea",en:"Quiet space for organizing a task",pt:"Espaço tranquilo para organizar uma tarefa"}},
-{url:"https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1400&q=85",alt:{es:"Cuaderno abierto para escribir",en:"Open notebook for writing",pt:"Caderno aberto para escrever"}}
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Writing_in_notebook_pen.jpg/1280px-Writing_in_notebook_pen.jpg",alt:{es:"Persona escribiendo en un cuaderno",en:"Person writing in a notebook",pt:"Pessoa escrevendo em um caderno"}},
+{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Notebook_and_coffee_desk.jpg/1280px-Notebook_and_coffee_desk.jpg",alt:{es:"Espacio tranquilo para organizar una tarea",en:"Quiet space for organizing a task",pt:"Espaço tranquilo para organizar uma tarefa"}}
 ]};
 const tr=k=>TEXT[lang]?.[k]||TEXT.es[k]||k;
 let lang="es",minutes=3,activities=[],current=null,currentProgramDay=1,programData=null,detailSection="calm",lastSection="calm";
