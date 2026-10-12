@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -65,7 +66,7 @@ select,input[type=number],input[type=search]{width:100%;border:1px solid var(--l
 .progressFill{height:100%;width:0;background:var(--green2);transition:width .25s}
 .sessionLayout{display:grid;grid-template-columns:1fr;gap:20px;align-items:start;margin-top:18px}
 .sessionVisual{position:relative;overflow:hidden;border-radius:19px;background:var(--mint);aspect-ratio:16/9;min-height:240px;box-shadow:var(--shadow)}
-.sessionVisual>img{width:100%;height:100%;min-height:240px;object-fit:cover;display:block;transition:opacity .6s}
+.sessionVisual>img{width:100%;height:100%;min-height:240px;object-fit:cover;display:block;transition:opacity .25s}
 .imageCaption{position:absolute;bottom:13px;left:13px;background:#172b20dc;color:#fff;border-radius:10px;padding:8px 12px;font-size:.86rem;font-weight:800;z-index:2;max-width:calc(100% - 26px)}
 .stepBox{background:var(--mint);border-radius:17px;padding:25px;min-height:165px;display:flex;flex-direction:column;justify-content:center}
 .stepCount{font-size:.78rem;font-weight:850;color:var(--green2);text-transform:uppercase;letter-spacing:.1em}
@@ -87,7 +88,7 @@ select,input[type=number],input[type=search]{width:100%;border:1px solid var(--l
 footer{max-width:1180px;margin:auto;padding:0 20px 30px;color:var(--muted);font-size:.84rem}
 footer a{color:var(--green)}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:30;background:#1e382a;color:white;padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);max-width:90vw}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.activityGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.heroText{padding:25px 24px 8px}.heroImage,.heroImage img{min-height:220px;max-height:280px}.sessionLayout{grid-template-columns:1fr}.quick{grid-template-columns:1fr}}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.activityGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.heroText{padding:25px 24px 8px}.heroImage,.heroImage img{min-height:220px;max-height:280px}.quick{grid-template-columns:1fr}}
 @media(max-width:520px){main{padding:16px 12px 35px}.nav{padding:10px 12px}.brand{font-size:.9rem}.logo{width:36px;height:36px}.panel,.card{padding:16px}.grid,.activityGrid{grid-template-columns:1fr 1fr;gap:9px}.category img{height:105px}.categoryText{padding:11px}.categoryText p{font-size:.82rem}.programDays{grid-template-columns:repeat(4,minmax(0,1fr))}.progressStats{grid-template-columns:1fr 1fr}.historyItem{font-size:.9rem}.heroText{padding:22px 18px 4px}.stepBox{padding:18px}.sessionVisual,.sessionVisual>img{min-height:220px}.imageCaption{font-size:.78rem;left:9px;bottom:9px}}
 @media(max-width:360px){.grid,.activityGrid{grid-template-columns:1fr}.navright{gap:4px}.langbtn{padding:7px 9px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
@@ -100,8 +101,7 @@ footer a{color:var(--green)}
 <button class="langbtn" id="langES" aria-pressed="true" type="button">ES</button>
 <button class="langbtn" id="langEN" aria-pressed="false" type="button">EN</button>
 <button class="langbtn" id="langPT" aria-pressed="false" type="button">PT</button>
-</div>
-</div></header>
+</div></div></header>
 <main>
 <section class="hero"><div class="heroText">
 <span class="pill" data-i="eyebrow">Un momento para ti</span>
@@ -128,16 +128,11 @@ footer a{color:var(--green)}
 <div class="sessionTop"><div><span class="eyebrow" data-i="yourSession">Tu sesión</span><h2 id="sessionTitle">Actividad</h2><p class="muted" id="sessionDescription"></p><button class="secondary" id="backFromSession" data-i="backCatalog" type="button">Volver al catálogo</button></div><div class="timer" id="timer" aria-live="off">03:00</div></div>
 <div class="progressTrack" role="progressbar" aria-label="Progreso de la sesión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="progressFill" id="progressFill"></div></div>
 <div class="sessionLayout">
-<div class="sessionVisual">
-<img id="sessionImage" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Forest_path_in_spring.jpg/1280px-Forest_path_in_spring.jpg" alt="Paisaje tranquilo" loading="eager">
-<span class="imageCaption" id="imageCaption">Una pausa a tu ritmo</span>
-</div>
+<div class="sessionVisual"><img id="sessionImage" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Forest_path_in_spring.jpg/1280px-Forest_path_in_spring.jpg" alt="Paisaje tranquilo" loading="eager"><span class="imageCaption" id="imageCaption">Una pausa a tu ritmo</span></div>
 <p class="muted" id="imageHint" data-i="imageHint">La fotografía acompaña la instrucción y cambia de forma tranquila durante la sesión.</p>
-<div>
-<div class="stepBox"><div class="stepCount" id="stepCount">Frase 1</div><div class="stepText" id="stepText">Prepárate para comenzar.</div></div>
+<div><div class="stepBox"><div class="stepCount" id="stepCount">Frase 1</div><div class="stepText" id="stepText">Prepárate para comenzar.</div></div>
 <div class="voiceStatus" id="voiceStatus" role="status" aria-live="polite"></div>
-<div class="btnrow"><button class="primary" id="startClock" data-i="start" type="button">Comenzar</button><button class="secondary hidden" id="pauseClock" data-i="pause" type="button">Pausar</button><button class="secondary hidden" id="resumeClock" data-i="resume" type="button">Continuar</button><button class="secondary" id="repeatVoice" data-i="repeat" type="button">Repetir voz</button><button class="secondary" id="stopVoice" data-i="mute" type="button">Detener voz</button><button class="secondary" id="restartSession" data-i="restart" type="button">Reiniciar</button></div>
-</div>
+<div class="btnrow"><button class="primary" id="startClock" data-i="start" type="button">Comenzar</button><button class="secondary hidden" id="pauseClock" data-i="pause" type="button">Pausar</button><button class="secondary hidden" id="resumeClock" data-i="resume" type="button">Continuar</button><button class="secondary" id="repeatVoice" data-i="repeat" type="button">Repetir voz</button><button class="secondary" id="stopVoice" data-i="mute" type="button">Detener voz</button><button class="secondary" id="restartSession" data-i="restart" type="button">Reiniciar</button></div></div>
 </div>
 <div class="notice" style="margin-top:18px" data-i="safety">Haz solo lo que te resulte cómodo. Detente si aparece dolor, mareo o malestar. Esta aplicación ofrece actividades generales y no sustituye atención profesional.</div>
 <div id="finishBox" class="hidden" style="margin-top:20px"><h2 data-i="finishTitle">Has terminado esta sesión.</h2><p data-i="finishDesc">Puedes guardar tu actividad o elegir otra.</p><div class="panel" style="box-shadow:none;margin-top:12px"><strong data-i="beforeLabel">¿Cómo te sentías antes? (opcional)</strong><div class="ratingRow" id="beforeRatings"></div><strong style="display:block;margin-top:14px" data-i="afterLabel">¿Cómo te sientes ahora? (opcional)</strong><div class="ratingRow" id="afterRatings"></div><div class="btnrow"><button class="primary" id="saveSession" data-i="save" type="button">Guardar en este dispositivo</button><button class="secondary" id="anotherSession" data-i="another" type="button">Elegir otra actividad</button></div></div></div>
@@ -156,152 +151,149 @@ const $=id=>document.getElementById(id);
 const KEY="wellness_coach_progress_v4";
 const LANGS=["es","en","pt"];
 const TEXT={
-es:{
-eyebrow:"Un momento para ti",heroTitle:"Bienestar sencillo, a tu ritmo.",heroDesc:"Elige una actividad breve de movimiento suave, atención o planificación. No necesitas experiencia previa.",begin:"Comenzar",minutesBadge:"3, 5 o 10 minutos",chooseCategory:"Elige lo que necesitas hoy",categoryDesc:"Tres formas sencillas de hacer una pausa.",movementTitle:"Movimiento suave",movementDesc:"Movimientos cotidianos y cómodos.",calmTitle:"Calma y atención",calmDesc:"Volver al momento presente.",coachTitle:"Coach y planificación",coachDesc:"Organizar un siguiente paso.",quickTitle:"Sesión rápida",quickDesc:"Elige la duración y empieza cuando estés preparado.",durationLabel:"Duración",activityType:"Tipo de actividad",optCalm:"Calma y atención",optMovement:"Movimiento suave",optCoach:"Coach y planificación",startSession:"Iniciar sesión",backHome:"Volver al inicio",backCatalog:"Volver al catálogo",yourSession:"Tu sesión",imageHint:"La fotografía acompaña la instrucción y cambia con calma para ofrecer variedad.",start:"Comenzar",pause:"Pausar",resume:"Continuar",repeat:"Repetir voz",mute:"Detener voz",restart:"Reiniciar",safety:"Haz solo lo que te resulte cómodo. Detente si aparece dolor, mareo o malestar. Esta aplicación ofrece actividades generales y no sustituye atención profesional.",finishTitle:"Has terminado esta sesión.",finishDesc:"Puedes guardar tu actividad o elegir otra.",beforeLabel:"¿Cómo te sentías antes? (opcional)",afterLabel:"¿Cómo te sientes ahora? (opcional)",save:"Guardar en este dispositivo",another:"Elegir otra actividad",programTitle:"Tu programa de 7 días",programDesc:"Un plan flexible para probar actividades diferentes.",startDay:"Iniciar este día",progressTitle:"Tu progreso",progressDesc:"El historial se guarda solo en este navegador.",statSessions:"Sesiones guardadas",statMinutes:"Minutos completados",statDays:"Días del programa",export:"Descargar",clear:"Borrar historial",footerNote:"Información general de bienestar cotidiano. No es un servicio médico ni ofrece diagnósticos o tratamientos.",loading:"Cargando actividades…",loadError:"No se pudo conectar con el catálogo. Comprueba que main.py y wellness_engine.py estén desplegados.",empty:"No se encontraron actividades.",min:"min",step:"Paso",phrase:"Frase",of:"de",voiceReady:"Tómate tu tiempo. La voz está preparada.",voiceUnavailable:"La voz no está disponible en este navegador; puedes leer las instrucciones.",voiceOff:"Voz detenida. Las instrucciones continúan en pantalla.",voiceSpeaking:"Escucha con calma. No hay prisa.",sessionDone:"Sesión completada.",sessionPaused:"Sesión pausada. Descansa el tiempo que necesites.",sessionRunning:"Sesión en curso. Sigue a tu propio ritmo.",saved:"Sesión guardada en este dispositivo.",savedAlready:"Esta sesión ya se guardó.",clearConfirm:"¿Borrar todo el historial local de WELLNESS COACH?",emptyHistory:"Todavía no hay sesiones guardadas.",day:"Día",done:"Completado",notDone:"Pendiente",startError:"No se pudo iniciar la actividad. Inténtalo de nuevo.",noTitle:"Actividad de bienestar",confirmAnother:"¿Salir de la sesión actual?",searchPlaceholder:"Buscar actividad por nombre o código",rating1:"Muy bajo",rating2:"Bajo",rating3:"Normal",rating4:"Bien",rating5:"Muy bien",noImage:"Imagen no disponible",imageLabel:"Paisaje para acompañar tu sesión",noSteps:"Esta actividad no contiene instrucciones.",noProgram:"No se pudo cargar el programa.",choose:"Elegir",programComplete:"Día marcado como completado.",backConfirm:"¿Salir de esta sesión? El tiempo transcurrido no se guardará.",historyDeleted:"Historial borrado.",catalogCount:"actividades",programGoal:"Objetivo del día",connectionError:"No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.",notSaved:"No se pudo guardar el historial en este dispositivo.",sessionStarted:"Sesión iniciada.",timeLabel:"Duración",stepHint:"Lee la frase primero y escucha cuando estés preparado. Puedes pausar en cualquier momento.",sessionSaved:"La sesión se guardó.",exportDone:"Download preparada."
-},
-en:{
-eyebrow:"A moment for you",heroTitle:"Simple wellbeing, at your pace.",heroDesc:"Choose a short activity in gentle movement, attention or planning. No previous experience needed.",begin:"Get started",minutesBadge:"3, 5 or 10 minutes",chooseCategory:"Choose what you need today",categoryDesc:"Three simple ways to take a pause.",movementTitle:"Gentle movement",movementDesc:"Comfortable everyday movement.",calmTitle:"Calm and attention",calmDesc:"Return to the present moment.",coachTitle:"Coaching and planning",coachDesc:"Organize one next step.",quickTitle:"Quick session",quickDesc:"Choose a duration and begin when ready.",durationLabel:"Duration",activityType:"Activity type",optCalm:"Calm and attention",optMovement:"Gentle movement",optCoach:"Coaching and planning",startSession:"Start session",backHome:"Back to home",backCatalog:"Back to catalog",yourSession:"Your session",imageHint:"The photograph accompanies the instruction and changes calmly to provide variety.",start:"Start",pause:"Pause",resume:"Resume",repeat:"Repeat voice",mute:"Stop voice",restart:"Restart",safety:"Only do what feels comfortable. Stop if pain, dizziness or discomfort occurs. This app offers general activities and does not replace professional care.",finishTitle:"You have finished this session.",finishDesc:"Save your activity or choose another.",beforeLabel:"How did you feel before? (optional)",afterLabel:"How do you feel now? (optional)",save:"Save on this device",another:"Choose another activity",programTitle:"Your 7-day program",programDesc:"A flexible plan to try different activities.",startDay:"Start this day",progressTitle:"Your progress",progressDesc:"Your history is stored only in this browser.",statSessions:"Saved sessions",statMinutes:"Minutes completed",statDays:"Program days",export:"Download",clear:"Delete history",footerNote:"General everyday wellbeing information. This is not a medical service and does not provide diagnosis or treatment.",loading:"Loading activities…",loadError:"Could not connect to the activity catalog. Check that main.py and wellness_engine.py are deployed.",empty:"No activities found.",min:"min",step:"Step",phrase:"Phrase",of:"of",voiceReady:"Take your time. Voice is ready.",voiceUnavailable:"Voice is not available in this browser; you can read the instructions.",voiceOff:"Voice stopped. On-screen instructions will continue.",voiceSpeaking:"Listen calmly. There is no rush.",sessionDone:"Session completed.",sessionPaused:"Session paused. Rest for as long as you need.",sessionRunning:"Session in progress. Follow your own pace.",saved:"Session saved on this device.",savedAlready:"This session has already been saved.",clearConfirm:"Delete all local WELLNESS COACH history?",emptyHistory:"No saved sessions yet.",day:"Day",done:"Completed",notDone:"Pending",startError:"Could not start the activity. Please try again.",noTitle:"Wellbeing activity",confirmAnother:"Leave the current session?",searchPlaceholder:"Search activity name or code",rating1:"Very low",rating2:"Low",rating3:"Okay",rating4:"Good",rating5:"Very good",noImage:"Image unavailable",imageLabel:"Landscape for your session",noSteps:"This activity has no instructions.",noProgram:"Could not load the program.",choose:"Choose",programComplete:"Day marked as completed.",backConfirm:"Leave this session? Elapsed time will not be saved.",historyDeleted:"History deleted.",catalogCount:"activities",programGoal:"Today's goal",connectionError:"Could not connect. Check your connection and try again.",notSaved:"Could not save history on this device.",sessionStarted:"Session started.",timeLabel:"Duration",stepHint:"Read the phrase first and listen when you are ready. You can pause at any time.",sessionSaved:"The session was saved.",exportDone:"Download prepared."
-},
-pt:{
-eyebrow:"Um momento para você",heroTitle:"Bem-estar simples, no seu ritmo.",heroDesc:"Escolha uma atividade breve de movimento suave, atenção ou planejamento. Não é necessária experiência anterior.",begin:"Começar",minutesBadge:"3, 5 ou 10 minutos",chooseCategory:"Escolha o que você precisa hoje",categoryDesc:"Três maneiras simples de fazer uma pausa.",movementTitle:"Movimento suave",movementDesc:"Movimentos cotidianos e confortáveis.",calmTitle:"Calma e atenção",calmDesc:"Voltar ao momento presente.",coachTitle:"Orientação e planejamento",coachDesc:"Organizar o próximo passo.",quickTitle:"Sessão rápida",quickDesc:"Escolha a duração e comece quando estiver pronto.",durationLabel:"Duração",activityType:"Tipo de atividade",optCalm:"Calma e atenção",optMovement:"Movimento suave",optCoach:"Orientação e planejamento",startSession:"Iniciar sessão",backHome:"Voltar ao início",backCatalog:"Voltar ao catálogo",yourSession:"Sua sessão",imageHint:"A fotografia acompanha a instrução e muda com calma para oferecer variedade.",start:"Começar",pause:"Pausar",resume:"Continuar",repeat:"Repetir voz",mute:"Parar voz",restart:"Reiniciar",safety:"Faça apenas o que for confortável. Pare se sentir dor, tontura ou desconforto. Este aplicativo oferece atividades gerais e não substitui atendimento profissional.",finishTitle:"Você concluiu esta sessão.",finishDesc:"Você pode salvar a atividade ou escolher outra.",beforeLabel:"Como você se sentia antes? (opcional)",afterLabel:"Como você se sente agora? (opcional)",save:"Salvar neste dispositivo",another:"Escolher outra atividade",programTitle:"Seu programa de 7 dias",programDesc:"Seu plano flexível para experimentar atividades diferentes.",startDay:"Iniciar este dia",progressTitle:"Seu progresso",progressDesc:"O histórico fica salvo apenas neste navegador.",statSessions:"Sessões salvas",statMinutes:"Minutos concluídos",statDays:"Dias do programa",export:"Baixar",clear:"Apagar histórico",footerNote:"Informações gerais sobre bem-estar cotidiano. Não é um serviço médico e não oferece diagnósticos ou tratamentos.",loading:"Carregando atividades…",loadError:"Não foi possível conectar ao catálogo. Verifique se main.py e wellness_engine.py estão publicados.",empty:"Nenhuma atividade encontrada.",min:"min",step:"Etapa",phrase:"Frase",of:"de",voiceReady:"Sem pressa. A voz está pronta.",voiceUnavailable:"A voz não está disponível neste navegador; você pode ler as instruções.",voiceOff:"Voz parada. As instruções continuarão na tela.",voiceSpeaking:"Ouça com calma. Não há pressa.",sessionDone:"Sessão concluída.",sessionPaused:"Sessão pausada. Descanse pelo tempo que precisar.",sessionRunning:"Sessão em andamento. Siga no seu ritmo.",saved:"Sessão salva neste dispositivo.",savedAlready:"Esta sessão já foi salva.",clearConfirm:"Apagar todo o histórico local do WELLNESS COACH?",emptyHistory:"Ainda não há sessões salvas.",day:"Dia",done:"Concluído",notDone:"Pendente",startError:"Não foi possível iniciar a atividade. Tente novamente.",noTitle:"Atividade de bem-estar",confirmAnother:"Sair da sessão atual?",searchPlaceholder:"Pesquisar atividade por nome ou código",rating1:"Muito baixo",rating2:"Baixo",rating3:"Normal",rating4:"Bem",rating5:"Muito bem",noImage:"Imagem indisponível",imageLabel:"Paisagem para acompanhar sua sessão",noSteps:"Esta atividade não contém instruções.",noProgram:"Não foi possível carregar o programa.",choose:"Escolher",programComplete:"Dia marcado como concluído.",backConfirm:"Sair desta sessão? O tempo decorrido não será salvo.",historyDeleted:"Histórico apagado.",catalogCount:"atividades",programGoal:"Objetivo do dia",connectionError:"Não foi possível conectar. Verifique sua conexão e tente novamente.",notSaved:"Não foi possível salvar o histórico neste dispositivo.",sessionStarted:"Sesión iniciada.",timeLabel:"Duração",stepHint:"Leia a frase primeiro e ouça quando estiver pronto. Você pode pausar a qualquer momento.",sessionSaved:"A sessão foi salva.",exportDone:"Download preparado."
-}};
+es:{eyebrow:"Un momento para ti",heroTitle:"Bienestar sencillo, a tu ritmo.",heroDesc:"Elige una actividad breve de movimiento suave, atención o planificación. No necesitas experiencia previa.",begin:"Comenzar",minutesBadge:"3, 5 o 10 minutos",chooseCategory:"Elige lo que necesitas hoy",categoryDesc:"Tres formas sencillas de hacer una pausa.",movementTitle:"Movimiento suave",movementDesc:"Movimientos cotidianos y cómodos.",calmTitle:"Calma y atención",calmDesc:"Volver al momento presente.",coachTitle:"Coach y planificación",coachDesc:"Organizar un siguiente paso.",quickTitle:"Sesión rápida",quickDesc:"Elige la duración y empieza cuando estés preparado.",durationLabel:"Duración",activityType:"Tipo de actividad",optCalm:"Calma y atención",optMovement:"Movimiento suave",optCoach:"Coach y planificación",startSession:"Iniciar sesión",backHome:"Volver al inicio",backCatalog:"Volver al catálogo",yourSession:"Tu sesión",imageHint:"La fotografía acompaña la instrucción y cambia con calma para ofrecer variedad.",start:"Comenzar",pause:"Pausar",resume:"Continuar",repeat:"Repetir voz",mute:"Detener voz",restart:"Reiniciar",safety:"Haz solo lo que te resulte cómodo. Detente si aparece dolor, mareo o malestar. Esta aplicación ofrece actividades generales y no sustituye atención profesional.",finishTitle:"Has terminado esta sesión.",finishDesc:"Puedes guardar tu actividad o elegir otra.",beforeLabel:"¿Cómo te sentías antes? (opcional)",afterLabel:"¿Cómo te sientes ahora? (opcional)",save:"Guardar en este dispositivo",another:"Elegir otra actividad",programTitle:"Tu programa de 7 días",programDesc:"Un plan flexible para probar actividades diferentes.",startDay:"Iniciar este día",progressTitle:"Tu progreso",progressDesc:"El historial se guarda solo en este navegador.",statSessions:"Sesiones guardadas",statMinutes:"Minutos completados",statDays:"Días del programa",export:"Descargar",clear:"Borrar historial",footerNote:"Información general de bienestar cotidiano. No es un servicio médico ni ofrece diagnósticos o tratamientos.",loading:"Cargando actividades…",loadError:"No se pudo conectar con el catálogo. Comprueba que main.py y wellness_engine.py estén desplegados.",empty:"No se encontraron actividades.",min:"min",step:"Paso",phrase:"Frase",of:"de",voiceReady:"Tómate tu tiempo. La voz está preparada.",voiceUnavailable:"La voz no está disponible en este navegador; puedes leer las instrucciones.",voiceOff:"Voz detenida. Las instrucciones continúan en pantalla.",voiceSpeaking:"Escucha con calma. No hay prisa.",sessionDone:"Sesión completada.",sessionPaused:"Sesión pausada. Descansa el tiempo que necesites.",sessionRunning:"Sesión en curso. Sigue a tu propio ritmo.",saved:"Sesión guardada en este dispositivo.",savedAlready:"Esta sesión ya se guardó.",clearConfirm:"¿Borrar todo el historial local de WELLNESS COACH?",emptyHistory:"Todavía no hay sesiones guardadas.",day:"Día",done:"Completado",notDone:"Pendiente",startError:"No se pudo iniciar la actividad. Inténtalo de nuevo.",noTitle:"Actividad de bienestar",confirmAnother:"¿Salir de la sesión actual?",searchPlaceholder:"Buscar actividad por nombre o código",rating1:"Muy bajo",rating2:"Bajo",rating3:"Normal",rating4:"Bien",rating5:"Muy bien",noImage:"Imagen no disponible",imageLabel:"Paisaje para acompañar tu sesión",noSteps:"Esta actividad no contiene instrucciones.",noProgram:"No se pudo cargar el programa.",choose:"Elegir",programComplete:"Día marcado como completado.",backConfirm:"¿Salir de esta sesión? El tiempo transcurrido no se guardará.",historyDeleted:"Historial borrado.",catalogCount:"actividades",programGoal:"Objetivo del día",connectionError:"No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.",notSaved:"No se pudo guardar el historial en este dispositivo.",sessionStarted:"Sesión iniciada.",timeLabel:"Duración",stepHint:"Lee la frase primero y escucha cuando estés preparado. Puedes pausar en cualquier momento.",sessionSaved:"La sesión se guardó.",exportDone:"Descarga preparada."},
+en:{eyebrow:"A moment for you",heroTitle:"Simple wellbeing, at your pace.",heroDesc:"Choose a short activity in gentle movement, attention or planning. No previous experience needed.",begin:"Get started",minutesBadge:"3, 5 or 10 minutes",chooseCategory:"Choose what you need today",categoryDesc:"Three simple ways to take a pause.",movementTitle:"Gentle movement",movementDesc:"Comfortable everyday movement.",calmTitle:"Calm and attention",calmDesc:"Return to the present moment.",coachTitle:"Coaching and planning",coachDesc:"Organize one next step.",quickTitle:"Quick session",quickDesc:"Choose a duration and begin when ready.",durationLabel:"Duration",activityType:"Activity type",optCalm:"Calm and attention",optMovement:"Gentle movement",optCoach:"Coaching and planning",startSession:"Start session",backHome:"Back to home",backCatalog:"Back to catalog",yourSession:"Your session",imageHint:"The photograph accompanies the instruction and changes calmly to provide variety.",start:"Start",pause:"Pause",resume:"Resume",repeat:"Repeat voice",mute:"Stop voice",restart:"Restart",safety:"Only do what feels comfortable. Stop if pain, dizziness or discomfort occurs. This app offers general activities and does not replace professional care.",finishTitle:"You have finished this session.",finishDesc:"Save your activity or choose another.",beforeLabel:"How did you feel before? (optional)",afterLabel:"How do you feel now? (optional)",save:"Save on this device",another:"Choose another activity",programTitle:"Your 7-day program",programDesc:"A flexible plan to try different activities.",startDay:"Start this day",progressTitle:"Your progress",progressDesc:"Your history is stored only in this browser.",statSessions:"Saved sessions",statMinutes:"Minutes completed",statDays:"Program days",export:"Download",clear:"Delete history",footerNote:"General everyday wellbeing information. This is not a medical service and does not provide diagnosis or treatment.",loading:"Loading activities…",loadError:"Could not connect to the activity catalog. Check that main.py and wellness_engine.py are deployed.",empty:"No activities found.",min:"min",step:"Step",phrase:"Phrase",of:"of",voiceReady:"Take your time. Voice is ready.",voiceUnavailable:"Voice is not available in this browser; you can read the instructions.",voiceOff:"Voice stopped. On-screen instructions will continue.",voiceSpeaking:"Listen calmly. There is no rush.",sessionDone:"Session completed.",sessionPaused:"Session paused. Rest for as long as you need.",sessionRunning:"Session in progress. Follow your own pace.",saved:"Session saved on this device.",savedAlready:"This session has already been saved.",clearConfirm:"Delete all local WELLNESS COACH history?",emptyHistory:"No saved sessions yet.",day:"Day",done:"Completed",notDone:"Pending",startError:"Could not start the activity. Please try again.",noTitle:"Wellbeing activity",confirmAnother:"Leave the current session?",searchPlaceholder:"Search activity name or code",rating1:"Very low",rating2:"Low",rating3:"Okay",rating4:"Good",rating5:"Very good",noImage:"Image unavailable",imageLabel:"Landscape for your session",noSteps:"This activity has no instructions.",noProgram:"Could not load the program.",choose:"Choose",programComplete:"Day marked as completed.",backConfirm:"Leave this session? Elapsed time will not be saved.",historyDeleted:"History deleted.",catalogCount:"activities",programGoal:"Today's goal",connectionError:"Could not connect. Check your connection and try again.",notSaved:"Could not save history on this device.",sessionStarted:"Session started.",timeLabel:"Duration",stepHint:"Read the phrase first and listen when you are ready. You can pause at any time.",sessionSaved:"The session was saved.",exportDone:"Download prepared."},
+pt:{eyebrow:"Um momento para você",heroTitle:"Bem-estar simples, no seu ritmo.",heroDesc:"Escolha uma atividade breve de movimento suave, atenção ou planejamento. Não é necessária experiência anterior.",begin:"Começar",minutesBadge:"3, 5 ou 10 minutos",chooseCategory:"Escolha o que você precisa hoje",categoryDesc:"Três maneiras simples de fazer uma pausa.",movementTitle:"Movimento suave",movementDesc:"Movimentos cotidianos e confortáveis.",calmTitle:"Calma e atenção",calmDesc:"Voltar ao momento presente.",coachTitle:"Orientação e planejamento",coachDesc:"Organizar o próximo passo.",quickTitle:"Sessão rápida",quickDesc:"Escolha a duração e comece quando estiver pronto.",durationLabel:"Duração",activityType:"Tipo de atividade",optCalm:"Calma e atenção",optMovement:"Movimento suave",optCoach:"Orientação e planejamento",startSession:"Iniciar sessão",backHome:"Voltar ao início",backCatalog:"Voltar ao catálogo",yourSession:"Sua sessão",imageHint:"A fotografia acompanha a instrução e muda com calma para oferecer variedade.",start:"Começar",pause:"Pausar",resume:"Continuar",repeat:"Repetir voz",mute:"Parar voz",restart:"Reiniciar",safety:"Faça apenas o que for confortável. Pare se sentir dor, tontura ou desconforto. Este aplicativo oferece atividades gerais e não substitui atendimento profissional.",finishTitle:"Você concluiu esta sessão.",finishDesc:"Você pode salvar a atividade ou escolher outra.",beforeLabel:"Como você se sentia antes? (opcional)",afterLabel:"Como você se sente agora? (opcional)",save:"Salvar neste dispositivo",another:"Escolher outra atividade",programTitle:"Seu programa de 7 dias",programDesc:"Seu plano flexível para experimentar atividades diferentes.",startDay:"Iniciar este dia",progressTitle:"Seu progresso",progressDesc:"O histórico fica salvo apenas neste navegador.",statSessions:"Sessões salvas",statMinutes:"Minutos concluídos",statDays:"Dias do programa",export:"Baixar",clear:"Apagar histórico",footerNote:"Informações gerais sobre bem-estar cotidiano. Não é um serviço médico e não oferece diagnósticos ou tratamentos.",loading:"Carregando atividades…",loadError:"Não foi possível conectar ao catálogo. Verifique se main.py e wellness_engine.py estão publicados.",empty:"Nenhuma atividade encontrada.",min:"min",step:"Etapa",phrase:"Frase",of:"de",voiceReady:"Sem pressa. A voz está pronta.",voiceUnavailable:"A voz não está disponível neste navegador; você pode ler as instruções.",voiceOff:"Voz parada. As instruções continuarão na tela.",voiceSpeaking:"Ouça com calma. Não há pressa.",sessionDone:"Sessão concluída.",sessionPaused:"Sessão pausada. Descanse pelo tempo que precisar.",sessionRunning:"Sessão em andamento. Siga no seu ritmo.",saved:"Sessão salva neste dispositivo.",savedAlready:"Esta sessão já foi salva.",clearConfirm:"Apagar todo o histórico local do WELLNESS COACH?",emptyHistory:"Ainda não há sessões salvas.",day:"Dia",done:"Concluído",notDone:"Pendente",startError:"Não foi possível iniciar a atividade. Tente novamente.",noTitle:"Atividade de bem-estar",confirmAnother:"Sair da sessão atual?",searchPlaceholder:"Pesquisar atividade por nome ou código",rating1:"Muito baixo",rating2:"Baixo",rating3:"Normal",rating4:"Bem",rating5:"Muito bem",noImage:"Imagem indisponível",imageLabel:"Paisagem para acompanhar sua sessão",noSteps:"Esta atividade não contém instruções.",noProgram:"Não foi possível carregar o programa.",choose:"Escolher",programComplete:"Dia marcado como concluído.",backConfirm:"Sair desta sessão? O tempo decorrido não será salvo.",historyDeleted:"Histórico apagado.",catalogCount:"atividades",programGoal:"Objetivo do dia",connectionError:"Não foi possível conectar. Verifique sua conexão e tente novamente.",notSaved:"Não foi possível salvar o histórico neste dispositivo.",sessionStarted:"Sessão iniciada.",timeLabel:"Duração",stepHint:"Leia a frase primeiro e ouça quando estiver pronto. Você pode pausar a qualquer momento.",sessionSaved:"A sessão foi salva.",exportDone:"Download preparado."}
+};
 const CATEGORY_NAMES={movement:{es:"Movimiento suave",en:"Gentle movement",pt:"Movimento suave"},calm:{es:"Calma y atención",en:"Calm and attention",pt:"Calma e atenção"},coach:{es:"Coach y planificación",en:"Coaching and planning",pt:"Orientação e planejamento"}};
 const PHOTO_BANK={
 movement:[
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tai_Chi_in_the_park.jpg/1280px-Tai_Chi_in_the_park.jpg",alt:{es:"Persona realizando movimiento suave",en:"Person doing gentle movement",pt:"Pessoa fazendo movimento suave"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Stretching_in_nature.jpg/1280px-Stretching_in_nature.jpg",alt:{es:"Persona haciendo un estiramiento",en:"Person stretching",pt:"Pessoa fazendo alongamento"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Walking_in_the_park.jpg/1280px-Walking_in_the_park.jpg",alt:{es:"Persona caminando al aire libre",en:"Person walking outdoors",pt:"Pessoa caminhando ao ar livre"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Yoga_posture_outdoors.jpg/1280px-Yoga_posture_outdoors.jpg",alt:{es:"Persona en postura tranquila",en:"Person in a calm posture",pt:"Pessoa em postura tranquila"}}
+{url:"https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80",alt:{es:"Persona practicando movimiento suave",en:"Person practicing gentle movement",pt:"Pessoa praticando movimento suave"}},
+{url:"https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1000&q=80",alt:{es:"Espacio tranquilo para moverse",en:"Quiet space for movement",pt:"Espaço tranquilo para movimento"}},
+{url:"https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1000&q=80",alt:{es:"Persona haciendo ejercicio suave",en:"Person doing gentle exercise",pt:"Pessoa fazendo exercício suave"}},
+{url:"https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?auto=format&fit=crop&w=1000&q=80",alt:{es:"Práctica de movimiento consciente",en:"Mindful movement practice",pt:"Prática de movimento consciente"}}
 ],
 calm:[
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Forest_path_in_spring.jpg/1280px-Forest_path_in_spring.jpg",alt:{es:"Sendero entre árboles",en:"Path through trees",pt:"Caminho entre árvores"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/A_tranquil_lake_in_Canada.jpg/1280px-A_tranquil_lake_in_Canada.jpg",alt:{es:"Lago rodeado de montañas",en:"Lake surrounded by mountains",pt:"Lago cercado por montanhas"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Moraine_Lake_17092005.jpg/1280px-Moraine_Lake_17092005.jpg",alt:{es:"Montañas y lago en un paisaje tranquilo",en:"Mountains and lake in a peaceful landscape",pt:"Montanhas e lago em uma paisagem tranquila"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Sunrise_over_mountains.jpg/1280px-Sunrise_over_mountains.jpg",alt:{es:"Paisaje al amanecer",en:"Landscape at sunrise",pt:"Paisagem ao nascer do sol"}}
+{url:"https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=80",alt:{es:"Paisaje tranquilo al amanecer",en:"Peaceful sunrise landscape",pt:"Paisagem tranquila ao amanhecer"}},
+{url:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=80",alt:{es:"Sendero entre árboles",en:"Path through trees",pt:"Caminho entre árvores"}},
+{url:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=80",alt:{es:"Paisaje natural abierto",en:"Open natural landscape",pt:"Paisagem natural aberta"}},
+{url:"https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1000&q=80",alt:{es:"Agua y naturaleza",en:"Water and nature",pt:"Água e natureza"}}
 ],
 plants:[
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Green_leaves_macro.jpg/1280px-Green_leaves_macro.jpg",alt:{es:"Hojas verdes en una planta",en:"Green leaves on a plant",pt:"Folhas verdes em uma planta"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Garden_plants_growing.jpg/1280px-Garden_plants_growing.jpg",alt:{es:"Plantas en un jardín",en:"Plants in a garden",pt:"Plantas em um jardim"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Green_nature_leaf.jpg/1280px-Green_nature_leaf.jpg",alt:{es:"Vegetación en un entorno natural",en:"Vegetation in a natural setting",pt:"Vegetação em ambiente natural"}}
+{url:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=80",alt:{es:"Vegetación en un bosque",en:"Forest vegetation",pt:"Vegetação em uma floresta"}},
+{url:"https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1000&q=80",alt:{es:"Plantas verdes",en:"Green plants",pt:"Plantas verdes"}},
+{url:"https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1000&q=80",alt:{es:"Hojas de una planta",en:"Plant leaves",pt:"Folhas de uma planta"}}
 ],
 coach:[
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Writing_in_notebook_pen.jpg/1280px-Writing_in_notebook_pen.jpg",alt:{es:"Persona escribiendo en un cuaderno",en:"Person writing in a notebook",pt:"Pessoa escrevendo em um caderno"}},
-{url:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Notebook_and_coffee_desk.jpg/1280px-Notebook_and_coffee_desk.jpg",alt:{es:"Espacio tranquilo para organizar una tarea",en:"Quiet space for organizing a task",pt:"Espaço tranquilo para organizar uma tarefa"}}
+{url:"https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1000&q=80",alt:{es:"Cuaderno para organizar ideas",en:"Notebook for organizing ideas",pt:"Caderno para organizar ideias"}},
+{url:"https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1000&q=80",alt:{es:"Escritura y planificación",en:"Writing and planning",pt:"Escrita e planejamento"}},
+{url:"https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1000&q=80",alt:{es:"Espacio de trabajo organizado",en:"Organized workspace",pt:"Espaço de trabalho organizado"}}
 ]};
 const tr=k=>TEXT[lang]?.[k]||TEXT.es[k]||k;
 let lang="es",minutes=3,activities=[],current=null,currentProgramDay=1,programData=null,detailSection="calm",lastSection="calm";
-let running=false,paused=false,sessionDone=false,sessionSaved=false,seconds=180,totalSeconds=180,activeElapsed=0,clockId=null,imageId=null,lastTick=0,sessionStart=null,programMode=false;
+let running=false,paused=false,sessionDone=false,sessionSaved=false,seconds=180,totalSeconds=180,activeElapsed=0,clockId=null,lastTick=0,sessionStart=null,programMode=false;
 let voiceEnabled=true,beforeRating=null,afterRating=null;
-let promptTimerId=null,promptRunToken=0,voiceRunToken=0,voiceList=[],phraseQueue=[],phraseIndex=0,phraseStartedAt=0,currentPhrase=null;
-let lastPhotoURL="",photoSequence=0,lastPhotoCategory="",lastPhraseKey="";
-const $safe=v=>String(v??"");
-function escapeHTML(v){return $safe(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+let promptTimerId=null,promptRunToken=0,voiceRunToken=0,voiceList=[],phraseQueue=[],phraseIndex=0,phraseStartedAt=0,currentPhrase=null,voiceWatchdog=null;
+let lastPhotoURL="",photoSequence=0,lastPhotoCategory="",lastPhraseKey="",activityRequestToken=0,programRequestToken=0,sessionToken=0;
+const safe=v=>String(v??"");
+function escapeHTML(v){return safe(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function toast(msg){const el=$("toast");el.textContent=msg;el.classList.remove("hidden");clearTimeout(toast._id);toast._id=setTimeout(()=>el.classList.add("hidden"),3000)}
 function setStatus(msg){$("appStatus").textContent=msg||""}
-async function fetchJSON(url){const r=await fetch(url,{headers:{"Accept":"application/json"},cache:"no-store"});if(!r.ok)throw new Error(`${r.status} ${url}`);return r.json()}
+async function fetchJSON(url,timeout=12000){
+const controller=new AbortController(),id=setTimeout(()=>controller.abort(),timeout);
+try{const r=await fetch(url,{headers:{Accept:"application/json"},cache:"no-store",signal:controller.signal});if(!r.ok)throw new Error(`${r.status} ${url}`);return await r.json()}finally{clearTimeout(id)}
+}
 function applyLanguage(){
 document.documentElement.lang=lang;
 document.querySelectorAll("[data-i]").forEach(el=>{const k=el.dataset.i;if(TEXT[lang][k])el.textContent=TEXT[lang][k]});
 document.querySelectorAll("[data-min]").forEach(b=>b.textContent=`${b.dataset.min} ${tr("min")}`);
 $("imageCaption").textContent=tr("imageLabel");
-$("langES").setAttribute("aria-pressed",String(lang==="es"));
-$("langEN").setAttribute("aria-pressed",String(lang==="en"));
-$("langPT").setAttribute("aria-pressed",String(lang==="pt"));
-if(current){$("sessionTitle").textContent=current.title\vert{}\vert{}tr("noTitle");$("sessionDescription").textContent=current.description||""}
-if(detailSection){$("detailTitle").textContent=CATEGORY_NAMES[detailSection]?.[lang]\vert{}\vert{}detailSection;$("detailDesc").textContent=tr(detailSection==="movement"?"movementDesc":detailSection==="calm"?"calmDesc":"coachDesc")}
+$("langES").setAttribute("aria-pressed",String(lang==="es"));$("langEN").setAttribute("aria-pressed",String(lang==="en"));$("langPT").setAttribute("aria-pressed",String(lang==="pt"));
+if(current){$("sessionTitle").textContent=current.title||tr("noTitle");$("sessionDescription").textContent=current.description||""}
+if(detailSection){$("detailTitle").textContent=CATEGORY_NAMES[detailSection]?.[lang]||detailSection;$("detailDesc").textContent=tr(detailSection==="movement"?"movementDesc":detailSection==="calm"?"calmDesc":"coachDesc")}
 renderProgramDays();renderRatings();renderProgress();
 if(currentPhrase)updateSessionPhoto(currentPhrase.text,true);
 }
 async function setLang(next){
 if(!LANGS.includes(next)||next===lang)return;
 if(running&&!confirm(tr("confirmAnother")))return;
-const wasRunning=running&&!paused;
-if(wasRunning){running=false;if(clockId){clearInterval(clockId);clockId=null}stopPromptSequence()}
+const resumeAfter=running&&!paused;
+if(resumeAfter){running=false;clearClock();stopPromptSequence()}
 lang=next;applyLanguage();
 await loadActivities();
 if(current){
-const updated=activities.find(a=>a.id===current.id);
+const updated=activities.find(a=>String(a.id)===String(current.id));
 if(updated)current=updated;
-$("sessionTitle").textContent=current.title||tr("noTitle");
-$("sessionDescription").textContent=current.description||"";
+$("sessionTitle").textContent=current.title||tr("noTitle");$("sessionDescription").textContent=current.description||"";
+const oldText=currentPhrase?.text;
 buildPhraseQueue();
-phraseIndex=Math.min(phraseIndex,Math.max(0,phraseQueue.length-1));
-if(phraseQueue.length){currentPhrase=phraseQueue[phraseIndex];renderCurrentPhrase()}
+const idx=phraseQueue.findIndex(p=>p.text===oldText);
+phraseIndex=idx>=0?idx:Math.min(phraseIndex,Math.max(0,phraseQueue.length-1));
+renderCurrentPhrase();
 }
 if(!$("detailPanel").classList.contains("hidden"))renderActivities();
 await loadProgram(currentProgramDay);
 refreshVoiceList();updateVoiceStatus();
-if(wasRunning){running=true;lastTick=performance.now();clockId=setInterval(tick,200);startPromptSequence()}
+if(resumeAfter&&!sessionDone){running=true;lastTick=performance.now();clockId=setInterval(tick,200);startPromptSequence()}
 }
 async function loadActivities(){
+const request=++activityRequestToken;
+setStatus(tr("loading"));
 try{
 const data=await fetchJSON(`/api/activities?lang=${encodeURIComponent(lang)}&section=all`);
-activities=Array.isArray(data.activities)?data.activities:Array.isArray(data)?data:[];
-activities=activities.filter(a=>["movement","calm","coach","plants"].includes(a.section));
+if(request!==activityRequestToken)return activities;
+const list=Array.isArray(data.activities)?data.activities:Array.isArray(data)?data:[];
+activities=list.filter(a=>a&&["movement","calm","coach","plants"].includes(a.section));
 setStatus("");
 if(!$("detailPanel").classList.contains("hidden"))renderActivities();
 return activities;
-}catch(e){setStatus(tr("loadError"));return activities}
-}
+}catch(e){
+if(request===activityRequestToken){setStatus(tr("loadError"));$("catalogStatus").textContent=tr("connectionError")}
+return activities;
+}}
 function hidePanels(){["detailPanel","sessionPanel"].forEach(id=>$(id).classList.add("hidden"))}
+function clearClock(){if(clockId!==null){clearInterval(clockId);clockId=null}}
 function cancelSpeech(){
 voiceRunToken++;
-if("speechSynthesis"in window)speechSynthesis.cancel();
+if(voiceWatchdog){clearTimeout(voiceWatchdog);voiceWatchdog=null}
+if("speechSynthesis"in window){try{speechSynthesis.cancel()}catch(e){}}
 }
 function stopPromptSequence(){
 if(promptTimerId){clearTimeout(promptTimerId);promptTimerId=null}
-promptRunToken++;
-cancelSpeech();
+promptRunToken++;cancelSpeech();
 }
 function stopClock(){
-if(clockId){clearInterval(clockId);clockId=null}
-running=false;paused=false;stopPromptSequence();
-if(imageId){clearInterval(imageId);imageId=null}
+clearClock();running=false;paused=false;stopPromptSequence();
 $("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
 }
 function showHome(){
-if(running&&!confirm(tr("confirmAnother")))return;
-stopClock();hidePanels();
+if((running||paused)&&!confirm(tr("confirmAnother")))return;
+stopClock();sessionToken++;hidePanels();
 $("quickPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function backFromSession(){
-if(running&&!confirm(tr("backConfirm")))return;
-stopClock();sessionDone=false;paused=false;hidePanels();
+if((running||paused)&&!confirm(tr("backConfirm")))return;
+stopClock();sessionToken++;sessionDone=false;paused=false;hidePanels();
 if(lastSection&&["movement","calm","coach"].includes(lastSection))showSection(lastSection,true);
 else $("quickPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function sectionName(section){return CATEGORY_NAMES[section]?.[lang]||section}
 function showSection(section,keepScroll=false){
 if(!["movement","calm","coach"].includes(section))return;
-if(running&&!confirm(tr("confirmAnother")))return;
-stopClock();lastSection=section;detailSection=section;hidePanels();
-$("detailPanel").classList.remove("hidden");
-$("detailTitle").textContent=sectionName(section);
+if((running||paused)&&!confirm(tr("confirmAnother")))return;
+stopClock();sessionToken++;lastSection=section;detailSection=section;hidePanels();
+$("detailPanel").classList.remove("hidden");$("detailTitle").textContent=sectionName(section);
 $("detailDesc").textContent=tr(section==="movement"?"movementDesc":section==="calm"?"calmDesc":"coachDesc");
 renderActivities();
 if(!keepScroll)$("detailPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function renderActivities(){
-const section=detailSection,root=$("activityList");
+const root=$("activityList"),section=detailSection;
 const term=($("activitySearch")?.value||"").trim().toLocaleLowerCase();
-let list=activities.filter(a=>a.section===section);
-if(term)list=list.filter(a=>(a.title||"").toLocaleLowerCase().includes(term)||(a.description||"").toLocaleLowerCase().includes(term)||(a.id||"").toLocaleLowerCase().includes(term));
-root.innerHTML="";
-if(!list.length){
-const empty=document.createElement("div");empty.className="activityCard";
-const p=document.createElement("p");p.textContent=tr("empty");empty.append(p);root.append(empty);
-}else{
-for(const a of list){
+const list=activities.filter(a=>a.section===section&&(!term||`${a.title||""} ${a.description||""} ${a.id||""}`.toLocaleLowerCase().includes(term)));
+root.replaceChildren();
+if(!list.length){const card=document.createElement("div");card.className="activityCard";const p=document.createElement("p");p.textContent=activities.length?tr("empty"):tr("loadError");card.append(p);root.append(card)}
+else for(const a of list){
 const card=document.createElement("article");card.className="activityCard";
 const title=document.createElement("h3");title.textContent=a.title||tr("noTitle");
 const desc=document.createElement("p");desc.textContent=a.description||"";
-const btn=document.createElement("button");btn.className="primary";btn.type="button";btn.textContent=`${tr("choose")} · ${minutes} ${tr("min")}`;btn.addEventListener("click",()=>beginSession(a,minutes,null));
-card.append(title,desc,btn);root.append(card);
-}}
+const btn=document.createElement("button");btn.className="primary";btn.type="button";btn.textContent=`${tr("choose")} · ${minutes} ${tr("min")}`;
+btn.addEventListener("click",()=>beginSession(a,minutes,null));card.append(title,desc,btn);root.append(card);
+}
 $("catalogStatus").textContent=`${list.length} ${tr("catalogCount")}`;
 }
 function setDuration(n){
-if(running)return;
+if(running||paused)return;
 const value=Number(n);if(![3,5,10].includes(value))return;
 minutes=value;
 document.querySelectorAll("[data-min]").forEach(b=>b.setAttribute("aria-pressed",String(Number(b.dataset.min)===minutes)));
@@ -331,8 +323,8 @@ const t=normalizedPhrase(text);
 if(/\b(caminar|camina|caminando|pasos|marcha|walk|walking|step forward|march|caminhe|caminhar|passos|ande|andar)\b/.test(t))return"walk";
 if(/\b(hombros|hombro|shoulder|shoulders|ombros|ombro)\b/.test(t))return"shoulders";
 if(/\b(estira|estirar|estiramiento|estire|eleva los brazos|brazos arriba|stretch|stretching|raise your arms|arms up|alongue|alongamento|alongar|estique)\b/.test(t))return"stretch";
-if(/\b(escribe|escribir|escriba|anota|anotar|organiza|organizar|prioriza|priorizar|planifica|planificar|plan|write|writing|organize|organise|prioritize|prioritise|planning|planeje|escreva|anote|planejamento)\b/.test(t))return"coach";
-if(/\b(planta|plantas|hojas|hoja|flor|flores|tallo|leaf|leaves|flower|flowers|plant|folhas|planta|flores)\b/.test(t)||current?.section==="plants")return"plants";
+if(/\b(escribe|escribir|escriba|anota|anotar|organiza|organizar|prioriza|priorizar|planifica|planificar|write|writing|organize|organise|prioritize|prioritise|planning|planeje|escreva|anote|planejamento)\b/.test(t))return"coach";
+if(/\b(planta|plantas|hojas|hoja|flor|flores|tallo|leaf|leaves|flower|flowers|plant|folhas)\b/.test(t)||current?.section==="plants")return"plants";
 if(/\b(respira|respirar|respiracion|inhal|exhal|breath|breathe|breathing|inhale|exhale|respire|respiracao|inspire|expire|inspirar|expirar)\b/.test(t))return"breath";
 if(/\b(sientate|sentado|sentada|sentarse|sit comfortably|sit down|sitting|sente-se|sentar)\b/.test(t))return"calm";
 if(current?.section==="coach")return"coach";
@@ -341,7 +333,7 @@ if(current?.section==="plants")return"plants";
 return"calm";
 }
 function photoCategory(kind){
-if(kind==="walk"||kind==="stretch"||kind==="shoulders"||kind==="movement"||kind==="breath")return"movement";
+if(["walk","stretch","shoulders","movement","breath"].includes(kind))return"movement";
 if(kind==="coach")return"coach";
 if(kind==="plants")return"plants";
 return"calm";
@@ -350,38 +342,35 @@ function choosePhoto(kind){
 const category=photoCategory(kind),pool=PHOTO_BANK[category]||PHOTO_BANK.calm;
 let choices=pool.filter(p=>p.url!==lastPhotoURL);
 if(!choices.length)choices=pool;
-let item=choices[Math.floor(Math.random()*choices.length)];
-if(category===lastPhotoCategory&&pool.length>1&&item.url===lastPhotoURL)item=pool.find(p=>p.url!==lastPhotoURL)||item;
+const item=choices[Math.floor(Math.random()*choices.length)];
 lastPhotoURL=item.url;lastPhotoCategory=category;photoSequence++;
 return item;
 }
 function updateSessionPhoto(text,force=false){
 const img=$("sessionImage"),caption=$("imageCaption");
 if(!img||!caption)return;
-const phrase=String(text||"").trim(),kind=classifyExercise(phrase);
-const signature=`${kind}|${phrase}`;
+const phrase=String(text||"").trim(),kind=classifyExercise(phrase),signature=`${kind}|${phrase}`;
 if(!force&&signature===lastPhraseKey)return;
 lastPhraseKey=signature;
-const photo=choosePhoto(kind);
-img.style.opacity=".25";
-const token=photoSequence,preload=new Image();
-preload.onload=()=>{
+const photo=choosePhoto(kind),token=photoSequence;
+img.style.opacity=".35";
+const preload=new Image();
+const apply=()=>{
 if(token!==photoSequence)return;
-img.src=photo.url;
-img.alt=photo.alt[lang]||photo.alt.es;
-img.style.opacity="1";
-caption.textContent=photo.alt[lang]||photo.alt.es;
+img.src=photo.url;img.alt=photo.alt[lang]||photo.alt.es;
+img.style.opacity="1";caption.textContent=photo.alt[lang]||photo.alt.es;
 };
+preload.onload=apply;
 preload.onerror=()=>{
 if(token!==photoSequence)return;
-img.style.opacity="1";
-caption.textContent=tr("noImage");
+img.style.opacity="1";caption.textContent=tr("noImage");
 };
 preload.src=photo.url;
+if(preload.complete&&preload.naturalWidth>0)apply();
 }
 function beginSession(activity,n,day){
 if(!activity||typeof activity!=="object"){toast(tr("startError"));return}
-stopClock();
+stopClock();sessionToken++;
 minutes=[3,5,10].includes(Number(n))?Number(n):3;
 if(detailSection&&["movement","calm","coach"].includes(detailSection))lastSection=detailSection;
 current=activity;programMode=day!==null&&day!==undefined;
@@ -389,9 +378,8 @@ currentProgramDay=programMode?Number(day):currentProgramDay;
 seconds=minutes*60;totalSeconds=seconds;activeElapsed=0;sessionStart=null;lastTick=0;
 running=false;paused=false;sessionDone=false;sessionSaved=false;beforeRating=null;afterRating=null;voiceEnabled=true;phraseIndex=0;currentPhrase=null;
 lastPhraseKey="";lastPhotoURL="";lastPhotoCategory="";
-$("sessionTitle").textContent=activity.title||tr("noTitle");
-$("sessionDescription").textContent=activity.description||"";
-$("timer").textContent=formatTime(seconds);$("progressFill").style.width="0\%";$("progressTrack").setAttribute("aria-valuenow","0");
+$("sessionTitle").textContent=activity.title||tr("noTitle");$("sessionDescription").textContent=activity.description||"";
+$("timer").textContent=formatTime(seconds);$("progressFill").style.width="0%";$("progressTrack").setAttribute("aria-valuenow","0");
 $("finishBox").classList.add("hidden");$("startClock").classList.remove("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
 buildPhraseQueue();renderCurrentPhrase();renderRatings();hidePanels();$("sessionPanel").classList.remove("hidden");updateVoiceStatus();
 $("sessionPanel").scrollIntoView({behavior:"smooth",block:"start"});
@@ -404,13 +392,11 @@ return [tr("noSteps")];
 function splitPhrases(text){
 const cleaned=String(text||"").replace(/\s+/g," ").trim();
 if(!cleaned)return [];
-const parts=cleaned.match(/[^.!?。！？]+[.!?。！？]?/g);
-return (parts||[cleaned]).map(s=>s.trim()).filter(Boolean);
+return (cleaned.match(/[^.!?。！？]+[.!?。！？]?/g)||[cleaned]).map(s=>s.trim()).filter(Boolean);
 }
 function buildPhraseQueue(){
 phraseQueue=[];
-const steps=getSteps();
-steps.forEach((step,stepNo)=>{splitPhrases(step).forEach(text=>phraseQueue.push({text,stepNo}))});
+getSteps().forEach((step,stepNo)=>splitPhrases(step).forEach(text=>phraseQueue.push({text,stepNo})));
 if(!phraseQueue.length)phraseQueue=[{text:tr("noSteps"),stepNo:0}];
 phraseIndex=Math.max(0,Math.min(phraseIndex,phraseQueue.length-1));
 }
@@ -436,16 +422,27 @@ if(!("speechSynthesis"in window)){$("voiceStatus").textContent=tr("voiceUnavaila
 $("voiceStatus").textContent=voiceEnabled?tr("voiceReady"):tr("voiceOff");
 }
 function speakPhrase(text,token,onFinished){
-if(!voiceEnabled||!("speechSynthesis"in window)){onFinished();return}
-const speechToken=++voiceRunToken;
-const u=new SpeechSynthesisUtterance(String(text||""));
-u.lang=voiceLanguage();u.rate=.78;u.pitch=.96;u.volume=1;
-const voice=getPreferredVoice();if(voice)u.voice=voice;
+if(!voiceEnabled||!("speechSynthesis"in window)){if(typeof onFinished==="function")onFinished();return}
+cancelSpeech();
+const speechToken=voiceRunToken,sessionAtCall=sessionToken;
+const utterance=new SpeechSynthesisUtterance(String(text||""));
+utterance.lang=voiceLanguage();utterance.rate=.82;utterance.pitch=.96;utterance.volume=1;
+const voice=getPreferredVoice();if(voice)utterance.voice=voice;
 let completed=false;
-const done=()=>{if(completed)return;completed=true;if(speechToken!==voiceRunToken)return;if(typeof onFinished==="function")onFinished()};
-u.onstart=()=>{if(speechToken===voiceRunToken)$("voiceStatus").textContent=tr("voiceSpeaking")};
-u.onend=done;u.onerror=done;
-try{speechSynthesis.speak(u)}catch(e){done()}
+const done=()=>{
+if(completed)return;completed=true;
+if(voiceWatchdog){clearTimeout(voiceWatchdog);voiceWatchdog=null}
+if(speechToken!==voiceRunToken||sessionAtCall!==sessionToken)return;
+if(typeof onFinished==="function")onFinished();
+};
+utterance.onstart=()=>{if(speechToken===voiceRunToken&&sessionAtCall===sessionToken)$("voiceStatus").textContent=tr("voiceSpeaking")};
+utterance.onend=done;utterance.onerror=done;
+voiceWatchdog=setTimeout(()=>{
+if(speechToken!==voiceRunToken)return;
+try{speechSynthesis.cancel()}catch(e){}
+done();
+},Math.max(12000,String(text||"").length*180));
+try{speechSynthesis.speak(utterance)}catch(e){done()}
 }
 function startPromptSequence(){
 if(!current||!running||paused||sessionDone)return;
@@ -466,14 +463,11 @@ const advance=()=>{
 if(advanced||token!==promptRunToken||!running||paused||sessionDone)return;
 advanced=true;
 const elapsed=performance.now()-phraseStartedAt;
-const minimumDisplay=8500;
-const quietGap=2200;
-const delay=Math.max(0,minimumDisplay-elapsed)+quietGap;
+const delay=Math.max(0,Math.min(8500-elapsed,8500))+1600;
 promptTimerId=setTimeout(()=>{
 promptTimerId=null;
 if(token!==promptRunToken||!running||paused||sessionDone)return;
-phraseIndex++;
-if(phraseIndex>=phraseQueue.length)phraseIndex=0;
+phraseIndex=(phraseIndex+1)%phraseQueue.length;
 playCurrentPhrase(token);
 },delay);
 };
@@ -486,7 +480,7 @@ if(!("speechSynthesis"in window)){updateVoiceStatus();return}
 voiceEnabled=true;
 if(running&&!paused){stopPromptSequence();startPromptSequence();return}
 cancelSpeech();renderCurrentPhrase();
-speakPhrase(currentPhrase?.text||tr("noSteps"),voiceRunToken,updateVoiceStatus);
+speakPhrase(currentPhrase?.text||tr("noSteps"),promptRunToken,updateVoiceStatus);
 }
 function startClock(){
 if(sessionDone||running||!current)return;
@@ -495,9 +489,7 @@ if(!sessionStart)sessionStart=Date.now();
 lastTick=performance.now();
 $("startClock").classList.add("hidden");$("pauseClock").classList.remove("hidden");$("resumeClock").classList.add("hidden");
 $("voiceStatus").textContent=tr("sessionRunning");
-if(clockId)clearInterval(clockId);
-clockId=setInterval(tick,200);
-startPromptSequence();
+clearClock();clockId=setInterval(tick,200);startPromptSequence();
 }
 function tick(){
 if(!running||paused||sessionDone)return;
@@ -505,48 +497,40 @@ const now=performance.now(),delta=Math.max(0,(now-lastTick)/1000);
 lastTick=now;activeElapsed=Math.min(totalSeconds,activeElapsed+delta);seconds=Math.max(0,totalSeconds-activeElapsed);
 $("timer").textContent=formatTime(seconds);
 const pct=Math.min(100,activeElapsed/totalSeconds*100);
-$("progressFill").style.width=pct+"\%";$("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
+$("progressFill").style.width=pct+"%";$("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
 if(seconds<=0)finishSession();
 }
 function pauseClock(){
 if(!running)return;
 tick();if(sessionDone)return;
-running=false;paused=true;
-if(clockId){clearInterval(clockId);clockId=null}
-stopPromptSequence();
+running=false;paused=true;clearClock();stopPromptSequence();
 $("pauseClock").classList.add("hidden");$("resumeClock").classList.remove("hidden");$("voiceStatus").textContent=tr("sessionPaused");
 }
 function resumeClock(){
 if(!paused||sessionDone)return;
 paused=false;running=true;lastTick=performance.now();
 $("pauseClock").classList.remove("hidden");$("resumeClock").classList.add("hidden");
-if(clockId)clearInterval(clockId);
-clockId=setInterval(tick,200);
-startPromptSequence();
+clearClock();clockId=setInterval(tick,200);startPromptSequence();
 }
 function finishSession(){
 if(sessionDone)return;
-activeElapsed=totalSeconds;seconds=0;
-if(clockId){clearInterval(clockId);clockId=null}
-running=false;paused=false;stopPromptSequence();
-if(imageId){clearInterval(imageId);imageId=null}
-sessionDone=true;
-$("timer").textContent="00:00";$("progressFill").style.width="100\%";$("progressTrack").setAttribute("aria-valuenow","100");
+activeElapsed=totalSeconds;seconds=0;clearClock();running=false;paused=false;stopPromptSequence();sessionDone=true;
+$("timer").textContent="00:00";$("progressFill").style.width="100%";$("progressTrack").setAttribute("aria-valuenow","100");
 $("finishBox").classList.remove("hidden");$("startClock").classList.add("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
 $("voiceStatus").textContent=tr("sessionDone");
 if(programMode)markProgramDay(currentProgramDay);
 if(voiceEnabled&&"speechSynthesis"in window){
-const u=new SpeechSynthesisUtterance(tr("sessionDone"));u.lang=voiceLanguage();u.rate=.78;u.pitch=.96;
+const u=new SpeechSynthesisUtterance(tr("sessionDone"));u.lang=voiceLanguage();u.rate=.82;
 const voice=getPreferredVoice();if(voice)u.voice=voice;
 try{speechSynthesis.speak(u)}catch(e){}
 }}
 function resetSession(){
-stopClock();sessionDone=false;paused=false;current=null;hidePanels();
+stopClock();sessionToken++;sessionDone=false;paused=false;current=null;hidePanels();
 $("quickPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function renderRatings(){
 for(const [id,key] of [["beforeRatings","before"],["afterRatings","after"]]){
-const root=$(id);if(!root)continue;root.innerHTML="";
+const root=$(id);if(!root)continue;root.replaceChildren();
 for(let i=1;i<=5;i++){
 const label=document.createElement("label"),radio=document.createElement("input");
 radio.type="radio";radio.name=key+"Rating";radio.value=String(i);
@@ -580,16 +564,15 @@ const data=readProgress();
 $("statSessions").textContent=data.sessions.length;
 $("statMinutes").textContent=data.sessions.reduce((n,s)=>n+(Number(s.minutes)||0),0);
 $("statDays").textContent=`${data.programDays.length}/7`;
-$("historyList").innerHTML="";
-if(!data.sessions.length){$("historyList").textContent=tr("emptyHistory");return}
+const root=$("historyList");root.replaceChildren();
+if(!data.sessions.length){root.textContent=tr("emptyHistory");return}
 data.sessions.slice().reverse().slice(0,12).forEach(s=>{
 const row=document.createElement("div");row.className="historyItem";
 const left=document.createElement("div"),title=document.createElement("strong"),meta=document.createElement("div");
 title.textContent=s.activityTitle||tr("noTitle");meta.className="muted";
-let date="";
-try{date=new Date(s.completedAt).toLocaleString(({es:"es-US",en:"en-US",pt:"pt-BR"})[lang],{dateStyle:"medium",timeStyle:"short"})}catch(e){}
+let date="";try{date=new Date(s.completedAt).toLocaleString(({es:"es-US",en:"en-US",pt:"pt-BR"})[lang],{dateStyle:"medium",timeStyle:"short"})}catch(e){}
 meta.textContent=`${date} · ${s.minutes||0} ${tr("min")}`;
-left.append(title,meta);row.append(left);$("historyList").append(row);
+left.append(title,meta);row.append(left);root.append(row);
 });
 }
 function exportProgress(){
@@ -597,72 +580,65 @@ const data=readProgress(),payload={app:"WELLNESS COACH",company:"May Roga LLC",e
 const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"});
 const url=URL.createObjectURL(blob),a=document.createElement("a");
 a.href=url;a.download=`wellness-coach-progress-${new Date().toISOString().slice(0,10)}.json`;
-document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-toast(tr("exportDone"));
+document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast(tr("exportDone"));
 }
 function clearProgress(){
 if(!confirm(tr("clearConfirm")))return;
-localStorage.removeItem(KEY);renderProgress();renderProgramDays();toast(tr("historyDeleted"));
+try{localStorage.removeItem(KEY)}catch(e){toast(tr("notSaved"));return}
+renderProgress();renderProgramDays();toast(tr("historyDeleted"));
 }
 function renderProgramDays(){
 const root=$("programDays");if(!root)return;
-root.innerHTML="";const done=readProgress().programDays;
+root.replaceChildren();const done=readProgress().programDays;
 for(let d=1;d<=7;d++){
 const b=document.createElement("button");b.className="dayBtn";b.type="button";
 b.setAttribute("aria-pressed",String(d===currentProgramDay));
-b.innerHTML=`${tr("day")} ${d}<small>${done.includes(d)?tr("done"):tr("notDone")}</small>`;
-b.addEventListener("click",()=>loadProgram(d));root.append(b);
+const label=document.createTextNode(`${tr("day")} ${d}`);
+const small=document.createElement("small");small.textContent=done.includes(d)?tr("done"):tr("notDone");
+b.append(label,small);b.addEventListener("click",()=>loadProgram(d));root.append(b);
 }}
 async function loadProgram(day){
 currentProgramDay=Math.max(1,Math.min(7,Number(day)||1));renderProgramDays();
+const request=++programRequestToken;
+$("startProgram").disabled=true;
 try{
-programData=await fetchJSON(`/api/program?lang=${encodeURIComponent(lang)}&day=${currentProgramDay}`);
-const a=programData.activity||{};
-$("programDayLabel").textContent=`${tr("day")} ${currentProgramDay} · ${programData.minutes||3} ${tr("min")}`;
-$("programTitleText").textContent=programData.title||tr("noTitle");
-$("programDescriptionText").textContent=programData.goal||programData.description||"";
+const data=await fetchJSON(`/api/program?lang=${encodeURIComponent(lang)}&day=${currentProgramDay}`);
+if(request!==programRequestToken)return;
+programData=data;
+const a=data.activity||{};
+$("programDayLabel").textContent=`${tr("day")} ${currentProgramDay} · ${data.minutes||3} ${tr("min")}`;
+$("programTitleText").textContent=data.title||tr("noTitle");
+$("programDescriptionText").textContent=data.goal||data.description||"";
 $("programActivityText").textContent=a.title?`${a.title} — ${a.description||""}`:"";
 $("startProgram").disabled=!a.id;
 }catch(e){
-$("programTitleText").textContent=tr("noProgram");$("programDescriptionText").textContent=tr("loadError");
-$("programActivityText").textContent="";$("startProgram").disabled=true;
+if(request!==programRequestToken)return;
+programData=null;$("programTitleText").textContent=tr("noProgram");
+$("programDescriptionText").textContent=tr("loadError");$("programActivityText").textContent="";
+$("startProgram").disabled=true;
 }}
 function startProgram(){
 if(!programData?.activity)return;
-const a=activities.find(x=>x.id===programData.activity.id)||programData.activity;
+const a=activities.find(x=>String(x.id)===String(programData.activity.id))||programData.activity;
 beginSession(a,Number(programData.minutes)||3,currentProgramDay);
 }
 function boot(){
 document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.section)));
 document.querySelectorAll("[data-min]").forEach(b=>b.addEventListener("click",()=>setDuration(b.dataset.min)));
-$("langES").addEventListener("click",()=>setLang("es"));
-$("langEN").addEventListener("click",()=>setLang("en"));
-$("langPT").addEventListener("click",()=>setLang("pt"));
+$("langES").addEventListener("click",()=>setLang("es"));$("langEN").addEventListener("click",()=>setLang("en"));$("langPT").addEventListener("click",()=>setLang("pt"));
 $("goQuick").addEventListener("click",()=>$("quickPanel").scrollIntoView({behavior:"smooth",block:"start"}));
-$("startQuick").addEventListener("click",startQuick);
-$("backHome").addEventListener("click",showHome);
-$("backFromSession").addEventListener("click",backFromSession);
-$("startClock").addEventListener("click",startClock);
-$("pauseClock").addEventListener("click",pauseClock);
-$("resumeClock").addEventListener("click",resumeClock);
+$("startQuick").addEventListener("click",startQuick);$("backHome").addEventListener("click",showHome);$("backFromSession").addEventListener("click",backFromSession);
+$("startClock").addEventListener("click",startClock);$("pauseClock").addEventListener("click",pauseClock);$("resumeClock").addEventListener("click",resumeClock);
 $("repeatVoice").addEventListener("click",()=>{voiceEnabled=true;speakCurrent()});
 $("stopVoice").addEventListener("click",()=>{voiceEnabled=false;cancelSpeech();updateVoiceStatus()});
 $("restartSession").addEventListener("click",()=>{
 if(!current)return;
-if(running&&!confirm(tr("confirmAnother")))return;
-const a=current,n=minutes,d=programMode?currentProgramDay:null;
-beginSession(a,n,d);
+if((running||paused)&&!confirm(tr("confirmAnother")))return;
+const a=current,n=minutes,d=programMode?currentProgramDay:null;beginSession(a,n,d);
 });
-$("saveSession").addEventListener("click",saveSession);
-$("anotherSession").addEventListener("click",resetSession);
-$("exportProgress").addEventListener("click",exportProgress);
-$("clearProgress").addEventListener("click",clearProgress);
-$("startProgram").addEventListener("click",startProgram);
-window.addEventListener("beforeunload",()=>{
-if(clockId)clearInterval(clockId);
-if(imageId)clearInterval(imageId);
-stopPromptSequence();
-});
+$("saveSession").addEventListener("click",saveSession);$("anotherSession").addEventListener("click",resetSession);
+$("exportProgress").addEventListener("click",exportProgress);$("clearProgress").addEventListener("click",clearProgress);$("startProgram").addEventListener("click",startProgram);
+window.addEventListener("pagehide",()=>{clearClock();stopPromptSequence()});
 refreshVoiceList();
 if("speechSynthesis"in window)speechSynthesis.addEventListener("voiceschanged",refreshVoiceList);
 renderRatings();applyLanguage();renderProgress();renderProgramDays();
@@ -670,7 +646,7 @@ $("timer").textContent="03:00";
 loadActivities().then(()=>loadProgram(1));
 if(!("speechSynthesis"in window))updateVoiceStatus();
 }
-boot();
+try{boot()}catch(e){console.error("WELLNESS COACH boot error:",e);setStatus("No se pudo iniciar la interfaz. Recarga la página e inténtalo de nuevo.")}
 </script>
 </body>
 </html>
