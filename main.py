@@ -33,11 +33,11 @@ def activities(lang:str="es",section:str="all"):
     return JSONResponse({"language":lang,"activities":engine.get_activities(lang,section)})
 
 @app.get("/api/session")
-def session(lang:str="es",kind:str="pause",minutes:int=3):
+def session(lang:str="es",kind:str="pause",minutes:int=3,allow_repeat:bool=False):
     lang=lang if lang in ("es","en") else "es"
     kind=kind if kind in ("pause","energy","calm","nature","coach","program") else "pause"
-    return JSONResponse(engine.get_session(lang,kind,max(3,min(10,minutes))))
-
+    return JSONResponse(engine.get_session(lang,kind,max(3,min(10,minutes)),allow_repeat=allow_repeat))
+    
 @app.get("/api/plant/{plant_id}")
 def plant(plant_id:str,lang:str="es"):
     lang=lang if lang in ("es","en") else "es"
