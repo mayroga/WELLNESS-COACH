@@ -216,8 +216,8 @@ $("imageCaption").textContent=tr("imageLabel");
 $("langES").setAttribute("aria-pressed",String(lang==="es"));
 $("langEN").setAttribute("aria-pressed",String(lang==="en"));
 $("langPT").setAttribute("aria-pressed",String(lang==="pt"));
-if(current){$("sessionTitle").textContent=current.title||tr("noTitle");$("sessionDescription").textContent=current.description||""}
-if(detailSection){$("detailTitle").textContent=CATEGORY_NAMES[detailSection]?.[lang]||detailSection;$("detailDesc").textContent=tr(detailSection==="movement"?"movementDesc":detailSection==="calm"?"calmDesc":"coachDesc")}
+if(current){$("sessionTitle").textContent=current.title\vert{}\vert{}tr("noTitle");$("sessionDescription").textContent=current.description||""}
+if(detailSection){$("detailTitle").textContent=CATEGORY_NAMES[detailSection]?.[lang]\vert{}\vert{}detailSection;$("detailDesc").textContent=tr(detailSection==="movement"?"movementDesc":detailSection==="calm"?"calmDesc":"coachDesc")}
 renderProgramDays();renderRatings();renderProgress();
 if(currentPhrase)updateSessionPhoto(currentPhrase.text,true);
 }
@@ -400,7 +400,7 @@ running=false;paused=false;sessionDone=false;sessionSaved=false;beforeRating=nul
 lastPhraseKey="";lastPhotoURL="";lastPhotoCategory="";
 $("sessionTitle").textContent=activity.title||tr("noTitle");
 $("sessionDescription").textContent=activity.description||"";
-$("timer").textContent=formatTime(seconds);$("progressFill").style.width="0%";$("progressTrack").setAttribute("aria-valuenow","0");
+$("timer").textContent=formatTime(seconds);$("progressFill").style.width="0\%";$("progressTrack").setAttribute("aria-valuenow","0");
 $("finishBox").classList.add("hidden");$("startClock").classList.remove("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
 buildPhraseQueue();renderCurrentPhrase();renderRatings();hidePanels();$("sessionPanel").classList.remove("hidden");updateVoiceStatus();
 $("sessionPanel").scrollIntoView({behavior:"smooth",block:"start"});
@@ -514,7 +514,7 @@ const now=performance.now(),delta=Math.max(0,(now-lastTick)/1000);
 lastTick=now;activeElapsed=Math.min(totalSeconds,activeElapsed+delta);seconds=Math.max(0,totalSeconds-activeElapsed);
 $("timer").textContent=formatTime(seconds);
 const pct=Math.min(100,activeElapsed/totalSeconds*100);
-$("progressFill").style.width=pct+"%";$("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
+$("progressFill").style.width=pct+"\%";$("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
 if(seconds<=0)finishSession();
 }
 function pauseClock(){
@@ -540,7 +540,7 @@ if(clockId){clearInterval(clockId);clockId=null}
 running=false;paused=false;stopPromptSequence();
 if(imageId){clearInterval(imageId);imageId=null}
 sessionDone=true;
-$("timer").textContent="00:00";$("progressFill").style.width="100%";$("progressTrack").setAttribute("aria-valuenow","100");
+$("timer").textContent="00:00";$("progressFill").style.width="100\%";$("progressTrack").setAttribute("aria-valuenow","100");
 $("finishBox").classList.remove("hidden");$("startClock").classList.add("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
 $("voiceStatus").textContent=tr("sessionDone");
 if(programMode)markProgramDay(currentProgramDay);
