@@ -1,593 +1,237 @@
+
 <!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#123b37">
+<meta name="theme-color" content="#244b3b">
 <title>WELLNESS COACH | May Roga LLC</title>
-<meta name="description" content="Actividades sencillas de bienestar cotidiano, movimiento suave, atención y organización. Español, inglés y portugués.">
+<meta name="description" content="Actividades sencillas de bienestar cotidiano: movimiento suave, calma, atención y organización personal.">
 <style>
-:root{--bg:#f4f7f5;--card:#fff;--ink:#18332f;--muted:#5b706b;--brand:#176b5c;--brand2:#dcefe8;--line:#dce6e1;--warn:#fff4dd;--shadow:0 8px 28px #153d3210;--radius:20px}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #78b8a9;outline-offset:3px}
-button:disabled{opacity:.45;cursor:not-allowed}
-header{background:linear-gradient(135deg,#123b37,#1a6a5a);color:#fff;padding:20px max(18px,calc((100% - 1100px)/2))}
-.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{font-weight:850;letter-spacing:.04em;font-size:1.15rem}
-.brand small{display:block;font-size:.78rem;font-weight:500;opacity:.85;letter-spacing:0}
-.langs{display:flex;gap:6px}
-.lang-btn{border:1px solid #ffffff70;color:#fff;background:transparent;border-radius:999px;padding:8px 13px;font-weight:700}
-.lang-btn.active{background:#fff;color:#174b42}
-.hero{max-width:1100px;margin:0 auto;padding:28px 18px 20px}
-.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.12;margin:10px 0}
-.hero p{max-width:720px;color:var(--muted);font-size:1.05rem;margin:8px 0}
-main{max-width:1100px;margin:0 auto;padding:0 18px 50px}
-.section-title{font-size:1.35rem;margin:26px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);min-width:0}
-.category{display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;min-height:145px;border:1px solid var(--line);background:var(--card);border-radius:var(--radius);padding:18px;color:var(--ink);box-shadow:var(--shadow)}
-.category:hover{border-color:var(--brand)}
-.category .emoji{font-size:1.8rem;margin-bottom:6px}
-.category strong{font-size:1.05rem}
-.category span:last-child{font-size:.9rem;color:var(--muted);margin-top:5px}
-.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.row.between{justify-content:space-between}
-label{font-weight:650}
-select,input[type=number]{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;color:var(--ink);max-width:100%}
-.btn{border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);padding:11px 15px;font-weight:750}
-.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
-.btn.soft{background:var(--brand2);border-color:var(--brand2);color:#174b42}
-.btn.danger{border-color:#e5c8c4;color:#8c3026;background:#fff}
-.btn.small{padding:8px 11px;font-size:.9rem}
-.muted{color:var(--muted)}
-.small{font-size:.9rem}
-.activity-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
-.activity{border:1px solid var(--line);border-radius:15px;background:#fff;padding:15px;text-align:left;color:var(--ink);min-width:0}
-.activity:hover{border-color:var(--brand)}
-.activity strong{display:block;margin-bottom:5px}
-.activity p{font-size:.9rem;color:var(--muted);margin:0}
-.pill{display:inline-flex;background:var(--brand2);color:#174b42;border-radius:999px;padding:4px 9px;font-size:.78rem;font-weight:750}
-.session-card{margin-top:20px;overflow:hidden}
-.session-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
-.timer{font-size:1.7rem;font-weight:850;font-variant-numeric:tabular-nums}
-.progress{height:9px;background:#e7efeb;border-radius:999px;overflow:hidden;margin:14px 0}
-.progress>div{height:100%;width:0;background:var(--brand);transition:width .2s linear}
-.step-meta{font-size:.9rem;color:var(--muted);font-weight:700}
-.instruction{font-size:clamp(1.2rem,3vw,1.65rem);line-height:1.45;font-weight:750;min-height:100px;display:flex;align-items:center;padding:8px 0}
-.step-nav{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
-.voice-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.notice{background:var(--warn);border:1px solid #efdfba;border-radius:14px;padding:13px 15px;color:#5c4822;font-size:.92rem;margin-top:15px}
-.program-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-top:14px}
-.day-btn{border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 5px;text-align:center;color:var(--ink)}
-.day-btn.active{background:var(--brand2);border-color:var(--brand);font-weight:800}
-.day-btn.done{border-color:#76ae9b}
-.day-btn small{display:block;font-size:.75rem;color:var(--muted)}
-.day-detail{margin-top:14px;padding:16px;background:#f6faf8;border-radius:14px;border:1px solid var(--line)}
-.rating-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
-.rating-btn{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 8px;color:var(--ink)}
-.rating-btn.selected{background:var(--brand2);border-color:var(--brand);font-weight:800}
-footer{max-width:1100px;margin:0 auto;padding:0 18px 32px;color:var(--muted);font-size:.85rem}
-.hidden{display:none!important}
-hr{border:0;border-top:1px solid var(--line);margin:18px 0}
-.status{min-height:1.5em;color:var(--brand);font-size:.9rem}
-@media(max-width:650px){.grid,.activity-list{grid-template-columns:1fr}.category{min-height:auto}.program-days{grid-template-columns:repeat(4,minmax(0,1fr))}.rating-grid{grid-template-columns:1fr}.hero{padding-top:22px}.card{padding:15px}.instruction{min-height:120px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+:root{--green:#244b3b;--green2:#376b51;--mint:#e8f1e8;--cream:#faf8f1;--white:#fff;--ink:#24332b;--muted:#65746a;--line:#dce4d9;--gold:#e9c77a;--shadow:0 8px 28px #243b2c12}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d7ad48;outline-offset:3px}button:disabled{opacity:.45;cursor:not-allowed}.hidden{display:none!important}
+header{position:sticky;top:0;z-index:10;background:#faf8f1f2;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:850;color:var(--green);letter-spacing:.02em}.logo{width:42px;height:42px;border-radius:14px;background:var(--green);color:white;display:grid;place-items:center;font-size:23px}.navright{display:flex;align-items:center;gap:8px}
+.langbtn,.secondary,.duration{border:1px solid var(--line);background:white;color:var(--green);border-radius:11px;padding:9px 13px;font-weight:700}.langbtn[aria-pressed=true],.duration[aria-pressed=true]{background:var(--green);color:white;border-color:var(--green)}
+main{max-width:1180px;margin:auto;padding:24px 20px 50px}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:25px;align-items:center;background:var(--mint);border-radius:25px;overflow:hidden;margin-bottom:25px}.heroText{padding:32px}.eyebrow{font-size:.76rem;letter-spacing:.14em;font-weight:850;color:var(--green2);text-transform:uppercase}
+h1{font-size:clamp(2rem,5vw,3.45rem);line-height:1.06;letter-spacing:-.045em;color:var(--green);margin:12px 0}h2{font-size:1.5rem;line-height:1.2;margin:0 0 10px;color:var(--green)}h3{font-size:1.05rem;margin:0 0 6px}p{margin:8px 0}.muted{color:var(--muted)}
+.heroImage{height:100%;min-height:290px;position:relative;background:#c9d9c9}.heroImage img{width:100%;height:100%;min-height:290px;object-fit:cover;display:block}.heroImage:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#e8f1e800,#244b3b08);pointer-events:none}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 10px;background:#fff;color:var(--green);font-size:.8rem;font-weight:750}.panel,.card{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:21px;box-shadow:var(--shadow)}
+.sectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin:26px 0 13px}.sectionHead p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.category{padding:0;overflow:hidden;text-align:left;color:inherit;border:1px solid var(--line);background:white;border-radius:18px;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}.category:hover{transform:translateY(-2px);border-color:#a7bca9}.category img{width:100%;height:145px;object-fit:cover;display:block;background:var(--mint)}.categoryText{padding:15px}.categoryText p{font-size:.9rem;color:var(--muted);margin:5px 0 0}.categoryIcon{font-size:1.45rem}
+.quick{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:center}.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.primary{background:var(--green);color:white;border:1px solid var(--green);border-radius:12px;padding:11px 16px;font-weight:800}.primary:hover{background:var(--green2)}.secondary:hover,.langbtn:hover{border-color:var(--green2)}.duration{min-width:62px}
+.field{display:grid;gap:6px}.field label{font-size:.9rem;font-weight:750}select,input[type=number],input[type=search]{width:100%;border:1px solid var(--line);border-radius:10px;background:white;padding:10px;color:var(--ink)}
+.activityGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.activityCard{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff;display:flex;flex-direction:column;gap:8px;min-width:0}.activityCard p{font-size:.9rem;color:var(--muted);flex:1}.activityCard .primary{width:100%;margin-top:5px}
+.sessionTop{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.timer{font-size:clamp(2.4rem,7vw,4rem);font-weight:850;letter-spacing:-.04em;color:var(--green);font-variant-numeric:tabular-nums}
+.progressTrack{height:8px;background:#e8eee6;border-radius:99px;overflow:hidden;margin:12px 0}.progressFill{height:100%;width:0;background:var(--green2);transition:width .25s}.sessionLayout{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px;align-items:start;margin-top:18px}
+.sessionVisual{position:relative;overflow:hidden;border-radius:17px;background:var(--mint);aspect-ratio:4/3}.sessionVisual img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .35s}.imageCaption{position:absolute;bottom:10px;left:10px;background:#172b20b8;color:#fff;border-radius:9px;padding:5px 9px;font-size:.78rem}
+.stepBox{background:var(--mint);border-radius:17px;padding:22px;min-height:170px;display:flex;flex-direction:column;justify-content:center}.stepCount{font-size:.78rem;font-weight:850;color:var(--green2);text-transform:uppercase;letter-spacing:.1em}.stepText{font-size:clamp(1.15rem,2.5vw,1.55rem);line-height:1.4;font-weight:750;margin-top:9px}.voiceStatus{font-size:.83rem;color:var(--muted);margin-top:10px}
+.notice{border-left:4px solid var(--gold);background:#fff9e9;padding:12px 14px;border-radius:8px;color:#63552d;font-size:.9rem}.programDays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:16px 0}.dayBtn{border:1px solid var(--line);background:white;border-radius:13px;padding:12px 5px;color:var(--green);font-weight:800}.dayBtn[aria-pressed=true]{background:var(--green);color:white}.dayBtn small{display:block;font-weight:500;font-size:.75rem}.programCard{background:var(--mint);border-radius:16px;padding:18px}
+.progressStats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}.stat{background:var(--mint);padding:15px;border-radius:14px}.stat strong{display:block;color:var(--green);font-size:1.5rem}.historyItem{border-bottom:1px solid var(--line);padding:12px 0;display:flex;justify-content:space-between;gap:12px}.historyItem:last-child{border-bottom:0}.ratingRow{display:flex;gap:12px;flex-wrap:wrap}.ratingRow label{display:flex;align-items:center;gap:6px}
+footer{max-width:1180px;margin:auto;padding:0 20px 30px;color:var(--muted);font-size:.84rem}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:30;background:#1e382a;color:white;padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);max-width:90vw}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.activityGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.heroText{padding:25px 24px 8px}.heroImage,.heroImage img{min-height:220px;max-height:280px}.sessionLayout{grid-template-columns:1fr}.quick{grid-template-columns:1fr}}
+@media(max-width:520px){main{padding:16px 12px 35px}.nav{padding:10px 12px}.brand{font-size:.9rem}.logo{width:36px;height:36px}.panel,.card{padding:16px}.grid,.activityGrid{grid-template-columns:1fr 1fr;gap:9px}.category img{height:105px}.categoryText{padding:11px}.categoryText p{font-size:.82rem}.programDays{grid-template-columns:repeat(4,minmax(0,1fr))}.progressStats{grid-template-columns:1fr 1fr}.historyItem{font-size:.9rem}.heroText{padding:22px 18px 4px}.stepBox{padding:17px}}
+@media(max-width:360px){.grid,.activityGrid{grid-template-columns:1fr}.navright{gap:4px}.langbtn{padding:7px 9px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
-<header>
-<div class="top">
-<div class="brand">WELLNESS COACH <small>May Roga LLC</small></div>
-<div class="langs" role="group" aria-label="Language">
-<button class="lang-btn active" data-lang="es" aria-pressed="true">ES</button>
-<button class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
-<button class="lang-btn" data-lang="pt" aria-pressed="false">PT</button>
-</div>
-</div>
-</header>
-<section class="hero">
-<span class="pill" id="audiencePill">Bienestar cotidiano · 40+</span>
-<h1 id="heroTitle">Pequeños pasos para tu bienestar cotidiano</h1>
-<p id="heroIntro">Elige una actividad sencilla y hazla a tu propio ritmo. No necesitas experiencia ni hacerlo todo perfectamente.</p>
-<div class="row" style="margin-top:18px">
-<label for="durationSelect" id="durationLabel">Duración</label>
-<select id="durationSelect">
-<option value="3">3 min</option>
-<option value="5">5 min</option>
-<option value="10">10 min</option>
-</select>
-<button class="btn primary" id="randomBtn">Elegir una actividad</button>
-</div>
-</section>
+<header><div class="nav"><div class="brand"><div class="logo" aria-hidden="true">✦</div><span>WELLNESS COACH</span></div><div class="navright"><button class="langbtn" id="langES" aria-pressed="true" type="button">ES</button><button class="langbtn" id="langEN" aria-pressed="false" type="button">EN</button><button class="langbtn" id="langPT" aria-pressed="false" type="button">PT</button></div></div></header>
 <main>
-<section aria-labelledby="categoriesTitle">
-<h2 class="section-title" id="categoriesTitle">¿Qué te gustaría hacer?</h2>
-<div class="grid" id="categoryGrid">
-<button class="category" data-section="calm"><span class="emoji">🌿</span><strong>Calma y atención</strong><span>Pausas breves para volver al presente.</span></button>
-<button class="category" data-section="movement"><span class="emoji">🚶</span><strong>Movimiento suave</strong><span>Movimientos cotidianos adaptables.</span></button>
-<button class="category" data-section="focus"><span class="emoji">🧩</span><strong>Organización y enfoque</strong><span>Ordena una idea o da un pequeño paso.</span></button>
-<button class="category" data-section="routines"><span class="emoji">☀️</span><strong>Rutinas de bienestar</strong><span>Hábitos sencillos para el día a día.</span></button>
-</div>
+<section class="hero"><div class="heroText"><span class="pill" data-i="eyebrow">Un momento para ti</span><h1 data-i="heroTitle">Bienestar sencillo, a tu ritmo.</h1><p class="muted" data-i="heroDesc">Elige una actividad breve de movimiento suave, calma o planificación. No necesitas experiencia previa.</p><div class="btnrow"><button class="primary" id="goQuick" data-i="begin" type="button">Comenzar</button><span class="pill" data-i="minutesBadge">3, 5 o 10 minutos</span></div></div><div class="heroImage"><img id="heroImg" src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&q=85" alt="Espacio tranquilo" loading="eager"></div></section>
+<div class="sectionHead"><div><h2 data-i="chooseCategory">Elige lo que necesitas hoy</h2><p data-i="categoryDesc">Cuatro formas sencillas de hacer una pausa.</p></div></div>
+<section class="grid" id="categories">
+<button class="category" data-section="routine" type="button"><img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">☀️</span><h3 data-i="routineTitle">Rutinas cotidianas</h3><p data-i="routineDesc">Crear pequeños hábitos a tu ritmo.</p></div></button>
+<button class="category" data-section="movement" type="button"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">🧘</span><h3 data-i="movementTitle">Movimiento suave</h3><p data-i="movementDesc">Movimientos cotidianos y cómodos.</p></div></button>
+<button class="category" data-section="calm" type="button"><img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">🍃</span><h3 data-i="calmTitle">Calma y atención</h3><p data-i="calmDesc">Volver al momento presente.</p></div></button>
+<button class="category" data-section="coach" type="button"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=80" alt="" loading="lazy"><div class="categoryText"><span class="categoryIcon">📝</span><h3 data-i="coachTitle">Organización y planificación</h3><p data-i="coachDesc">Organizar un siguiente paso.</p></div></button>
 </section>
-
-<section id="activitiesSection" aria-labelledby="activitiesTitle">
-<div class="row between">
-<h2 class="section-title" id="activitiesTitle">Actividades</h2>
-<label class="small"><input type="checkbox" id="avoidRepeat" checked> <span id="avoidRepeatLabel">Evitar repetir actividades recientes</span></label>
-</div>
-<p class="muted" id="activitiesHint">Elige una categoría o selecciona una actividad de la lista.</p>
-<div class="activity-list" id="activityList"></div>
-<div class="status" id="activityStatus" role="status" aria-live="polite"></div>
-</section>
-
-<section class="card session-card hidden" id="sessionPanel" aria-labelledby="sessionTitle">
-<div class="session-head">
-<div>
-<span class="pill" id="sessionCategory">Actividad</span>
-<h2 id="sessionTitle" style="margin:8px 0">Tu actividad</h2>
-<p class="muted small" id="sessionDescription"></p>
-</div>
-<div>
-<div class="timer" id="timer" aria-live="off">03:00</div>
-<div class="step-meta" id="stepCounter">Paso 1 de 6</div>
-</div>
-</div>
-<div class="progress" role="progressbar" aria-label="Progreso de la actividad" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressOuter"><div id="progressBar"></div></div>
-<div class="step-meta" id="instructionLabel">Instrucción actual</div>
-<div class="instruction" id="instructionText" aria-live="polite">La instrucción aparecerá aquí.</div>
-<div class="step-nav">
-<button class="btn" id="previousBtn">← Anterior</button>
-<button class="btn primary" id="startPauseBtn">Comenzar</button>
-<button class="btn" id="nextBtn">Siguiente →</button>
-</div>
-<div class="voice-controls">
-<button class="btn soft" id="repeatVoiceBtn">🔊 Repetir instrucción</button>
-<button class="btn" id="stopVoiceBtn">■ Detener voz</button>
-<button class="btn" id="restartBtn">↻ Reiniciar</button>
-<button class="btn" id="anotherBtn">Elegir otra actividad</button>
-</div>
-<p class="muted small" id="voiceStatus" role="status" aria-live="polite"></p>
-<div class="notice" id="safetyNotice">Adapta los movimientos a tu comodidad. Detente si sientes dolor, mareo, falta de aire o cualquier malestar.</div>
-<div class="hidden" id="completionPanel">
-<hr>
-<h3 id="completeTitle">Actividad completada</h3>
-<p id="completeMessage"></p>
-<div class="small" id="ratingQuestion">¿Cómo te resultó esta actividad?</div>
-<div class="rating-grid" id="ratingGrid">
-<button class="rating-btn" data-rating="1">Necesito algo más sencillo</button>
-<button class="rating-btn" data-rating="2">Me resultó adecuada</button>
-<button class="rating-btn" data-rating="3">Me sentí muy bien</button>
-</div>
-<div class="status" id="ratingStatus" role="status"></div>
-</div>
-</section>
-
-<section class="card" style="margin-top:22px" aria-labelledby="programTitle">
-<div class="row between">
-<div>
-<h2 id="programTitle" style="margin:0 0 5px">Programa de 7 días</h2>
-<p class="muted small" id="programIntro">Un pequeño paso al día. Puedes adaptar o repetir cualquier actividad.</p>
-</div>
-<span class="pill" id="weekProgress">0/7</span>
-</div>
-<div class="program-days" id="programDays"></div>
-<div class="day-detail" id="dayDetail">
-<strong id="dayTitle">Día 1</strong>
-<p id="dayDescription" class="muted">Selecciona un día para ver su actividad.</p>
-<button class="btn primary" id="startDayBtn">Comenzar actividad del día</button>
-</div>
-</section>
-
-<section class="card" style="margin-top:22px" aria-labelledby="progressTitle">
-<h2 id="progressTitle" style="margin-top:0">Tu progreso en este dispositivo</h2>
-<p class="muted small" id="progressIntro">Las actividades completadas y tus valoraciones se guardan localmente en este navegador. No se necesita una cuenta.</p>
-<div class="row">
-<span class="pill" id="completedCount">Completadas: 0</span>
-<span class="pill" id="ratingCount">Valoraciones: 0</span>
-</div>
-<div class="row" style="margin-top:15px">
-<button class="btn" id="exportBtn">Exportar mis datos</button>
-<button class="btn danger" id="deleteBtn">Borrar mis datos locales</button>
-</div>
-<p class="status" id="dataStatus" role="status" aria-live="polite"></p>
-</section>
+<div class="sectionHead"><div><h2 data-i="quickTitle">Sesión rápida</h2><p data-i="quickDesc">Elige la duración y empieza cuando estés preparado.</p></div></div>
+<section class="panel quick" id="quickPanel"><div><strong data-i="durationLabel">Duración</strong><div class="btnrow" id="durationButtons"><button class="duration" data-min="3" aria-pressed="true" type="button">3 min</button><button class="duration" data-min="5" aria-pressed="false" type="button">5 min</button><button class="duration" data-min="10" aria-pressed="false" type="button">10 min</button></div></div><div><div class="field"><label for="quickKind" data-i="activityType">Tipo de actividad</label><select id="quickKind"><option value="calm" data-i="optCalm">Calma y atención</option><option value="movement" data-i="optMovement">Movimiento suave</option><option value="coach" data-i="optRoutine">Rutinas cotidianas</option><option value="coach" data-i="optCoach">Organización y planificación</option></select></div><div class="btnrow"><button class="primary" id="startQuick" data-i="startSession" type="button">Iniciar sesión</button></div></div></section>
+<section class="panel hidden" id="detailPanel" style="margin-top:22px"><div class="sectionHead" style="margin-top:0"><div><h2 id="detailTitle"></h2><p id="detailDesc"></p></div><button class="secondary" id="backHome" data-i="backHome" type="button">Volver al inicio</button></div><div class="activityGrid" id="activityList"></div><p class="muted" id="catalogStatus" role="status"></p></section>
+<section class="panel hidden" id="sessionPanel" style="margin-top:22px"><div class="sessionTop"><div><span class="eyebrow" data-i="yourSession">Tu sesión</span><h2 id="sessionTitle">Actividad</h2><p class="muted" id="sessionDescription"></p><button class="secondary" id="backFromSession" data-i="backCatalog" type="button">Volver al catálogo</button></div><div class="timer" id="timer" aria-live="off">03:00</div></div>
+<div class="progressTrack" role="progressbar" aria-label="Progreso de la sesión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="progressFill" id="progressFill"></div></div>
+<div class="sessionLayout"><div><div class="sessionVisual"><img id="sessionImage" src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=900&q=80" alt="Imagen de bienestar"><span class="imageCaption" id="imageCaption">WELLNESS COACH</span></div><p class="muted" data-i="imageHint">La imagen cambia cada 10 segundos durante la sesión.</p></div><div><div class="stepBox"><div class="stepCount" id="stepCount">Paso 1</div><div class="stepText" id="stepText">Prepárate para comenzar.</div></div><div class="voiceStatus" id="voiceStatus" role="status" aria-live="polite"></div><div class="btnrow"><button class="primary" id="startClock" data-i="start" type="button">Comenzar</button><button class="secondary hidden" id="pauseClock" data-i="pause" type="button">Pausar</button><button class="secondary hidden" id="resumeClock" data-i="resume" type="button">Continuar</button><button class="secondary" id="repeatVoice" data-i="repeat" type="button">Repetir voz</button><button class="secondary" id="stopVoice" data-i="mute" type="button">Detener voz</button><button class="secondary" id="restartSession" data-i="restart" type="button">Reiniciar</button></div></div></div>
+<div class="notice" style="margin-top:18px" data-i="safety">Haz solo lo que te resulte cómodo. Detente si aparece dolor, mareo o malestar. Esta aplicación ofrece actividades generales y no sustituye atención profesional.</div>
+<div id="finishBox" class="hidden" style="margin-top:20px"><h2 data-i="finishTitle">Has terminado esta sesión.</h2><p data-i="finishDesc">Puedes guardar tu actividad o elegir otra.</p><div class="panel" style="box-shadow:none;margin-top:12px"><strong data-i="beforeLabel">¿Cómo te sentías antes? (opcional)</strong><div class="ratingRow" id="beforeRatings"></div><strong style="display:block;margin-top:14px" data-i="afterLabel">¿Cómo te sientes ahora? (opcional)</strong><div class="ratingRow" id="afterRatings"></div><div class="btnrow"><button class="primary" id="saveSession" data-i="save" type="button">Guardar en este dispositivo</button><button class="secondary" id="anotherSession" data-i="another" type="button">Elegir otra actividad</button></div></div></div></section>
+<div class="sectionHead"><div><h2 data-i="programTitle">Tu programa de 7 días</h2><p data-i="programDesc">Un plan flexible para probar actividades diferentes.</p></div></div>
+<section class="panel" id="programPanel"><div class="programDays" id="programDays"></div><div class="programCard"><span class="pill" id="programDayLabel">Día 1</span><h3 id="programTitleText">Comenzar con calma</h3><p id="programDescriptionText"></p><p class="muted" id="programActivityText"></p><div class="btnrow"><button class="primary" id="startProgram" data-i="startDay" type="button">Iniciar este día</button></div></div></section>
+<div class="sectionHead"><div><h2 data-i="progressTitle">Tu progreso</h2><p data-i="progressDesc">El historial se guarda solo en este navegador.</p></div></div>
+<section class="panel" id="progressPanel"><div class="progressStats"><div class="stat"><span data-i="statSessions">Sesiones guardadas</span><strong id="statSessions">0</strong></div><div class="stat"><span data-i="statMinutes">Minutos completados</span><strong id="statMinutes">0</strong></div><div class="stat"><span data-i="statDays">Días del programa</span><strong id="statDays">0/7</strong></div></div><div class="btnrow"><button class="secondary" id="exportProgress" data-i="export" type="button">Exportar datos JSON</button><button class="secondary" id="clearProgress" data-i="clear" type="button">Borrar historial</button></div><div id="historyList" style="margin-top:15px"></div></section>
+<p class="muted" id="appStatus" role="status" style="margin-top:15px"></p>
 </main>
-<footer>
-<p id="footerSafety">WELLNESS COACH ofrece actividades generales de bienestar. No diagnostica, trata ni sustituye la atención de un profesional. Adapta cada actividad a tus posibilidades y detente si notas molestias.</p>
-<p>© <span id="year"></span> May Roga LLC</p>
-</footer>
+<footer><p>WELLNESS COACH · May Roga LLC</p><p data-i="footerNote">Información general de bienestar cotidiano. No es un servicio médico ni ofrece diagnósticos o tratamientos.</p></footer><div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 <script>
 "use strict";
-const $=id=>document.getElementById(id);
-const API="";
-const STORE_KEY="wellness_coach_progress_v5";
-const LANGS=["es","en","pt"];
-const SECTION_KEYS=["calm","movement","focus","routines"];
+const $=id=>document.getElementById(id),KEY="wellness_coach_progress_v4",LANGS=["es","en","pt"];
 const TEXT={
-es:{
-audience:"Bienestar cotidiano · 40+",hero:"Pequeños pasos para tu bienestar cotidiano",intro:"Elige una actividad sencilla y hazla a tu propio ritmo. No necesitas experiencia ni hacerlo todo perfectamente.",duration:"Duración",random:"Elegir una actividad",categories:"¿Qué te gustaría hacer?",activities:"Actividades",avoid:"Evitar repetir actividades recientes",hint:"Elige una categoría o selecciona una actividad de la lista.",calm:"Calma y atención",movement:"Movimiento suave",focus:"Organización y enfoque",routines:"Rutinas de bienestar",calmDesc:"Pausas breves para volver al presente.",movementDesc:"Movimientos cotidianos adaptables.",focusDesc:"Ordena una idea o da un pequeño paso.",routinesDesc:"Hábitos sencillos para el día a día.",choose:"Elige una actividad",min:"min",step:"Paso",of:"de",instruction:"Instrucción actual",start:"Comenzar",pause:"Pausar",resume:"Reanudar",previous:"← Anterior",next:"Siguiente →",repeatVoice:"🔊 Repetir instrucción",stopVoice:"■ Detener voz",restart:"↻ Reiniciar",another:"Elegir otra actividad",safety:"Adapta los movimientos a tu comodidad. Detente si sientes dolor, mareo, falta de aire o cualquier malestar. Esta aplicación ofrece orientación general de bienestar, no atención médica.",completed:"Actividad completada",finish:"Has completado esta actividad. Gracias por dedicarte este momento.",ratingQ:"¿Cómo te resultó esta actividad?",rating1:"Necesito algo más sencillo",rating2:"Me resultó adecuada",rating3:"Me sentí muy bien",ratingSaved:"Valoración guardada.",program:"Programa de 7 días",programIntro:"Un pequeño paso al día. Puedes adaptar o repetir cualquier actividad.",day:"Día",startDay:"Comenzar actividad del día",chooseDay:"Selecciona un día para ver su actividad.",weekDone:"Semana completada",progress:"Tu progreso en este dispositivo",progressIntro:"Las actividades completadas y tus valoraciones se guardan localmente en este navegador. No se necesita una cuenta.",completedCount:"Completadas",ratings:"Valoraciones",export:"Exportar mis datos",delete:"Borrar mis datos locales",exported:"Archivo preparado para exportar.",deleted:"Se han borrado los datos locales de esta aplicación.",confirmDelete:"¿Quieres borrar el progreso, el historial y las valoraciones guardadas en este navegador? Esta acción no se puede deshacer.",noActivities:"No se pudieron cargar las actividades. Comprueba la conexión e inténtalo de nuevo.",loading:"Cargando actividades…",error:"No se pudo completar la solicitud. Inténtalo de nuevo.",noVoice:"La lectura por voz no está disponible en este navegador.",voiceOn:"Leyendo la instrucción actual.",voiceOff:"Voz detenida.",voicePaused:"Actividad pausada.",finished:"¡Muy bien! Has terminado esta sesión.",beforeUnload:"La actividad está en marcha. ¿Quieres salir?",activity:"Actividad",durationLabel:"Duración",footer:"WELLNESS COACH ofrece actividades generales de bienestar. No diagnostica, trata ni sustituye la atención de un profesional. Adapta cada actividad a tus posibilidades y detente si notas molestias.",sessionDescription:"Sigue cada paso a tu propio ritmo.",dayLoaded:"Actividad del día cargada.",noHistory:"Todavía no has completado actividades.",sessionStarted:"Actividad en marcha.",sessionReset:"Actividad reiniciada.",selected:"Actividad seleccionada.",speakHint:"La voz lee la misma instrucción que aparece en pantalla.",programDone:"Has llegado al final del programa semanal. Puedes repetirlo o elegir otra actividad.",categoryNames:{calm:"Calma y atención",movement:"Movimiento suave",focus:"Organización y enfoque",routines:"Rutinas de bienestar"}
-},
-en:{
-audience:"Everyday well-being · 40+",hero:"Small steps for everyday well-being",intro:"Choose a simple activity and go at your own pace. No experience or perfection is required.",duration:"Duration",random:"Choose an activity",categories:"What would you like to do?",activities:"Activities",avoid:"Avoid repeating recent activities",hint:"Choose a category or select an activity from the list.",calm:"Calm and attention",movement:"Gentle movement",focus:"Organization and focus",routines:"Everyday wellness routines",calmDesc:"Short pauses to return to the present.",movementDesc:"Adaptable everyday movements.",focusDesc:"Organize one thought or take one small step.",routinesDesc:"Simple habits for everyday life.",choose:"Choose an activity",min:"min",step:"Step",of:"of",instruction:"Current instruction",start:"Start",pause:"Pause",resume:"Resume",previous:"← Previous",next:"Next →",repeatVoice:"🔊 Repeat instruction",stopVoice:"■ Stop voice",restart:"↻ Restart",another:"Choose another activity",safety:"Adapt movements to your comfort. Stop if you feel pain, dizziness, shortness of breath, or any discomfort. This app provides general wellness guidance, not medical care.",completed:"Activity completed",finish:"You have completed this activity. Thank you for taking this moment for yourself.",ratingQ:"How did this activity feel?",rating1:"I need something simpler",rating2:"It felt suitable",rating3:"I felt very good",ratingSaved:"Rating saved.",program:"7-day program",programIntro:"One small step a day. You can adapt or repeat any activity.",day:"Day",startDay:"Start today's activity",chooseDay:"Choose a day to see its activity.",weekDone:"Week completed",progress:"Your progress on this device",progressIntro:"Completed activities and ratings are saved locally in this browser. No account is needed.",completedCount:"Completed",ratings:"Ratings",export:"Export my data",delete:"Delete my local data",exported:"Export file prepared.",deleted:"This app's local data has been deleted.",confirmDelete:"Delete progress, history, and ratings saved in this browser? This cannot be undone.",noActivities:"Activities could not be loaded. Check your connection and try again.",loading:"Loading activities…",error:"The request could not be completed. Please try again.",noVoice:"Speech is not available in this browser.",voiceOn:"Reading the current instruction.",voiceOff:"Voice stopped.",voicePaused:"Activity paused.",finished:"Well done! You have finished this session.",beforeUnload:"Your activity is in progress. Do you want to leave?",activity:"Activity",durationLabel:"Duration",footer:"WELLNESS COACH offers general wellness activities. It does not diagnose, treat, or replace professional care. Adapt every activity to your abilities and stop if you feel discomfort.",sessionDescription:"Follow each step at your own pace.",dayLoaded:"Daily activity loaded.",noHistory:"You have not completed any activities yet.",sessionStarted:"Activity in progress.",sessionReset:"Activity restarted.",selected:"Activity selected.",speakHint:"Speech reads the same instruction shown on screen.",programDone:"You have reached the end of the weekly program. You can repeat it or choose another activity.",categoryNames:{calm:"Calm and attention",movement:"Gentle movement",focus:"Organization and focus",routines:"Everyday wellness routines"}
-},
-pt:{
-audience:"Bem-estar diário · 40+",hero:"Pequenos passos para o bem-estar diário",intro:"Escolha uma atividade simples e faça no seu ritmo. Você não precisa ter experiência nem fazer tudo perfeitamente.",duration:"Duração",random:"Escolher uma atividade",categories:"O que você gostaria de fazer?",activities:"Atividades",avoid:"Evitar repetir atividades recentes",hint:"Escolha uma categoria ou selecione uma atividade da lista.",calm:"Calma e atenção",movement:"Movimento suave",focus:"Organização e foco",routines:"Rotinas de bem-estar",calmDesc:"Pausas curtas para voltar ao presente.",movementDesc:"Movimentos cotidianos adaptáveis.",focusDesc:"Organize uma ideia ou dê um pequeno passo.",routinesDesc:"Hábitos simples para o dia a dia.",choose:"Escolha uma atividade",min:"min",step:"Etapa",of:"de",instruction:"Instrução atual",start:"Começar",pause:"Pausar",resume:"Retomar",previous:"← Anterior",next:"Próxima →",repeatVoice:"🔊 Repetir instrução",stopVoice:"■ Parar voz",restart:"↻ Reiniciar",another:"Escolher outra atividade",safety:"Adapte os movimentos ao seu conforto. Pare se sentir dor, tontura, falta de ar ou qualquer desconforto. Este aplicativo oferece orientações gerais de bem-estar, não atendimento médico.",completed:"Atividade concluída",finish:"Você concluiu esta atividade. Obrigado por reservar este momento para si.",ratingQ:"Como foi esta atividade para você?",rating1:"Preciso de algo mais simples",rating2:"Foi adequada para mim",rating3:"Senti-me muito bem",ratingSaved:"Avaliação salva.",program:"Programa de 7 dias",programIntro:"Um pequeno passo por dia. Você pode adaptar ou repetir qualquer atividade.",day:"Dia",startDay:"Começar a atividade do dia",chooseDay:"Escolha um dia para ver sua atividade.",weekDone:"Semana concluída",progress:"Seu progresso neste dispositivo",progressIntro:"As atividades concluídas e suas avaliações são salvas localmente neste navegador. Não é necessário ter uma conta.",completedCount:"Concluídas",ratings:"Avaliações",export:"Exportar meus dados",delete:"Apagar meus dados locais",exported:"Arquivo preparado para exportação.",deleted:"Os dados locais deste aplicativo foram apagados.",confirmDelete:"Apagar o progresso, o histórico e as avaliações salvas neste navegador? Esta ação não pode ser desfeita.",noActivities:"Não foi possível carregar as atividades. Verifique sua conexão e tente novamente.",loading:"Carregando atividades…",error:"Não foi possível concluir a solicitação. Tente novamente.",noVoice:"A leitura por voz não está disponível neste navegador.",voiceOn:"Lendo a instrução atual.",voiceOff:"Voz interrompida.",voicePaused:"Atividade pausada.",finished:"Muito bem! Você terminou esta sessão.",beforeUnload:"Sua atividade está em andamento. Deseja sair?",activity:"Atividade",durationLabel:"Duração",footer:"WELLNESS COACH oferece atividades gerais de bem-estar. Não faz diagnósticos, não trata doenças e não substitui o atendimento profissional. Adapte cada atividade às suas possibilidades e pare se sentir desconforto.",sessionDescription:"Siga cada etapa no seu próprio ritmo.",dayLoaded:"Atividade do dia carregada.",noHistory:"Você ainda não concluiu atividades.",sessionStarted:"Atividade em andamento.",sessionReset:"Atividade reiniciada.",selected:"Atividade selecionada.",speakHint:"A voz lê a mesma instrução exibida na tela.",programDone:"Você chegou ao fim do programa semanal. Pode repeti-lo ou escolher outra atividade.",categoryNames:{calm:"Calma e atenção",movement:"Movimento suave",focus:"Organização e foco",routines:"Rotinas de bem-estar"}
-}};
-let lang="es",activities=[],activeSection="all",currentActivity=null,currentDay=1,programDays=[],stepIndex=0,remaining=180,elapsed=0,timerId=null,running=false,completed=false,sessionStarted=false,selectedRating=null,voiceEnabled=true,utteranceToken=0,sessionStartedAt=null;
-let store=loadStore();
-function loadStore(){
- try{
-  const v=JSON.parse(localStorage.getItem(STORE_KEY)||"{}");
-  return {completed:Array.isArray(v.completed)?v.completed:[],ratings:Array.isArray(v.ratings)?v.ratings:[],recent:Array.isArray(v.recent)?v.recent:[],program:Array.isArray(v.program)?v.program:[],updatedAt:v.updatedAt||null};
- }catch(e){return {completed:[],ratings:[],recent:[],program:[],updatedAt:null}}
+es:{eyebrow:"Un momento para ti",heroTitle:"Bienestar sencillo, a tu ritmo.",heroDesc:"Elige una actividad breve de movimiento suave, calma o planificación. No necesitas experiencia previa.",begin:"Comenzar",minutesBadge:"3, 5 o 10 minutos",chooseCategory:"Elige lo que necesitas hoy",categoryDesc:"Cuatro formas sencillas de hacer una pausa.",routineTitle:"Rutinas cotidianas",routineDesc:"Crear pequeños hábitos a tu ritmo.",movementTitle:"Movimiento suave",movementDesc:"Movimientos cotidianos y cómodos.",calmTitle:"Calma y atención",calmDesc:"Volver al momento presente.",coachTitle:"Organización y planificación",coachDesc:"Organizar un siguiente paso.",quickTitle:"Sesión rápida",quickDesc:"Elige la duración y empieza cuando estés preparado.",durationLabel:"Duración",activityType:"Tipo de actividad",optCalm:"Calma y atención",optMovement:"Movimiento suave",optRoutine:"Rutinas cotidianas",optCoach:"Organización y planificación",startSession:"Iniciar sesión",choose:"Elegir",backHome:"Volver al inicio",backCatalog:"Volver al catálogo",yourSession:"Tu sesión",imageHint:"La imagen cambia cada 10 segundos durante la sesión.",start:"Comenzar",pause:"Pausar",resume:"Continuar",repeat:"Repetir voz",mute:"Detener voz",restart:"Reiniciar",safety:"Haz solo lo que te resulte cómodo. Detente si aparece dolor, mareo o malestar. Esta aplicación ofrece actividades generales y no sustituye atención profesional.",finishTitle:"Has terminado esta sesión.",finishDesc:"Puedes guardar tu actividad o elegir otra.",beforeLabel:"¿Cómo te sentías antes? (opcional)",afterLabel:"¿Cómo te sientes ahora? (opcional)",save:"Guardar en este dispositivo",another:"Elegir otra actividad",programTitle:"Tu programa de 7 días",programDesc:"Un plan flexible para probar actividades diferentes.",startDay:"Iniciar este día",progressTitle:"Tu progreso",progressDesc:"El historial se guarda solo en este navegador.",statSessions:"Sesiones guardadas",statMinutes:"Minutos completados",statDays:"Días del programa",export:"Exportar datos JSON",clear:"Borrar historial",footerNote:"Información general de bienestar cotidiano. No es un servicio médico ni ofrece diagnósticos o tratamientos.",loadError:"No se pudo conectar con el catálogo. Comprueba que main.py y wellness_engine.py estén desplegados.",empty:"No se encontraron actividades.",min:"min",step:"Paso",of:"de",voiceReady:"Voz disponible.",voiceUnavailable:"La voz no está disponible en este navegador; puedes leer las instrucciones.",voiceOff:"Voz detenida.",voiceSpeaking:"Leyendo la instrucción.",sessionDone:"Sesión completada.",sessionPaused:"Sesión pausada.",sessionRunning:"Sesión en curso.",saved:"Sesión guardada en este dispositivo.",savedAlready:"Esta sesión ya se guardó.",clearConfirm:"¿Borrar todo el historial local de WELLNESS COACH?",emptyHistory:"Todavía no hay sesiones guardadas.",day:"Día",done:"Completado",notDone:"Pendiente",startError:"No se pudo iniciar la actividad. Inténtalo de nuevo.",rating1:"Muy bajo",rating2:"Bajo",rating3:"Normal",rating4:"Bien",rating5:"Muy bien",noImage:"Imagen no disponible",imageLabel:"Bienestar · atención plena",noSteps:"Esta actividad no contiene instrucciones.",noProgram:"No se pudo cargar el programa.",noTitle:"Actividad de bienestar",confirmAnother:"¿Salir de la sesión actual?",backConfirm:"¿Salir de esta sesión? El tiempo transcurrido no se guardará.",historyDeleted:"Historial borrado.",catalogCount:"actividades",notSaved:"No se pudo guardar el historial en este dispositivo."},
+en:{eyebrow:"A moment for you",heroTitle:"Simple wellbeing, at your pace.",heroDesc:"Choose a short activity in gentle movement, calm or planning. No previous experience needed.",begin:"Get started",minutesBadge:"3, 5 or 10 minutes",chooseCategory:"Choose what you need today",categoryDesc:"Four simple ways to take a pause.",routineTitle:"Everyday routines",routineDesc:"Build small habits at your own pace.",movementTitle:"Gentle movement",movementDesc:"Comfortable everyday movement.",calmTitle:"Calm and attention",calmDesc:"Return to the present moment.",coachTitle:"Organization and planning",coachDesc:"Organize one next step.",quickTitle:"Quick session",quickDesc:"Choose a duration and begin when ready.",durationLabel:"Duration",activityType:"Activity type",optCalm:"Calm and attention",optMovement:"Gentle movement",optRoutine:"Everyday routines",optCoach:"Organization and planning",startSession:"Start session",choose:"Choose",backHome:"Back to home",backCatalog:"Back to catalog",yourSession:"Your session",imageHint:"The image changes every 10 seconds during the session.",start:"Start",pause:"Pause",resume:"Resume",repeat:"Repeat voice",mute:"Stop voice",restart:"Restart",safety:"Only do what feels comfortable. Stop if pain, dizziness or discomfort occurs. This app offers general activities and does not replace professional care.",finishTitle:"You have finished this session.",finishDesc:"Save your activity or choose another.",beforeLabel:"How did you feel before? (optional)",afterLabel:"How do you feel now? (optional)",save:"Save on this device",another:"Choose another activity",programTitle:"Your 7-day program",programDesc:"A flexible plan to try different activities.",startDay:"Start this day",progressTitle:"Your progress",progressDesc:"Your history is stored only in this browser.",statSessions:"Saved sessions",statMinutes:"Minutes completed",statDays:"Program days",export:"Export JSON data",clear:"Delete history",footerNote:"General everyday wellbeing information. This is not a medical service and does not provide diagnosis or treatment.",loadError:"Could not connect to the activity catalog. Check that main.py and wellness_engine.py are deployed.",empty:"No activities found.",min:"min",step:"Step",of:"of",voiceReady:"Voice available.",voiceUnavailable:"Voice is not available in this browser; you can read the instructions.",voiceOff:"Voice stopped.",voiceSpeaking:"Reading the instruction.",sessionDone:"Session completed.",sessionPaused:"Session paused.",sessionRunning:"Session in progress.",saved:"Session saved on this device.",savedAlready:"This session has already been saved.",clearConfirm:"Delete all local WELLNESS COACH history?",emptyHistory:"No saved sessions yet.",day:"Day",done:"Completed",notDone:"Pending",startError:"Could not start the activity. Please try again.",rating1:"Very low",rating2:"Low",rating3:"Okay",rating4:"Good",rating5:"Very good",noImage:"Image unavailable",imageLabel:"Wellbeing · mindful attention",noSteps:"This activity has no instructions.",noProgram:"Could not load the program.",noTitle:"Wellbeing activity",confirmAnother:"Leave the current session?",backConfirm:"Leave this session? Elapsed time will not be saved.",historyDeleted:"History deleted.",catalogCount:"activities",notSaved:"Could not save history on this device."},
+pt:{eyebrow:"Um momento para si",heroTitle:"Bem-estar simples, ao seu ritmo.",heroDesc:"Escolha uma atividade breve de movimento suave, calma ou planeamento. Não precisa de experiência prévia.",begin:"Começar",minutesBadge:"3, 5 ou 10 minutos",chooseCategory:"Escolha o que precisa hoje",categoryDesc:"Quatro formas simples de fazer uma pausa.",routineTitle:"Rotinas do dia a dia",routineDesc:"Criar pequenos hábitos ao seu ritmo.",movementTitle:"Movimento suave",movementDesc:"Movimentos quotidianos e confortáveis.",calmTitle:"Calma e atenção",calmDesc:"Voltar ao momento presente.",coachTitle:"Organização e planeamento",coachDesc:"Organizar o próximo passo.",quickTitle:"Sessão rápida",quickDesc:"Escolha a duração e comece quando estiver preparado.",durationLabel:"Duração",activityType:"Tipo de atividade",optCalm:"Calma e atenção",optMovement:"Movimento suave",optRoutine:"Rotinas do dia a dia",optCoach:"Organização e planeamento",startSession:"Iniciar sessão",choose:"Escolher",backHome:"Voltar ao início",backCatalog:"Voltar ao catálogo",yourSession:"A sua sessão",imageHint:"A imagem muda a cada 10 segundos durante a sessão.",start:"Começar",pause:"Pausar",resume:"Continuar",repeat:"Repetir voz",mute:"Parar voz",restart:"Reiniciar",safety:"Faça apenas o que for confortável. Pare se sentir dor, tontura ou desconforto. Esta aplicação oferece atividades gerais e não substitui cuidados profissionais.",finishTitle:"Terminou esta sessão.",finishDesc:"Pode guardar a atividade ou escolher outra.",beforeLabel:"Como se sentia antes? (opcional)",afterLabel:"Como se sente agora? (opcional)",save:"Guardar neste dispositivo",another:"Escolher outra atividade",programTitle:"O seu programa de 7 dias",programDesc:"Um plano flexível para experimentar atividades diferentes.",startDay:"Iniciar este dia",progressTitle:"O seu progresso",progressDesc:"O histórico é guardado apenas neste navegador.",statSessions:"Sessões guardadas",statMinutes:"Minutos concluídos",statDays:"Dias do programa",export:"Exportar dados JSON",clear:"Apagar histórico",footerNote:"Informação geral sobre bem-estar quotidiano. Não é um serviço médico e não fornece diagnósticos ou tratamentos.",loadError:"Não foi possível ligar ao catálogo. Confirme se main.py e wellness_engine.py estão publicados.",empty:"Não foram encontradas atividades.",min:"min",step:"Passo",of:"de",voiceReady:"Voz disponível.",voiceUnavailable:"A voz não está disponível neste navegador; pode ler as instruções.",voiceOff:"Voz parada.",voiceSpeaking:"A ler a instrução.",sessionDone:"Sessão concluída.",sessionPaused:"Sessão pausada.",sessionRunning:"Sessão em curso.",saved:"Sessão guardada neste dispositivo.",savedAlready:"Esta sessão já foi guardada.",clearConfirm:"Apagar todo o histórico local do WELLNESS COACH?",emptyHistory:"Ainda não há sessões guardadas.",day:"Dia",done:"Concluído",notDone:"Pendente",startError:"Não foi possível iniciar a atividade. Tente novamente.",rating1:"Muito baixo",rating2:"Baixo",rating3:"Razoável",rating4:"Bom",rating5:"Muito bom",noImage:"Imagem indisponível",imageLabel:"Bem-estar · atenção plena",noSteps:"Esta atividade não tem instruções.",noProgram:"Não foi possível carregar o programa.",noTitle:"Atividade de bem-estar",confirmAnother:"Sair da sessão atual?",backConfirm:"Sair desta sessão? O tempo decorrido não será guardado.",historyDeleted:"Histórico apagado.",catalogCount:"atividades",notSaved:"Não foi possível guardar o histórico neste dispositivo."}
+};
+let lang="es",minutes=3,activities=[],current=null,currentProgramDay=1,programData=null,detailSection="calm",lastSection="calm";
+let running=false,paused=false,sessionDone=false,sessionSaved=false,seconds=180,totalSeconds=180,stepIndex=0,clockId=null,imageId=null,lastTick=0,activeElapsed=0,sessionStart=null,programMode=false;
+let imageDeck=[],imagePointer=0,voiceEnabled=true,beforeRating=null,afterRating=null,voiceTimerId=null,voiceTurn=0,voiceQueue=[],voiceQueueIndex=0,spokenPhrases=new Set(),voiceRunToken=0,voiceList=[];
+const CATEGORY_NAMES={routine:{es:"Rutinas cotidianas",en:"Everyday routines",pt:"Rotinas do dia a dia"},movement:{es:"Movimiento suave",en:"Gentle movement",pt:"Movimento suave"},calm:{es:"Calma y atención",en:"Calm and attention",pt:"Calma e atenção"},coach:{es:"Organización y planificación",en:"Organization and planning",pt:"Organização e planeamento"}};
+const IMG_BANK=Array.from({length:72},(_,i)=>`https://picsum.photos/seed/wellnesscoach${String(i+1).padStart(3,"0")}/1000/750`);
+const tr=k=>TEXT[lang]?.[k]||TEXT.es[k]||k;
+function toast(msg){const el=$("toast");el.textContent=msg;el.classList.remove("hidden");clearTimeout(toast._id);toast._id=setTimeout(()=>el.classList.add("hidden"),3000)}
+function setStatus(msg){$("appStatus").textContent=msg||""}
+async function fetchJSON(url){const r=await fetch(url,{headers:{"Accept":"application/json"},cache:"no-store"});if(!r.ok)throw new Error(`${r.status} ${url}`);return r.json()}
+function applyLanguage(){
+document.documentElement.lang=lang;
+document.querySelectorAll("[data-i]").forEach(el=>{const k=el.dataset.i;if(TEXT[lang][k])el.textContent=TEXT[lang][k]});
+$("imageCaption").textContent=tr("imageLabel");
+document.querySelectorAll("[data-min]").forEach(b=>b.textContent=`${b.dataset.min} ${tr("min")}`);
+if(current){$("sessionTitle").textContent=current.title||tr("noTitle");$("sessionDescription").textContent=current.description||""}
+if(detailSection){$("detailTitle").textContent=CATEGORY_NAMES[detailSection]?.[lang]||detailSection;$("detailDesc").textContent=tr(detailSection+"Desc")}
+renderProgramDays();if(activities.length&&!$("detailPanel").classList.contains("hidden"))renderActivities();renderRatings();renderProgress();
 }
-function saveStore(){
- try{store.updatedAt=new Date().toISOString();localStorage.setItem(STORE_KEY,JSON.stringify(store));renderProgress()}catch(e){$("dataStatus").textContent="No se pudieron guardar los datos locales."}
-}
-function T(key){return TEXT[lang][key]??TEXT.es[key]??key}
-function setText(id,value){const el=$(id);if(el)el.textContent=value}
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function apiLang(){return encodeURIComponent(lang)}
-async function api(path){
- const response=await fetch(API+path,{headers:{"Accept":"application/json"}});
- if(!response.ok)throw new Error("HTTP "+response.status);
- return response.json()
-}
-function setLanguage(next){
- if(!LANGS.includes(next))next="es";
- const wasRunning=running;
- pauseTimer(false);
- stopVoice(false);
- lang=next;
- document.documentElement.lang=lang;
- document.querySelectorAll(".lang-btn").forEach(b=>{const active=b.dataset.lang===lang;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))});
- applyTranslations();
- loadActivities().then(async()=>{
-  await loadProgram();
-  if(currentActivity){
-   const fresh=activities.find(a=>a.id===currentActivity.id);
-   if(fresh){currentActivity=fresh;renderSession(false)}
-   else closeSession()
-  }
-  if(wasRunning&&currentActivity&&!completed)startTimer()
- }).catch(showError)
-}
-function applyTranslations(){
- const map={audiencePill:"audience",heroTitle:"hero",heroIntro:"intro",durationLabel:"duration",randomBtn:"random",categoriesTitle:"categories",activitiesTitle:"activities",avoidRepeatLabel:"avoid",activitiesHint:"hint",instructionLabel:"instruction",previousBtn:"previous",nextBtn:"next",repeatVoiceBtn:"repeatVoice",stopVoiceBtn:"stopVoice",restartBtn:"restart",anotherBtn:"another",safetyNotice:"safety",completeTitle:"completed",ratingQuestion:"ratingQ",programTitle:"program",programIntro:"programIntro",startDayBtn:"startDay",progressTitle:"progress",progressIntro:"progressIntro",exportBtn:"export",deleteBtn:"delete",footerSafety:"footer"};
- Object.entries(map).forEach(([id,key])=>setText(id,T(key)));
- $("categoryGrid").querySelectorAll("[data-section]").forEach(btn=>{
-  const s=btn.dataset.section;
-  const title=btn.querySelector("strong"),desc=btn.querySelector("span:last-child");
-  if(title)title.textContent=T(s);
-  if(desc)desc.textContent=T(s+"Desc")
- });
- $("durationSelect").querySelectorAll("option").forEach(o=>o.textContent=o.value+" "+T("min"));
- document.querySelectorAll("[data-rating]").forEach(b=>b.textContent=T("rating"+b.dataset.rating));
- $("year").textContent=new Date().getFullYear();
- $("voiceStatus").textContent=T("speakHint");
- if(currentActivity)renderSession(false);
- renderProgress();
- renderProgram();
+async function setLang(next){
+if(!LANGS.includes(next)||next===lang)return;
+if(running&&!confirm(tr("confirmAnother")))return;
+const wasRunning=running&&!paused;stopVoiceSchedule();lang=next;
+for(const code of LANGS)$("lang"+code.toUpperCase()).setAttribute("aria-pressed",String(lang===code));
+applyLanguage();await loadActivities();
+if(current){const updated=activities.find(a=>a.id===current.id);if(updated)current=updated;$("sessionTitle").textContent=current.title||tr("noTitle");$("sessionDescription").textContent=current.description||"";renderCurrentStep()}
+if(!$("detailPanel").classList.contains("hidden"))renderActivities();
+await loadProgram(currentProgramDay);updateVoiceStatus();
+if(wasRunning&&voiceEnabled){buildVoiceQueue(true);startVoiceSchedule()}
 }
 async function loadActivities(){
- $("activityStatus").textContent=T("loading");
- try{
-  const data=await api("/api/activities?lang="+apiLang()+"&section=all");
-  activities=Array.isArray(data.activities)?data.activities:[];
-  renderActivities();
-  $("activityStatus").textContent="";
- }catch(e){
-  $("activityStatus").textContent=T("noActivities");
-  throw e
- }
+try{const data=await fetchJSON(`/api/activities?lang=${encodeURIComponent(lang)}&section=all`);activities=Array.isArray(data.activities)?data.activities:Array.isArray(data)?data:[];setStatus("");if(!$("detailPanel").classList.contains("hidden"))renderActivities();return activities}
+catch(e){setStatus(tr("loadError"));return activities}
+}
+function hidePanels(){["detailPanel","sessionPanel"].forEach(id=>$(id).classList.add("hidden"))}
+function stopVoiceSchedule(){if(voiceTimerId){clearTimeout(voiceTimerId);voiceTimerId=null}voiceRunToken++;if("speechSynthesis"in window)speechSynthesis.cancel()}
+function stopClock(){if(clockId){clearInterval(clockId);clockId=null}running=false;paused=false;stopVoiceSchedule();if(imageId){clearInterval(imageId);imageId=null}if($("pauseClock"))$("pauseClock").classList.add("hidden");if($("resumeClock"))$("resumeClock").classList.add("hidden")}
+function showHome(){if(running&&!confirm(tr("confirmAnother")))return;stopClock();hidePanels();$("quickPanel").scrollIntoView({behavior:"smooth",block:"start"})}
+function backFromSession(){if(running&&!confirm(tr("backConfirm")))return;stopClock();sessionDone=false;paused=false;hidePanels();if(lastSection&&["routine","movement","calm","coach"].includes(lastSection))showSection(lastSection,true);else $("quickPanel").scrollIntoView({behavior:"smooth",block:"start"})}
+function sectionName(section){return CATEGORY_NAMES[section]?.[lang]||section}
+function showSection(section,keepScroll=false){
+if(!["routine","movement","calm","coach"].includes(section))return;
+if(running&&!confirm(tr("confirmAnother")))return;
+stopClock();lastSection=section;detailSection=section;hidePanels();$("detailPanel").classList.remove("hidden");$("detailTitle").textContent=sectionName(section);$("detailDesc").textContent=tr(section+"Desc");renderActivities();
+if(!keepScroll)$("detailPanel").scrollIntoView({behavior:"smooth",block:"start"})
 }
 function renderActivities(){
- const list=$("activityList");
- list.replaceChildren();
- const filtered=activeSection==="all"?activities:activities.filter(a=>a.section===activeSection);
- if(!filtered.length){
-  list.innerHTML="<p class='muted'>"+escapeHtml(T("noActivities"))+"</p>";
-  return
- }
- filtered.forEach(a=>{
-  const btn=document.createElement("button");
-  btn.className="activity";
-  btn.type="button";
-  const title=document.createElement("strong");title.textContent=a.title||a.id;
-  const desc=document.createElement("p");desc.textContent=a.description||T("sessionDescription");
-  const tag=document.createElement("span");tag.className="pill";tag.textContent=T(a.section)||a.section;
-  btn.append(title,desc,document.createElement("br"),tag);
-  btn.addEventListener("click",()=>beginSession(a.id));
-  list.appendChild(btn)
- })
+const section=detailSection,root=$("activityList");root.innerHTML="";
+const sourceSection=section==="routine"?"coach":section,list=activities.filter(a=>a.section===sourceSection);
+if(!list.length){const empty=document.createElement("div");empty.className="activityCard";const p=document.createElement("p");p.textContent=tr("empty");empty.append(p);root.append(empty)}
+else for(const a of list){const card=document.createElement("article");card.className="activityCard";const title=document.createElement("h3");title.textContent=a.title||tr("noTitle");const desc=document.createElement("p");desc.textContent=a.description||"";card.append(title,desc);const btn=document.createElement("button");btn.className="primary";btn.type="button";btn.textContent=`${tr("choose")} · ${minutes} ${tr("min")}`;btn.addEventListener("click",()=>beginSession(a,minutes,null));card.append(btn);root.append(card)}
+$("catalogStatus").textContent=`${list.length} ${tr("catalogCount")}`
 }
-function sectionTitle(section){return T(section)||section||T("activity")}
-function setSection(section){
- activeSection=SECTION_KEYS.includes(section)?section:"all";
- renderActivities();
- $("activitiesSection").scrollIntoView({behavior:"smooth",block:"start"})
+function setDuration(n){if(running)return;const value=Number(n);if(![3,5,10].includes(value))return;minutes=value;document.querySelectorAll("[data-min]").forEach(b=>b.setAttribute("aria-pressed",String(Number(b.dataset.min)===minutes)));document.querySelectorAll(".activityCard .primary").forEach(b=>b.textContent=`${tr("choose")} · ${minutes} ${tr("min")}`);if(!current){seconds=minutes*60;$("timer").textContent=formatTime(seconds)}}
+function pickActivity(section){let pool=activities.filter(a=>a.section===section);if(!pool.length)pool=activities.filter(a=>a.section==="calm");if(!pool.length)return null;const recent=readProgress().sessions.slice(-5).map(s=>s.activityId),fresh=pool.filter(a=>!recent.includes(a.id)),source=fresh.length?fresh:pool;return source[Math.floor(Math.random()*source.length)]}
+async function startQuick(){try{if(!activities.length)await loadActivities();const a=pickActivity($("quickKind").value);if(!a){toast(tr("loadError"));return}beginSession(a,minutes,null)}catch(e){toast(tr("startError"))}}
+function shuffle(list){const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function setupImages(){if(imageId)clearInterval(imageId);imagePointer=0;imageDeck=shuffle(IMG_BANK);showNextImage();imageId=setInterval(()=>{if(running&&!paused&&!sessionDone)showNextImage()},10000)}
+function showNextImage(){
+if(!imageDeck.length||imagePointer>=imageDeck.length){imageDeck=shuffle(IMG_BANK);imagePointer=0}
+const img=$("sessionImage"),next=imageDeck[imagePointer++];img.style.opacity=".25";const preload=new Image();
+preload.onload=()=>{img.src=next;img.alt=tr("imageLabel");img.style.opacity="1";$("imageCaption").textContent=tr("imageLabel")};
+preload.onerror=()=>{img.style.opacity="1";$("imageCaption").textContent=tr("noImage");if(imagePointer<imageDeck.length)setTimeout(showNextImage,100)};
+preload.src=next
 }
-function makeLocalRecent(){
- const ids=store.recent.map(x=>typeof x==="string"?x:x.id).filter(Boolean);
- return ids
+function beginSession(activity,n,day){
+if(!activity||typeof activity!=="object"){toast(tr("startError"));return}
+stopClock();minutes=[3,5,10].includes(Number(n))?Number(n):3;
+if(detailSection&&["routine","movement","calm","coach"].includes(detailSection))lastSection=detailSection;
+current=activity;programMode=day!==null&&day!==undefined;currentProgramDay=programMode?Number(day):currentProgramDay;
+seconds=minutes*60;totalSeconds=seconds;stepIndex=0;activeElapsed=0;sessionStart=null;lastTick=0;
+running=false;paused=false;sessionDone=false;sessionSaved=false;beforeRating=null;afterRating=null;voiceEnabled=true;voiceTurn=0;voiceQueue=[];voiceQueueIndex=0;spokenPhrases.clear();
+$("sessionTitle").textContent=activity.title||tr("noTitle");$("sessionDescription").textContent=activity.description||"";$("timer").textContent=formatTime(seconds);$("progressFill").style.width="0%";$("progressTrack").setAttribute("aria-valuenow","0");
+$("finishBox").classList.add("hidden");$("startClock").classList.remove("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");
+renderRatings();renderCurrentStep();hidePanels();$("sessionPanel").classList.remove("hidden");setupImages();updateVoiceStatus();$("sessionPanel").scrollIntoView({behavior:"smooth",block:"start"})
 }
-async function chooseActivity(section="all"){
- let choices=activities.filter(a=>section==="all"||a.section===section);
- if(!choices.length)choices=activities.slice();
- if($("avoidRepeat").checked){
-  const recent=new Set(makeLocalRecent());
-  const fresh=choices.filter(a=>!recent.has(a.id));
-  if(fresh.length)choices=fresh
- }
- if(!choices.length){$("activityStatus").textContent=T("noActivities");return}
- const a=choices[Math.floor(Math.random()*choices.length)];
- await beginSession(a.id)
+function getSteps(){const s=current?.steps;if(Array.isArray(s)&&s.length)return s.map(x=>typeof x==="string"?x:(x?.[lang]||x?.es||""));return [tr("noSteps")]}
+function renderCurrentStep(){if(!current)return;const steps=getSteps();stepIndex=Math.max(0,Math.min(stepIndex,steps.length-1));$("stepCount").textContent=`${tr("step")} ${stepIndex+1} ${tr("of")} ${steps.length}`;$("stepText").textContent=steps[stepIndex]||tr("noSteps")}
+function formatTime(s){s=Math.max(0,Math.ceil(s));return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+function normalizePhrase(text){return String(text||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim()}
+function refreshVoiceList(){if("speechSynthesis"in window)voiceList=speechSynthesis.getVoices()||[]}
+function getPreferredVoice(){refreshVoiceList();const wanted=lang,exact=lang==="es"?"es-es":lang==="pt"?"pt-pt":"en-us";return voiceList.find(v=>v.lang&&v.lang.toLowerCase()===exact)||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted+"-"))||voiceList.find(v=>v.lang&&v.lang.toLowerCase().startsWith(wanted))||null}
+function buildVoiceQueue(fromCurrent=false){
+const steps=getSteps(),source=fromCurrent?steps.slice(stepIndex):steps,queue=[],seen=new Set();
+for(const step of source){const parts=String(step||"").match(/[^.!?。！？\n]+[.!?。！？]?/g)||[];for(const part of parts){const phrase=part.trim(),key=normalizePhrase(phrase);if(!key||seen.has(key)||spokenPhrases.has(key))continue;seen.add(key);queue.push({text:phrase,key})}}
+voiceQueue=queue;voiceQueueIndex=0
 }
-async function beginSession(activityId,fromProgram=false){
- try{
-  stopTimer();stopVoice(false);
-  const minutes=Number($("durationSelect").value)||3;
-  const data=await api("/api/session?lang="+apiLang()+"&kind="+encodeURIComponent(activeSection==="all"?"calm":activeSection)+"&minutes="+minutes+"&activity_id="+encodeURIComponent(activityId)+"&allow_repeat="+(!$("avoidRepeat").checked));
-  currentActivity=data;
-  if(!Array.isArray(currentActivity.steps)||!currentActivity.steps.length){
-   const found=activities.find(a=>a.id===activityId);
-   if(found)currentActivity=found
-  }
-  if(!currentActivity||!Array.isArray(currentActivity.steps)||!currentActivity.steps.length)throw new Error("Missing activity steps");
-  stepIndex=0;remaining=(Number(currentActivity.duration_seconds)||minutes*60);elapsed=0;running=false;completed=false;sessionStarted=false;selectedRating=null;sessionStartedAt=null;
-  $("completionPanel").classList.add("hidden");
-  $("ratingStatus").textContent="";
-  document.querySelectorAll("[data-rating]").forEach(b=>b.classList.remove("selected"));
-  renderSession(false);
-  $("sessionPanel").classList.remove("hidden");
-  $("sessionPanel").scrollIntoView({behavior:"smooth",block:"start"});
-  $("voiceStatus").textContent=T("speakHint");
-  if(fromProgram)$("activityStatus").textContent=T("dayLoaded");
- }catch(e){showError(e)}
+function scheduleNextVoice(token){if(token!==voiceRunToken||!running||paused||sessionDone||!voiceEnabled)return;if(voiceTimerId)clearTimeout(voiceTimerId);const delay=voiceTurn%2===0?4000:5000;voiceTurn++;voiceTimerId=setTimeout(()=>{voiceTimerId=null;speakNextVoiceChunk(token)},delay)}
+function speakNextVoiceChunk(token){
+if(token!==voiceRunToken||!running||paused||sessionDone||!voiceEnabled)return;
+if(!("speechSynthesis"in window)){updateVoiceStatus();return}
+while(voiceQueueIndex<voiceQueue.length&&spokenPhrases.has(voiceQueue[voiceQueueIndex].key))voiceQueueIndex++;
+if(voiceQueueIndex>=voiceQueue.length){buildVoiceQueue(false);while(voiceQueueIndex<voiceQueue.length&&spokenPhrases.has(voiceQueue[voiceQueueIndex].key))voiceQueueIndex++;if(voiceQueueIndex>=voiceQueue.length){updateVoiceStatus();return}}
+const item=voiceQueue[voiceQueueIndex++];if(spokenPhrases.has(item.key)){scheduleNextVoice(token);return}spokenPhrases.add(item.key);
+const u=new SpeechSynthesisUtterance(item.text);u.lang=lang==="es"?"es-ES":lang==="pt"?"pt-PT":"en-US";u.rate=.91;u.pitch=1;const voice=getPreferredVoice();if(voice)u.voice=voice;
+u.onstart=()=>{if(token===voiceRunToken)$("voiceStatus").textContent=tr("voiceSpeaking")};u.onend=()=>{if(token===voiceRunToken&&running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token)};u.onerror=()=>{if(token===voiceRunToken&&running&&!paused&&!sessionDone&&voiceEnabled)scheduleNextVoice(token)};speechSynthesis.speak(u)
 }
-function renderSession(announce=true){
- if(!currentActivity)return;
- const steps=currentActivity.steps||[];
- const total=steps.length;
- stepIndex=Math.max(0,Math.min(stepIndex,total-1));
- const step=steps[stepIndex];
- setText("sessionTitle",currentActivity.title||T("activity"));
- setText("sessionCategory",sectionTitle(currentActivity.section));
- setText("sessionDescription",currentActivity.description||T("sessionDescription"));
- setText("instructionText",step?.text||"");
- setText("stepCounter",T("step")+" "+(stepIndex+1)+" "+T("of")+" "+total);
- setText("timer",formatTime(remaining));
- setText("startPauseBtn",completed?T("finished"):running?T("pause"):sessionStarted?T("resume"):T("start"));
- $("startPauseBtn").disabled=completed;
- $("previousBtn").disabled=stepIndex===0||completed;
- $("nextBtn").disabled=stepIndex>=total-1||completed;
- const percent=Math.round((elapsed/Math.max(1,Number(currentActivity.duration_seconds)||180))*100);
- $("progressBar").style.width=Math.min(100,percent)+"%";
- $("progressOuter").setAttribute("aria-valuenow",String(Math.min(100,percent)));
- if(announce&&voiceEnabled&&running)speakCurrentStep();
+function startVoiceSchedule(){if(!voiceEnabled||!current||!running||paused||sessionDone||!("speechSynthesis"in window)){updateVoiceStatus();return}if(voiceTimerId){clearTimeout(voiceTimerId);voiceTimerId=null}voiceRunToken++;const token=voiceRunToken;speechSynthesis.cancel();if(!voiceQueue.length||voiceQueueIndex>=voiceQueue.length)buildVoiceQueue(false);speakNextVoiceChunk(token)}
+function speakCurrent(){
+if(!voiceEnabled)return;if(!("speechSynthesis"in window)){updateVoiceStatus();return}
+if(running){stopVoiceSchedule();buildVoiceQueue(true);startVoiceSchedule();return}
+speechSynthesis.cancel();const steps=getSteps(),phrase=String(steps[stepIndex]||"").trim();if(!phrase){updateVoiceStatus();return}
+const key=normalizePhrase(phrase);spokenPhrases.add(key);const u=new SpeechSynthesisUtterance(phrase);u.lang=lang==="es"?"es-ES":lang==="pt"?"pt-PT":"en-US";u.rate=.91;u.pitch=1;const voice=getPreferredVoice();if(voice)u.voice=voice;u.onstart=()=>{$("voiceStatus").textContent=tr("voiceSpeaking")};u.onend=updateVoiceStatus;u.onerror=updateVoiceStatus;speechSynthesis.speak(u)
 }
-function formatTime(seconds){
- seconds=Math.max(0,Math.ceil(Number(seconds)||0));
- return String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0")
+function updateVoiceStatus(){if(!("speechSynthesis"in window)){$("voiceStatus").textContent=tr("voiceUnavailable");return}$("voiceStatus").textContent=voiceEnabled?tr("voiceReady"):tr("voiceOff")}
+function startClock(){
+if(sessionDone||running||!current)return;running=true;paused=false;if(!sessionStart)sessionStart=Date.now();lastTick=performance.now();
+$("startClock").classList.add("hidden");$("pauseClock").classList.remove("hidden");$("resumeClock").classList.add("hidden");$("voiceStatus").textContent=tr("sessionRunning");if(!voiceQueue.length)buildVoiceQueue(false);startVoiceSchedule();if(clockId)clearInterval(clockId);clockId=setInterval(tick,200)
 }
-function speakCurrentStep(){
- if(!voiceEnabled||!currentActivity)return;
- if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){
-  $("voiceStatus").textContent=T("noVoice");return
- }
- const text=currentActivity.steps?.[stepIndex]?.text;
- if(!text)return;
- window.speechSynthesis.cancel();
- const token=++utteranceToken;
- const u=new SpeechSynthesisUtterance(text);
- u.lang=lang==="es"?"es-ES":lang==="pt"?"pt-PT":"en-US";
- u.rate=0.92;u.pitch=1;
- u.onstart=()=>{if(token===utteranceToken)$("voiceStatus").textContent=T("voiceOn")};
- u.onerror=()=>{if(token===utteranceToken)$("voiceStatus").textContent=T("noVoice")};
- window.speechSynthesis.speak(u)
+function tick(){
+if(!running||paused||sessionDone)return;
+const now=performance.now(),delta=Math.max(0,(now-lastTick)/1000);lastTick=now;activeElapsed=Math.min(totalSeconds,activeElapsed+delta);seconds=Math.max(0,totalSeconds-activeElapsed);$("timer").textContent=formatTime(seconds);
+const pct=Math.min(100,activeElapsed/totalSeconds*100);$("progressFill").style.width=pct+"%";$("progressTrack").setAttribute("aria-valuenow",String(Math.round(pct)));
+const steps=getSteps(),newIndex=Math.min(steps.length-1,Math.floor(activeElapsed/totalSeconds*steps.length));if(newIndex!==stepIndex){stepIndex=newIndex;renderCurrentStep()}if(seconds<=0)finishSession()
 }
-function stopVoice(show=true){
- utteranceToken++;
- if("speechSynthesis" in window)window.speechSynthesis.cancel();
- if(show)$("voiceStatus").textContent=T("voiceOff")
-}
-function pauseTimer(showStatus=true){
- if(timerId!==null){clearInterval(timerId);timerId=null}
- if(running){running=false}
- if("speechSynthesis" in window&&window.speechSynthesis.speaking)window.speechSynthesis.pause();
- if(currentActivity&&!completed){
-  setText("startPauseBtn",sessionStarted?T("resume"):T("start"));
-  if(showStatus)$("voiceStatus").textContent=T("voicePaused")
- }
-}
-function stopTimer(){
- if(timerId!==null){clearInterval(timerId);timerId=null}
- running=false
-}
-function startTimer(){
- if(!currentActivity||completed)return;
- if(remaining<=0){finishSession();return}
- running=true;sessionStarted=true;
- if(!sessionStartedAt)sessionStartedAt=new Date().toISOString();
- if("speechSynthesis" in window&&window.speechSynthesis.paused)window.speechSynthesis.resume();
- renderSession(false);
- speakCurrentStep();
- timerId=setInterval(()=>{
-  if(!running)return;
-  elapsed=Math.min(Number(currentActivity.duration_seconds)||180,elapsed+1);
-  remaining=Math.max(0,remaining-1);
-  const total=Number(currentActivity.duration_seconds)||180;
-  const count=currentActivity.steps.length;
-  const target=Math.min(count-1,Math.floor(elapsed/(total/count)));
-  if(target!==stepIndex){
-   stepIndex=target;
-   renderSession(false);
-   speakCurrentStep()
-  }else{
-   setText("timer",formatTime(remaining));
-   const percent=Math.round(elapsed/total*100);
-   $("progressBar").style.width=Math.min(100,percent)+"%";
-   $("progressOuter").setAttribute("aria-valuenow",String(Math.min(100,percent)))
-  }
-  if(remaining<=0)finishSession()
- },1000)
-}
-function toggleStartPause(){
- if(!currentActivity)return;
- if(running){pauseTimer();stopVoice(false);renderSession(false)}
- else if(!completed)startTimer()
-}
-function goStep(direction){
- if(!currentActivity||completed)return;
- const wasRunning=running;
- pauseTimer(false);stopVoice(false);
- const total=currentActivity.steps.length;
- stepIndex=Math.max(0,Math.min(total-1,stepIndex+direction));
- const duration=Number(currentActivity.duration_seconds)||180;
- elapsed=Math.round(stepIndex*(duration/total));
- remaining=Math.max(0,duration-elapsed);
- renderSession(false);
- if(wasRunning){running=true;startTimer()}
-}
-function restartSession(){
- if(!currentActivity)return;
- stopTimer();stopVoice(false);
- const minutes=Number(currentActivity.session_minutes)||Number($("durationSelect").value)||3;
- stepIndex=0;elapsed=0;remaining=minutes*60;running=false;completed=false;sessionStarted=false;sessionStartedAt=null;selectedRating=null;
- $("completionPanel").classList.add("hidden");
- $("ratingStatus").textContent="";
- document.querySelectorAll("[data-rating]").forEach(b=>b.classList.remove("selected"));
- renderSession(false);
- setText("voiceStatus",T("sessionReset"))
-}
+function pauseClock(){if(!running)return;tick();if(sessionDone)return;running=false;paused=true;if(clockId){clearInterval(clockId);clockId=null}stopVoiceSchedule();$("pauseClock").classList.add("hidden");$("resumeClock").classList.remove("hidden");$("voiceStatus").textContent=tr("sessionPaused")}
+function resumeClock(){if(!paused||sessionDone)return;paused=false;startClock()}
 function finishSession(){
- if(completed)return;
- stopTimer();stopVoice(false);
- completed=true;running=false;remaining=0;elapsed=Number(currentActivity.duration_seconds)||180;
- stepIndex=currentActivity.steps.length-1;
- renderSession(false);
- $("progressBar").style.width="100%";
- $("progressOuter").setAttribute("aria-valuenow","100");
- $("completionPanel").classList.remove("hidden");
- setText("completeTitle",T("completed"));
- setText("completeMessage",T("finish"));
- setText("voiceStatus",T("finished"));
- const record={id:currentActivity.id,title:currentActivity.title,section:currentActivity.section,lang,minutes:Number(currentActivity.session_minutes)||3,completedAt:new Date().toISOString(),startedAt:sessionStartedAt||null,rating:null};
- store.completed.push(record);
- if(store.completed.length>500)store.completed=store.completed.slice(-500);
- store.recent.unshift({id:currentActivity.id,at:Date.now()});
- store.recent=store.recent.slice(0,30);
- if(currentDay>=1&&currentDay<=7&&!store.program.includes(currentDay))store.program.push(currentDay);
- saveStore();renderProgram()
+if(sessionDone)return;activeElapsed=totalSeconds;seconds=0;if(clockId){clearInterval(clockId);clockId=null}running=false;paused=false;stopVoiceSchedule();if(imageId){clearInterval(imageId);imageId=null}
+sessionDone=true;stepIndex=getSteps().length-1;renderCurrentStep();$("timer").textContent="00:00";$("progressFill").style.width="100%";$("progressTrack").setAttribute("aria-valuenow","100");$("finishBox").classList.remove("hidden");$("startClock").classList.add("hidden");$("pauseClock").classList.add("hidden");$("resumeClock").classList.add("hidden");$("voiceStatus").textContent=tr("sessionDone");if(programMode)markProgramDay(currentProgramDay);
+if(voiceEnabled&&"speechSynthesis"in window){const u=new SpeechSynthesisUtterance(tr("sessionDone"));u.lang=lang==="es"?"es-ES":lang==="pt"?"pt-PT":"en-US";const voice=getPreferredVoice();if(voice)u.voice=voice;speechSynthesis.speak(u)}
 }
-function closeSession(){
- pauseTimer(false);stopVoice(false);currentActivity=null;
- $("sessionPanel").classList.add("hidden")
+function resetSession(){stopClock();sessionDone=false;paused=false;current=null;hidePanels();$("quickPanel").scrollIntoView({behavior:"smooth",block:"start"})}
+function renderRatings(){
+for(const [id,key] of [["beforeRatings","before"],["afterRatings","after"]]){const root=$(id);if(!root)continue;root.innerHTML="";for(let i=1;i<=5;i++){const label=document.createElement("label"),radio=document.createElement("input");radio.type="radio";radio.name=key+"Rating";radio.value=String(i);radio.checked=(key==="before"?beforeRating:afterRating)===i;radio.addEventListener("change",()=>{if(key==="before")beforeRating=i;else afterRating=i});const span=document.createElement("span");span.textContent=`${i} · ${tr("rating"+i)}`;label.append(radio,span);root.append(label)}}
 }
-function recordRating(value){
- if(!completed||!currentActivity)return;
- selectedRating=Number(value);
- document.querySelectorAll("[data-rating]").forEach(b=>b.classList.toggle("selected",Number(b.dataset.rating)===selectedRating));
- const last=[...store.completed].reverse().find(x=>x.id===currentActivity.id&&x.rating==null);
- if(last)last.rating=selectedRating;
- store.ratings.push({activity_id:currentActivity.id,rating:selectedRating,lang,at:new Date().toISOString()});
- if(store.ratings.length>500)store.ratings=store.ratings.slice(-500);
- saveStore();setText("ratingStatus",T("ratingSaved"))
+function readProgress(){try{const v=JSON.parse(localStorage.getItem(KEY)||"{}");return {sessions:Array.isArray(v.sessions)?v.sessions:[],programDays:Array.isArray(v.programDays)?v.programDays:[]}}catch(e){return {sessions:[],programDays:[]}}}
+function writeProgress(data){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){toast(tr("notSaved"));return false}}
+function saveSession(){
+if(!current||!sessionDone)return;if(sessionSaved){toast(tr("savedAlready"));return}
+const data=readProgress();data.sessions.push({id:`${Date.now()}-${Math.random().toString(36).slice(2)}`,activityId:current.id,activityTitle:current.title||tr("noTitle"),section:current.section||"calm",minutes,completedAt:new Date().toISOString(),language:lang,beforeRating,afterRating,programDay:programMode?currentProgramDay:null});data.sessions=data.sessions.slice(-300);
+if(writeProgress(data)){sessionSaved=true;renderProgress();toast(tr("saved"))}
 }
-async function loadProgram(){
- programDays=[];
- for(let day=1;day<=7;day++){
-  try{programDays.push(await api("/api/program?lang="+apiLang()+"&day="+day))}
-  catch(e){programDays.push(null)}
- }
- renderProgram()
-}
-function renderProgram(){
- const container=$("programDays");
- if(!container)return;
- container.replaceChildren();
- for(let day=1;day<=7;day++){
-  const data=programDays[day-1];
-  const btn=document.createElement("button");
-  btn.type="button";
-  btn.className="day-btn"+(day===currentDay?" active":"")+(store.program.includes(day)?" done":"");
-  btn.innerHTML="<strong>"+escapeHtml(T("day"))+" "+day+"</strong><small>"+(store.program.includes(day)?"✓":data?escapeHtml(data.section||""):"")+"</small>";
-  btn.setAttribute("aria-pressed",String(day===currentDay));
-  btn.addEventListener("click",()=>selectProgramDay(day));
-  container.appendChild(btn)
- }
- setText("weekProgress",store.program.length+"/7");
- const data=programDays[currentDay-1];
- setText("dayTitle",T("day")+" "+currentDay+(store.program.includes(currentDay)?" ✓":""));
- setText("dayDescription",data?.activity?.title||data?.title||T("chooseDay"));
- setText("startDayBtn",T("startDay"));
- $("startDayBtn").disabled=!data?.activity_id;
-}
-function selectProgramDay(day){
- currentDay=Math.max(1,Math.min(7,Number(day)||1));
- renderProgram()
-}
-async function startProgramDay(){
- const data=programDays[currentDay-1];
- if(!data||!data.activity_id)return;
- const id=data.activity_id;
- const found=activities.find(a=>a.id===id);
- if(found)await beginSession(found.id,true);
- else await beginSession(id,true)
-}
+function markProgramDay(day){const data=readProgress();if(!data.programDays.includes(day))data.programDays.push(day);data.programDays.sort((a,b)=>a-b);writeProgress(data);renderProgramDays();renderProgress()}
 function renderProgress(){
- if(!store)return;
- setText("completedCount",T("completedCount")+": "+store.completed.length);
- setText("ratingCount",T("ratings")+": "+store.ratings.length);
- setText("weekProgress",store.program.length+"/7");
+const data=readProgress();$("statSessions").textContent=data.sessions.length;$("statMinutes").textContent=data.sessions.reduce((n,s)=>n+(Number(s.minutes)||0),0);$("statDays").textContent=`${data.programDays.length}/7`;$("historyList").innerHTML="";
+if(!data.sessions.length){$("historyList").textContent=tr("emptyHistory");return}
+data.sessions.slice().reverse().slice(0,12).forEach(s=>{const row=document.createElement("div");row.className="historyItem";const left=document.createElement("div"),title=document.createElement("strong"),meta=document.createElement("div");title.textContent=s.activityTitle||tr("noTitle");meta.className="muted";let date="";try{date=new Date(s.completedAt).toLocaleString(lang==="es"?"es-US":lang==="pt"?"pt-PT":"en-US",{dateStyle:"medium",timeStyle:"short"})}catch(e){}meta.textContent=`${date} · ${s.minutes||0} ${tr("min")}`;left.append(title,meta);row.append(left);$("historyList").append(row)})
 }
-function exportData(){
- const payload={app:"WELLNESS COACH",version:"5.0.0",exportedAt:new Date().toISOString(),completed:store.completed,ratings:store.ratings,recent:store.recent,program:store.program};
- const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;a.download="wellness-coach-progreso.json";
- document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
- setText("dataStatus",T("exported"))
+function exportProgress(){const data=readProgress(),payload={app:"WELLNESS COACH",company:"May Roga LLC",exportedAt:new Date().toISOString(),data};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"});const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`wellness-coach-progress-${new Date().toISOString().slice(0,10)}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function clearProgress(){if(!confirm(tr("clearConfirm")))return;localStorage.removeItem(KEY);renderProgress();renderProgramDays();toast(tr("historyDeleted"))}
+function renderProgramDays(){
+const root=$("programDays");if(!root)return;root.innerHTML="";const done=readProgress().programDays;
+for(let d=1;d<=7;d++){const b=document.createElement("button");b.className="dayBtn";b.type="button";b.setAttribute("aria-pressed",String(d===currentProgramDay));b.innerHTML=`${tr("day")} ${d}<small>${done.includes(d)?tr("done"):tr("notDone")}</small>`;b.addEventListener("click",()=>loadProgram(d));root.append(b)}
 }
-function deleteData(){
- if(!confirm(T("confirmDelete")))return;
- store={completed:[],ratings:[],recent:[],program:[],updatedAt:null};
- try{localStorage.removeItem(STORE_KEY)}catch(e){}
- saveStore();renderProgram();setText("dataStatus",T("deleted"))
+async function loadProgram(day){
+currentProgramDay=Math.max(1,Math.min(7,Number(day)||1));renderProgramDays();
+try{programData=await fetchJSON(`/api/program?lang=${encodeURIComponent(lang)}&day=${currentProgramDay}`);const a=programData.activity||{};$("programDayLabel").textContent=`${tr("day")} ${currentProgramDay} · ${programData.minutes||3} ${tr("min")}`;$("programTitleText").textContent=programData.title||tr("noTitle");$("programDescriptionText").textContent=programData.goal||programData.description||"";$("programActivityText").textContent=a.title?`${a.title} — ${a.description||""}`:"";$("startProgram").disabled=!a.id}
+catch(e){$("programTitleText").textContent=tr("noProgram");$("programDescriptionText").textContent=tr("loadError");$("programActivityText").textContent="";$("startProgram").disabled=true}
 }
-function showError(error){
- console.error(error);
- $("activityStatus").textContent=T("error")
+function startProgram(){if(!programData?.activity)return;const a=activities.find(x=>x.id===programData.activity.id)||programData.activity;beginSession(a,Number(programData.minutes)||3,currentProgramDay)}
+function boot(){
+document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.section)));
+document.querySelectorAll("[data-min]").forEach(b=>b.addEventListener("click",()=>setDuration(b.dataset.min)));
+$("langES").addEventListener("click",()=>setLang("es"));$("langEN").addEventListener("click",()=>setLang("en"));$("langPT").addEventListener("click",()=>setLang("pt"));
+$("goQuick").addEventListener("click",()=>$("quickPanel").scrollIntoView({behavior:"smooth",block:"start"}));$("startQuick").addEventListener("click",startQuick);$("backHome").addEventListener("click",showHome);$("backFromSession").addEventListener("click",backFromSession);
+$("startClock").addEventListener("click",startClock);$("pauseClock").addEventListener("click",pauseClock);$("resumeClock").addEventListener("click",resumeClock);$("repeatVoice").addEventListener("click",()=>{voiceEnabled=true;speakCurrent()});$("stopVoice").addEventListener("click",()=>{voiceEnabled=false;stopVoiceSchedule();updateVoiceStatus()});
+$("restartSession").addEventListener("click",()=>{if(!current)return;if(running&&!confirm(tr("confirmAnother")))return;const a=current,n=minutes,d=programMode?currentProgramDay:null;beginSession(a,n,d)});
+$("saveSession").addEventListener("click",saveSession);$("anotherSession").addEventListener("click",resetSession);$("exportProgress").addEventListener("click",exportProgress);$("clearProgress").addEventListener("click",clearProgress);$("startProgram").addEventListener("click",startProgram);
+window.addEventListener("beforeunload",()=>{if(clockId)clearInterval(clockId);if(imageId)clearInterval(imageId);stopVoiceSchedule()});
+refreshVoiceList();if("speechSynthesis"in window)speechSynthesis.addEventListener("voiceschanged",refreshVoiceList);
+renderRatings();applyLanguage();renderProgress();renderProgramDays();$("timer").textContent="03:00";loadActivities().then(()=>loadProgram(1));if(!("speechSynthesis"in window))updateVoiceStatus()
 }
-document.querySelectorAll(".lang-btn").forEach(b=>b.addEventListener("click",()=>setLanguage(b.dataset.lang)));
-document.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>setSection(b.dataset.section)));
-$("randomBtn").addEventListener("click",()=>chooseActivity(activeSection));
-$("startPauseBtn").addEventListener("click",toggleStartPause);
-$("previousBtn").addEventListener("click",()=>goStep(-1));
-$("nextBtn").addEventListener("click",()=>goStep(1));
-$("repeatVoiceBtn").addEventListener("click",()=>speakCurrentStep());
-$("stopVoiceBtn").addEventListener("click",()=>stopVoice(true));
-$("restartBtn").addEventListener("click",restartSession);
-$("anotherBtn").addEventListener("click",()=>{closeSession();chooseActivity(activeSection)});
-$("startDayBtn").addEventListener("click",startProgramDay);
-$("exportBtn").addEventListener("click",exportData);
-$("deleteBtn").addEventListener("click",deleteData);
-document.querySelectorAll("[data-rating]").forEach(b=>b.addEventListener("click",()=>recordRating(b.dataset.rating)));
-$("durationSelect").addEventListener("change",()=>{if(currentActivity&&!running&&!completed)restartSession()});
-window.addEventListener("beforeunload",event=>{if(running){event.preventDefault();event.returnValue=T("beforeUnload")}});
-document.addEventListener("visibilitychange",()=>{if(document.hidden&&running){pauseTimer();stopVoice(false);renderSession(false)}});
-async function init(){
- $("year").textContent=new Date().getFullYear();
- applyTranslations();renderProgress();
- try{await loadActivities();await loadProgram();renderProgram()}
- catch(e){showError(e)}
-}
-init();
+boot();
 </script>
 </body>
 </html>
