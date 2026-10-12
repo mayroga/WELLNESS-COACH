@@ -1,406 +1,222 @@
-
-from datetime import datetime,timezone
-from copy import deepcopy
-import hashlib
-import random
-import threading
-
-VERSION="10.0.0"
+import hashlib,random,time,threading
 APP_NAME="WELLNESS COACH"
 COMPANY="May Roga LLC"
-AUDIENCE="40+"
+VERSION="11.0.0"
 LANGUAGES=("es","en","pt")
-SECTIONS=("movement","calm","coach")
 MINUTES_ALLOWED=(3,5,10)
-PROMPT_INTERVAL_SECONDS=10
-PROGRAM_DAYS=7
-_RECENT_SECONDS=1800
+SECTIONS=("all","calm","movement","coach")
+PROMPT_INTERVAL_SECONDS=12
+_RNG=random.Random()
 _LOCK=threading.RLock()
-_RECENT={}
-_SESSIONS={}
-_MAX_SESSIONS=500
-
-_NAMES={
-"movement":{
-"es":["Despierta el cuerpo","Movimiento suave al comenzar el día","Pausa para hombros y cuello","Camina con atención","Activa las manos","Equilibrio y estabilidad con apoyo","Movilidad de espalda","Estira las piernas con suavidad","Activa el cuerpo sentado","Pausa para las articulaciones","Movimiento consciente","Descanso activo de pantalla","Movilidad de caderas","Respira y mueve los brazos","Pausa para los pies","Recupera tu postura","Movimiento lento y controlado","Activa el cuerpo sin prisa","Camina dentro de casa","Cierra el día con movimiento suave"],
-"en":["Wake Up Your Body","Gentle Morning Movement","Shoulder and Neck Break","Mindful Walking","Activate Your Hands","Supported Balance and Stability","Back Mobility","Gentle Leg Stretch","Activate Your Body While Seated","Joint-Friendly Break","Mindful Movement","Active Screen Break","Hip Mobility","Breathe and Move Your Arms","Foot Break","Reset Your Posture","Slow and Controlled Movement","Move Without Rushing","Walk Indoors","End the Day with Gentle Movement"],
-"pt":["Desperte o corpo","Movimento suave ao começar o dia","Pausa para ombros e pescoço","Caminhada com atenção","Ative as mãos","Equilíbrio e estabilidade com apoio","Mobilidade das costas","Alongue as pernas suavemente","Ative o corpo sentado","Pausa para as articulações","Movimento consciente","Pausa ativa das telas","Mobilidade dos quadris","Respire e mova os braços","Pausa para os pés","Recupere a postura","Movimento lento e controlado","Ative o corpo sem pressa","Caminhe dentro de casa","Termine o dia com movimento suave"]
-},
+_DAY_SECTIONS=("calm","movement","coach","calm","movement","coach","calm")
+_DAY_MINUTES=(3,5,3,5,10,5,10)
+_TITLES={
+"calm":[
+("Respirar con tranquilidad","Breathe with ease","Respire com tranquilidade"),
+("Soltar la tensión del día","Release the day's tension","Solte a tensão do dia"),
+("Hacer una pausa consciente","Take a mindful pause","Faça uma pausa consciente"),
+("Descansar los hombros","Relax your shoulders","Relaxe os ombros"),
+("Encontrar un ritmo sereno","Find a calm rhythm","Encontre um ritmo tranquilo"),
+("Volver al momento presente","Return to the present","Volte ao momento presente"),
+("Dar espacio a la calma","Make room for calm","Dê espaço à calma"),
+("Relajar el rostro","Relax your face","Relaxe o rosto"),
+("Respirar sin prisa","Breathe without rushing","Respire sem pressa"),
+("Hacer una pausa amable","Take a gentle pause","Faça uma pausa gentil"),
+("Reconocer cómo se siente el cuerpo","Notice how your body feels","Perceba como seu corpo se sente"),
+("Dejar ir la tensión innecesaria","Release unnecessary tension","Solte a tensão desnecessária"),
+("Descansar la mente unos minutos","Give your mind a short rest","Descanse a mente por alguns minutos"),
+("Recuperar la atención con suavidad","Gently regain your attention","Recupere a atenção com suavidade"),
+("Crear un momento de quietud","Create a moment of stillness","Crie um momento de tranquilidade"),
+("Respirar con comodidad","Breathe comfortably","Respire com conforto"),
+("Bajar el ritmo por un momento","Slow down for a moment","Diminua o ritmo por um momento"),
+("Practicar una pausa tranquila","Practice a calm pause","Pratique uma pausa tranquila"),
+("Notar el apoyo de los pies","Notice the support beneath your feet","Perceba o apoio sob os pés"),
+("Terminar con serenidad","Finish with serenity","Termine com serenidade")],
+"movement":[
+("Mover el cuerpo con suavidad","Move your body gently","Movimente o corpo suavemente"),
+("Despertar los hombros","Wake up your shoulders","Desperte os ombros"),
+("Estirar los brazos cómodamente","Stretch your arms comfortably","Alongue os braços com conforto"),
+("Soltar las manos y las muñecas","Relax your hands and wrists","Relaxe as mãos e os pulsos"),
+("Movilidad suave sentado","Gentle seated mobility","Mobilidade suave sentado"),
+("Dar unos pasos conscientes","Take a few mindful steps","Dê alguns passos com atenção"),
+("Activar los tobillos","Move your ankles","Movimente os tornozelos"),
+("Estirar la espalda sin forzar","Stretch your back without strain","Alongue as costas sem forçar"),
+("Mover el cuello con cuidado","Move your neck carefully","Movimente o pescoço com cuidado"),
+("Cambiar de postura con comodidad","Change position comfortably","Mude de posição com conforto"),
+("Despertar el cuerpo poco a poco","Gently wake up your body","Desperte o corpo aos poucos"),
+("Coordinar brazos y respiración","Coordinate your arms and breathing","Coordene braços e respiração"),
+("Pausar el tiempo sentado","Take a seated movement break","Faça uma pausa de movimento sentado"),
+("Aflojar las piernas","Loosen your legs","Relaxe as pernas"),
+("Practicar equilibrio con apoyo","Practice balance with support","Pratique equilíbrio com apoio"),
+("Mover las manos con intención","Move your hands with intention","Movimente as mãos com intenção"),
+("Hacer una pausa activa","Take an active break","Faça uma pausa ativa"),
+("Recuperar movilidad cotidiana","Support everyday mobility","Estimule a mobilidade cotidiana"),
+("Estirar sin llegar al dolor","Stretch without reaching pain","Alongue sem chegar à dor"),
+("Terminar con movimientos suaves","Finish with gentle movements","Termine com movimentos suaves")],
+"coach":[
+("Preparar el día con claridad","Prepare your day with clarity","Prepare o dia com clareza"),
+("Elegir una prioridad realista","Choose one realistic priority","Escolha uma prioridade realista"),
+("Organizar el próximo paso","Organize the next step","Organize o próximo passo"),
+("Crear una pausa en la rutina","Make room for a routine break","Crie uma pausa na rotina"),
+("Dividir una tarea en pasos","Break a task into steps","Divida uma tarefa em etapas"),
+("Ordenar el espacio inmediato","Organize your immediate space","Organize o espaço ao seu redor"),
+("Planificar un descanso breve","Plan a short rest","Planeje um breve descanso"),
+("Reconocer lo que ya está hecho","Notice what is already done","Reconheça o que já foi feito"),
+("Elegir un ritmo sostenible","Choose a sustainable pace","Escolha um ritmo sustentável"),
+("Simplificar una tarea cotidiana","Simplify an everyday task","Simplifique uma tarefa cotidiana"),
+("Prepararse para una transición","Prepare for a transition","Prepare-se para uma mudança de atividade"),
+("Hacer una cosa a la vez","Do one thing at a time","Faça uma coisa de cada vez"),
+("Crear un hábito pequeño","Build a small habit","Crie um pequeno hábito"),
+("Recordar una pausa necesaria","Remember to take a needed break","Lembre-se de fazer uma pausa necessária"),
+("Revisar el día sin juzgarse","Review the day without judgment","Revise o dia sem se julgar"),
+("Poner límites al ritmo diario","Set limits on your daily pace","Estabeleça limites para o ritmo diário"),
+("Elegir qué puede esperar","Choose what can wait","Escolha o que pode esperar"),
+("Preparar un cierre tranquilo","Prepare a calm ending","Prepare um encerramento tranquilo"),
+("Dar valor a un pequeño avance","Value a small step forward","Valorize um pequeno avanço"),
+("Elegir el siguiente paso posible","Choose the next possible step","Escolha o próximo passo possível")]
+}
+_DESCRIPTIONS={
+"calm":{"es":"Una pausa sencilla para recuperar tranquilidad, sin exigencias ni prisa.","en":"A simple pause to regain calm, without pressure or rushing.","pt":"Uma pausa simples para recuperar a tranquilidade, sem pressão nem pressa."},
+"movement":{"es":"Movimientos cotidianos suaves. Haz solo lo que te resulte cómodo y estable.","en":"Gentle everyday movements. Do only what feels comfortable and steady.","pt":"Movimentos suaves do dia a dia. Faça apenas o que for confortável e estável."},
+"coach":{"es":"Una guía práctica para organizar el día y elegir un siguiente paso realista.","en":"Practical guidance to organize your day and choose a realistic next step.","pt":"Orientação prática para organizar o dia e escolher o próximo passo realista."}
+}
+_STEP_TEXT={
 "calm":{
-"es":["Respira y haz una pausa","Suelta la tensión del día","Un momento de tranquilidad","Respiración lenta y cómoda","Descansa la mente","Vuelve al momento presente","Pausa para bajar el ritmo","Relaja el rostro y los hombros","Escucha tu respiración","Recupera tu espacio interior","Pausa consciente entre tareas","Un minuto de silencio y atención","Deja pasar los pensamientos","Descanso mental sin exigencias","Pausa tranquila sentado","Respira antes de continuar","Reconoce cómo te sientes","Haz espacio para la calma","Cierra los ojos si te resulta cómodo","Termina el día con serenidad"],
-"en":["Breathe and Take a Pause","Release the Day's Tension","A Moment of Calm","Slow, Comfortable Breathing","Rest Your Mind","Return to the Present Moment","Slow Down for a Moment","Relax Your Face and Shoulders","Listen to Your Breathing","Reconnect with Your Inner Space","Mindful Break Between Tasks","A Quiet Moment of Attention","Let Thoughts Pass","Mental Rest Without Pressure","A Calm Seated Pause","Breathe Before Continuing","Notice How You Feel","Make Room for Calm","Close Your Eyes if Comfortable","End the Day with Calm"],
-"pt":["Respire e faça uma pausa","Solte a tensão do dia","Um momento de tranquilidade","Respiração lenta e confortável","Descanse a mente","Volte ao momento presente","Diminua o ritmo por um momento","Relaxe o rosto e os ombros","Escute sua respiração","Recupere seu espaço interior","Pausa consciente entre tarefas","Um momento de silêncio e atenção","Deixe os pensamentos passarem","Descanso mental sem cobranças","Pausa tranquila sentado","Respire antes de continuar","Perceba como você se sente","Abra espaço para a calma","Feche os olhos se for confortável","Termine o dia com serenidade"]
-},
-"coach":{
-"es":["Organiza tu siguiente paso","Empieza con una tarea pequeña","Haz una pausa y elige","Aclara lo que necesitas hoy","Divide una tarea en pasos","Recupera tu atención","Reconoce un avance cotidiano","Crea una rutina sencilla","Elige una prioridad realista","Prepara tu próximo momento","Ordena tus ideas con calma","Practica decir no a una tarea","Haz espacio para lo importante","Revisa tu día sin juzgarte","Elige un hábito pequeño","Recupera el enfoque con una pausa","Planifica sin exigirte demasiado","Pide apoyo cuando lo necesites","Prepara un cierre tranquilo","Elige cómo continuar"],
-"en":["Organize Your Next Step","Start with One Small Task","Pause and Choose","Clarify What You Need Today","Break a Task into Steps","Bring Back Your Attention","Notice Everyday Progress","Create a Simple Routine","Choose a Realistic Priority","Prepare for Your Next Moment","Sort Your Thoughts Calmly","Practice Saying No to a Task","Make Room for What Matters","Review Your Day Without Judgment","Choose a Small Habit","Refocus with a Pause","Plan Without Overloading Yourself","Ask for Support When Needed","Prepare a Calm Finish","Choose How to Continue"],
-"pt":["Organize seu próximo passo","Comece com uma pequena tarefa","Faça uma pausa e escolha","Esclareça o que precisa hoje","Divida uma tarefa em etapas","Recupere sua atenção","Reconheça um avanço cotidiano","Crie uma rotina simples","Escolha uma prioridade realista","Prepare seu próximo momento","Organize suas ideias com calma","Pratique dizer não a uma tarefa","Abra espaço para o que importa","Revise seu dia sem se julgar","Escolha um pequeno hábito","Recupere o foco com uma pausa","Planeje sem se sobrecarregar","Peça apoio quando precisar","Prepare um encerramento tranquilo","Escolha como continuar"]
-}
-}
-
-_DESC={
-"movement":{
-"es":"Actividad cotidiana de movimiento suave, adaptable a tu comodidad y a tu propio ritmo.",
-"en":"A gentle everyday movement activity that you can adapt to your comfort and pace.",
-"pt":"Atividade cotidiana de movimento suave, adaptável ao seu conforto e ritmo."
-},
-"calm":{
-"es":"Pausa de atención y tranquilidad sin exigencias. Respira de forma cómoda y natural.",
-"en":"A mindful pause for calm without pressure. Breathe comfortably and naturally.",
-"pt":"Pausa de atenção e tranquilidade sem cobranças. Respire de forma confortável e natural."
-},
-"coach":{
-"es":"Ejercicio práctico para organizar tus decisiones cotidianas y elegir un paso manejable.",
-"en":"A practical exercise to organize everyday decisions and choose a manageable next step.",
-"pt":"Exercício prático para organizar decisões cotidianas e escolher um próximo passo possível."
-}
-}
-
-_STEPS={
+"es":[
+"Adopta una postura cómoda y estable. Puedes permanecer sentado.",
+"Lee esta indicación y permite que tu respiración siga su ritmo natural.",
+"Afloja suavemente la mandíbula, las manos y los hombros, sin forzar.",
+"Quédate con una sola sensación cómoda. No necesitas conseguir nada especial.",
+"Nota cómo estás ahora y prepárate para continuar a tu propio ritmo."],
+"en":[
+"Choose a comfortable, stable position. You may remain seated.",
+"Read this instruction and let your breathing keep its natural rhythm.",
+"Softly relax your jaw, hands, and shoulders without forcing them.",
+"Stay with one comfortable sensation. You do not need to achieve anything special.",
+"Notice how you feel now and prepare to continue at your own pace."],
+"pt":[
+"Escolha uma posição confortável e estável. Você pode permanecer sentado.",
+"Leia esta instrução e deixe a respiração seguir seu ritmo natural.",
+"Relaxe suavemente a mandíbula, as mãos e os ombros, sem forçar.",
+"Permaneça com uma sensação confortável. Você não precisa alcançar nada especial.",
+"Perceba como você está agora e prepare-se para continuar no seu ritmo."]},
 "movement":{
 "es":[
-"Busca una posición cómoda y estable. Si lo necesitas, siéntate o utiliza un apoyo firme.",
-"Comienza despacio y observa cómo responde tu cuerpo. No fuerces ningún movimiento.",
-"Mueve una parte del cuerpo con suavidad, dentro de un rango cómodo.",
-"Continúa a tu ritmo y mantén una respiración natural. Descansa cuando lo necesites.",
-"Reduce el movimiento poco a poco y vuelve a una posición cómoda.",
-"Nota cómo te encuentras. Puedes terminar aquí o continuar con tu día."
-],
+"Colócate en una posición estable. Si lo necesitas, permanece sentado.",
+"Comienza con un movimiento pequeño y lento, sin rebotes ni esfuerzo.",
+"Continúa solo dentro de un rango cómodo. Respira con naturalidad.",
+"Reduce el movimiento o descansa si notas dolor, mareo o falta de estabilidad.",
+"Detén el movimiento con calma y vuelve a una posición cómoda."],
 "en":[
-"Find a comfortable, stable position. Sit down or use firm support if needed.",
-"Begin slowly and notice how your body responds. Do not force any movement.",
-"Move one part of your body gently, within a comfortable range.",
-"Continue at your own pace and breathe naturally. Rest whenever you need to.",
-"Gradually reduce the movement and return to a comfortable position.",
-"Notice how you feel. You can finish here or continue with your day."
-],
+"Get into a stable position. Remain seated if that helps.",
+"Begin with a small, slow movement, without bouncing or straining.",
+"Continue only within a comfortable range. Breathe naturally.",
+"Reduce the movement or rest if you notice pain, dizziness, or instability.",
+"Stop the movement calmly and return to a comfortable position."],
 "pt":[
-"Encontre uma posição confortável e estável. Sente-se ou use um apoio firme se precisar.",
-"Comece devagar e observe como seu corpo responde. Não force nenhum movimento.",
-"Mova uma parte do corpo suavemente, dentro de um limite confortável.",
-"Continue no seu ritmo e respire naturalmente. Descanse quando precisar.",
-"Reduza o movimento aos poucos e volte a uma posição confortável.",
-"Perceba como você está. Pode terminar aqui ou continuar seu dia."
-]
-},
-"calm":{
-"es":[
-"Adopta una postura cómoda y permite que el cuerpo descanse.",
-"Observa tu respiración sin intentar cambiarla ni hacerla más profunda.",
-"Dirige la atención a las sensaciones del momento, sin juzgarlas.",
-"Si aparecen pensamientos, reconócelos y vuelve con suavidad a tu respiración.",
-"Deja que el ritmo se mantenga cómodo. No necesitas lograr una sensación especial.",
-"Termina a tu ritmo y observa cómo te sientes antes de continuar."
-],
-"en":[
-"Choose a comfortable posture and allow your body to rest.",
-"Notice your breathing without trying to change it or make it deeper.",
-"Bring your attention to present sensations without judging them.",
-"If thoughts appear, acknowledge them and gently return to your breathing.",
-"Let your breathing remain comfortable. You do not need to achieve a special feeling.",
-"Finish at your own pace and notice how you feel before continuing."
-],
-"pt":[
-"Escolha uma postura confortável e permita que o corpo descanse.",
-"Observe sua respiração sem tentar mudá-la nem torná-la mais profunda.",
-"Leve a atenção às sensações do momento, sem julgá-las.",
-"Se surgirem pensamentos, reconheça-os e volte suavemente à respiração.",
-"Deixe o ritmo continuar confortável. Você não precisa alcançar uma sensação especial.",
-"Termine no seu ritmo e perceba como está antes de continuar."
-]
-},
+"Fique em uma posição estável. Permaneça sentado se isso ajudar.",
+"Comece com um movimento pequeno e lento, sem impulsos nem esforço.",
+"Continue apenas dentro de uma amplitude confortável. Respire naturalmente.",
+"Reduza o movimento ou descanse se sentir dor, tontura ou falta de estabilidade.",
+"Interrompa o movimento com calma e volte a uma posição confortável."]},
 "coach":{
 "es":[
-"Detente un momento y piensa qué necesitas atender ahora, sin exigirte resolverlo todo.",
-"Elige una sola situación o tarea concreta en la que quieras centrarte.",
-"Describe el siguiente paso con palabras sencillas y realistas.",
-"Si parece demasiado grande, divídelo en una acción más pequeña.",
-"Decide cuándo o dónde podrías dar ese paso. Ajusta el plan a tu día real.",
-"Resume tu elección y reconoce que puedes revisarla cuando lo necesites."
-],
+"Observa qué necesitas atender ahora, sin intentar resolverlo todo a la vez.",
+"Elige una sola tarea o intención que sea realista para este momento.",
+"Divídela mentalmente en un paso pequeño y concreto.",
+"Decide cuándo o cómo darás ese paso, dejando margen para descansar.",
+"Resume tu próximo paso en una frase sencilla y termina sin exigirte más."],
 "en":[
-"Pause and consider what needs your attention now, without expecting yourself to solve everything.",
-"Choose one specific situation or task to focus on.",
-"Describe the next step in simple, realistic words.",
-"If it feels too big, break it into a smaller action.",
-"Decide when or where you could take that step. Fit the plan to your actual day.",
-"Summarize your choice and remember that you can revise it whenever needed."
-],
+"Notice what needs your attention now, without trying to solve everything at once.",
+"Choose one task or intention that is realistic for this moment.",
+"Break it down mentally into one small, concrete step.",
+"Decide when or how to take that step, leaving room to rest.",
+"Summarize your next step in one simple sentence and finish without demanding more of yourself."],
 "pt":[
-"Pare por um momento e pense no que precisa de atenção agora, sem exigir resolver tudo.",
-"Escolha uma situação ou tarefa específica para focar.",
-"Descreva o próximo passo com palavras simples e realistas.",
-"Se parecer grande demais, divida em uma ação menor.",
-"Decida quando ou onde poderá dar esse passo. Ajuste o plano ao seu dia real.",
-"Resuma sua escolha e lembre-se de que pode revê-la quando precisar."
-]
-}
-}
-
-_SECTION_LABELS={
-"es":{"all":"Todas las actividades","movement":"Movimiento","calm":"Calma","coach":"Rutinas cotidianas"},
-"en":{"all":"All activities","movement":"Movement","calm":"Calm","coach":"Everyday routines"},
-"pt":{"all":"Todas as atividades","movement":"Movimento","calm":"Calma","coach":"Rotinas cotidianas"}
-}
-
-_PROGRAM={
-"es":[
-("Empezar con calma","Elige una actividad sencilla y observa cómo te encuentras."),
-("Moverte a tu ritmo","Haz una pausa de movimiento suave que puedas adaptar."),
-("Respirar con atención","Reserva unos minutos para descansar y observar tu respiración."),
-("Ordenar una prioridad","Escoge una tarea pequeña que tenga sentido para ti."),
-("Crear una pausa cotidiana","Identifica un momento realista del día para hacer una pausa."),
-("Reconocer lo que funciona","Observa qué actividad te resultó cómoda y qué podrías ajustar."),
-("Elegir cómo continuar","Selecciona una práctica que quieras repetir o modificar.")
-],
-"en":[
-("Begin Calmly","Choose a simple activity and notice how you feel."),
-("Move at Your Own Pace","Take a gentle movement break that you can adapt."),
-("Breathe Mindfully","Set aside a few minutes to rest and notice your breathing."),
-("Organize One Priority","Choose a small task that matters to you."),
-("Create an Everyday Pause","Identify a realistic moment in your day for a pause."),
-("Notice What Works","Consider which activity felt comfortable and what you might adjust."),
-("Choose How to Continue","Select a practice you would like to repeat or adapt.")
-],
-"pt":[
-("Comece com calma","Escolha uma atividade simples e perceba como você está."),
-("Movimente-se no seu ritmo","Faça uma pausa de movimento suave que possa adaptar."),
-("Respire com atenção","Reserve alguns minutos para descansar e observar sua respiração."),
-("Organize uma prioridade","Escolha uma pequena tarefa que faça sentido para você."),
-("Crie uma pausa cotidiana","Identifique um momento realista do dia para fazer uma pausa."),
-("Reconheça o que funciona","Observe qual atividade foi confortável e o que pode ajustar."),
-("Escolha como continuar","Selecione uma prática que deseja repetir ou adaptar.")
-]
-}
-
-def _lang(lang):
+"Perceba o que precisa da sua atenção agora, sem tentar resolver tudo de uma vez.",
+"Escolha uma tarefa ou intenção realista para este momento.",
+"Divida-a mentalmente em uma etapa pequena e concreta.",
+"Decida quando ou como dará esse passo, deixando espaço para descansar.",
+"Resuma o próximo passo em uma frase simples e termine sem exigir demais de si."]
+}}
+def _valid_lang(lang):
+    lang=str(lang or "es").lower().strip()
     return lang if lang in LANGUAGES else "es"
-
-def _section(section):
-    if section in SECTIONS:
-        return section
-    aliases={
-        "pause":"calm","energy":"movement","nature":"calm",
-        "program":"coach","routine":"coach","daily":"coach"
-    }
-    return aliases.get(str(section or "").lower(),"coach")
-
-def _duration(minutes):
-    try:
-        value=int(minutes)
-    except (TypeError,ValueError):
-        value=3
+def _valid_section(section):
+    section=str(section or "all").lower().strip()
+    return section if section in SECTIONS else "all"
+def _duration(value):
+    try: value=int(value)
+    except (TypeError,ValueError): value=3
     return min(MINUTES_ALLOWED,key=lambda n:abs(n-value))
-
 def _make_catalog():
-    result=[]
-    for section in SECTIONS:
-        for i,title in enumerate(_NAMES[section]["es"],1):
-            aid=f"{section}_{i:02d}"
-            titles={lang:_NAMES[section][lang][i-1] for lang in LANGUAGES}
-            descriptions={lang:_DESC[section][lang] for lang in LANGUAGES}
-            result.append({
-                "id":aid,
-                "kind":section,
-                "section":section,
-                "title":titles,
-                "name":titles,
-                "description":descriptions,
-                "duration_options":list(MINUTES_ALLOWED),
-                "minutes":5,
-                "steps":{lang:list(_STEPS[section][lang]) for lang in LANGUAGES},
-                "plant_id":None
-            })
-    return result
-
+    out=[]
+    for section,titles in _TITLES.items():
+        for i,title in enumerate(titles,1):
+            out.append({"id":f"{section}_{i:02d}","section":section,"title":dict(zip(LANGUAGES,title)),"description":_DESCRIPTIONS[section],"steps":_STEP_TEXT[section],"plant_id":None,"step_count":5})
+    return out
 _CATALOG=_make_catalog()
-_BY_ID={item["id"]:item for item in _CATALOG}
-
-def get_catalog(lang="es"):
-    lang=_lang(lang)
-    return {
-        "language":lang,
-        "sections":[
-            {"id":s,"name":_SECTION_LABELS[lang][s],
-             "count":sum(1 for a in _CATALOG if a["section"]==s)}
-            for s in ("all",)+SECTIONS
-        ],
-        "durations":list(MINUTES_ALLOWED),
-        "program_days":PROGRAM_DAYS
-    }
-
-def get_activities(lang="es",section="all"):
-    lang=_lang(lang)
-    section=section if section in ("all",)+SECTIONS else "all"
-    result=[]
-    for item in _CATALOG:
-        if section!="all" and item["section"]!=section:
-            continue
-        result.append({
-            "id":item["id"],
-            "kind":item["kind"],
-            "section":item["section"],
-            "title":item["title"][lang],
-            "name":item["name"][lang],
-            "description":item["description"][lang],
-            "minutes":item["minutes"],
-            "duration_options":list(MINUTES_ALLOWED),
-            "steps":list(item["steps"][lang])
-        })
+_BY_ID={x["id"]:x for x in _CATALOG}
+def _public_activity(item,lang="es",minutes=None):
+    lang=_valid_lang(lang)
+    result={"id":item["id"],"section":item["section"],"title":item["title"][lang],"description":item["description"][lang],"steps":list(item["steps"][lang]),"instructions":list(item["steps"][lang]),"step_count":len(item["steps"][lang]),"plant_id":None,"language":lang}
+    if minutes is not None:
+        duration=_duration(minutes)
+        result.update({"minutes":duration,"duration_minutes":duration,"duration_seconds":duration*60,"step_interval_seconds":duration*60/len(result["steps"]),"prompt_interval_seconds":duration*60/len(result["steps"])})
     return result
-
+def get_catalog(lang="es"):
+    lang=_valid_lang(lang)
+    return {"app":APP_NAME,"company":COMPANY,"version":VERSION,"language":lang,"languages":list(LANGUAGES),"sections":[{"id":"calm","name":{"es":"Calma","en":"Calm","pt":"Calma"}[lang]},{"id":"movement","name":{"es":"Movimiento suave","en":"Gentle movement","pt":"Movimento suave"}[lang]},{"id":"coach","name":{"es":"Rutinas cotidianas","en":"Everyday routines","pt":"Rotinas cotidianas"}[lang]}],"activities":[_public_activity(x,lang) for x in _CATALOG],"activity_count":len(_CATALOG),"plant_count":0,"durations":list(MINUTES_ALLOWED),"program_days":7,"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS}
+def get_activities(lang="es",section="all"):
+    lang=_valid_lang(lang); section=_valid_section(section)
+    return [_public_activity(x,lang) for x in _CATALOG if section=="all" or x["section"]==section]
 def get_activity(activity_id,lang="es"):
-    lang=_lang(lang)
-    item=_BY_ID.get(str(activity_id))
-    if not item:
-        return None
-    return {
-        "id":item["id"],
-        "kind":item["kind"],
-        "section":item["section"],
-        "title":item["title"][lang],
-        "name":item["name"][lang],
-        "description":item["description"][lang],
-        "minutes":item["minutes"],
-        "duration_options":list(MINUTES_ALLOWED),
-        "steps":list(item["steps"][lang])
-    }
-
+    item=_BY_ID.get(str(activity_id or ""))
+    return _public_activity(item,lang) if item else None
 def get_plant(plant_id,lang="es"):
     return None
-
 def _section_for_kind(kind):
-    return _section(kind)
-
-def _choose_activity(section,allow_repeat=False):
-    section=_section(section)
-    now=datetime.now(timezone.utc).timestamp()
-    with _LOCK:
-        expired=[key for key,stamp in _RECENT.items() if now-stamp>_RECENT_SECONDS]
-        for key in expired:
-            _RECENT.pop(key,None)
-        choices=[a for a in _CATALOG if a["section"]==section]
-        if not allow_repeat:
-            fresh=[a for a in choices if now-_RECENT.get(a["id"],0)>_RECENT_SECONDS]
-            if fresh:
-                choices=fresh
-        chosen=random.choice(choices)
-        _RECENT[chosen["id"]]=now
-        return chosen
-
-def create_session_id(activity_id=None):
-    seed=f"{activity_id or ''}|{datetime.now(timezone.utc).isoformat()}|{random.random()}"
-    return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:24]
-
-def _remember_session(session_data):
-    with _LOCK:
-        _SESSIONS[session_data["session_id"]]=deepcopy(session_data)
-        while len(_SESSIONS)>_MAX_SESSIONS:
-            _SESSIONS.pop(next(iter(_SESSIONS)))
-    return session_data
-
-def get_session(lang="es",kind="pause",minutes=3,allow_repeat=False,activity_id=None):
-    lang=_lang(lang)
-    duration=_duration(minutes)
-    section=_section(kind)
-    chosen=_BY_ID.get(str(activity_id)) if activity_id else None
-    if chosen and chosen["section"]!=section:
-        section=chosen["section"]
-    if not chosen:
-        chosen=_choose_activity(section,allow_repeat=allow_repeat)
-    steps=list(chosen["steps"][lang])
-    seconds=duration*60
-    step_seconds=seconds/len(steps)
-    session_id=create_session_id(chosen["id"])
-    session_data={
-        "session_id":session_id,
-        "id":chosen["id"],
-        "kind":chosen["kind"],
-        "section":chosen["section"],
-        "language":lang,
-        "title":chosen["title"][lang],
-        "name":chosen["name"][lang],
-        "description":chosen["description"][lang],
-        "minutes":duration,
-        "duration_minutes":duration,
-        "duration_seconds":seconds,
-        "prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,
-        "step_seconds":step_seconds,
-        "steps":steps,
-        "instructions":steps,
-        "total_steps":len(steps),
-        "allow_repeat":bool(allow_repeat),
-        "created_at":datetime.now(timezone.utc).isoformat(),
-        "voice_text":steps[0] if steps else "",
-        "voice_language":{"es":"es-ES","en":"en-US","pt":"pt-PT"}[lang],
-        "safety_note":{
-            "es":"Adapta la actividad a tu comodidad. No fuerces movimientos ni la respiración; detente si sientes dolor, mareo o malestar.",
-            "en":"Adapt the activity to your comfort. Do not force movement or breathing; stop if you feel pain, dizziness, or discomfort.",
-            "pt":"Adapte a atividade ao seu conforto. Não force movimentos nem a respiração; pare se sentir dor, tontura ou desconforto."
-        }[lang]
-    }
-    return _remember_session(session_data)
-
-def get_session_by_id(session_id):
-    with _LOCK:
-        value=_SESSIONS.get(str(session_id))
-        return deepcopy(value) if value else None
-
+    kind=str(kind or "calm").lower().strip()
+    mapping={"pause":"calm","energy":"movement","calm":"calm","movement":"movement","coach":"coach","routine":"coach","daily":"coach","program":"all"}
+    return mapping.get(kind,kind if kind in SECTIONS else "calm")
+def create_session_id(activity_id="",minutes=3):
+    raw=f"{activity_id}|{minutes}|{time.time_ns()}|{random.random()}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:20]
+def get_session(activity_id=None,minutes=3,lang="es",activity=None,kind=None,**kwargs):
+    # Compatible with older positional calls: get_session(lang,kind,minutes)
+    if activity_id in LANGUAGES and isinstance(minutes,str) and str(lang).isdigit():
+        old_lang,old_kind,old_minutes=activity_id,minutes,int(lang)
+        activity_id=None; kind=old_kind; minutes=old_minutes; lang=old_lang
+    lang=_valid_lang(lang); duration=_duration(minutes)
+    if isinstance(activity,dict) and activity.get("id"):
+        activity_id=activity["id"]
+    item=_BY_ID.get(str(activity_id or ""))
+    if item is None:
+        section=_section_for_kind(kind or activity_id)
+        pool=[x for x in _CATALOG if section=="all" or x["section"]==section]
+        if not pool: pool=[x for x in _CATALOG if x["section"]=="calm"]
+        with _LOCK: item=_RNG.choice(pool)
+    result=_public_activity(item,lang,duration)
+    result.update({"app":APP_NAME,"version":VERSION,"session_id":create_session_id(item["id"],duration),"total_steps":len(result["steps"]),"instructions":list(result["steps"]),"duration_seconds":duration*60,"step_interval_seconds":duration*60/len(result["steps"]),"prompt_interval_seconds":duration*60/len(result["steps"]),"timing_mode":"duration_divided_equally_between_visible_steps","voice_order":"show_text_then_speak_same_text"})
+    return result
 def get_program_day(lang="es",day=1):
-    lang=_lang(lang)
-    try:
-        day=int(day)
-    except (TypeError,ValueError):
-        day=1
-    day=max(1,min(PROGRAM_DAYS,day))
-    title,goal=_PROGRAM[lang][day-1]
-    section=("calm","movement","calm","coach","coach","movement","coach")[day-1]
-    chosen=_choose_activity(section,allow_repeat=True)
-    activity=get_activity(chosen["id"],lang)
-    return {
-        "day":day,
-        "total_days":PROGRAM_DAYS,
-        "language":lang,
-        "title":title,
-        "goal":goal,
-        "description":goal,
-        "section":section,
-        "activity":activity,
-        "minutes":5,
-        "duration_options":list(MINUTES_ALLOWED)
-    }
-
+    lang=_valid_lang(lang)
+    try: day=max(1,min(7,int(day)))
+    except (TypeError,ValueError): day=1
+    section=_DAY_SECTIONS[day-1]; duration=_DAY_MINUTES[day-1]
+    pool=[x for x in _CATALOG if x["section"]==section]
+    item=pool[(day*3-3)%len(pool)]
+    labels={"es":f"Día {day} de 7","en":f"Day {day} of 7","pt":f"Dia {day} de 7"}
+    descriptions={"es":"Una propuesta breve y flexible. Adáptala a tu comodidad.","en":"A short, flexible suggestion. Adapt it to your comfort.","pt":"Uma proposta breve e flexível. Adapte-a ao seu conforto."}
+    return {"app":APP_NAME,"version":VERSION,"language":lang,"day":day,"total_days":7,"title":labels[lang],"description":descriptions[lang],"section":section,"minutes":duration,"duration_minutes":duration,"duration_seconds":duration*60,"prompt_interval_seconds":duration*60/5,"activity":_public_activity(item,lang,duration)}
 def get_health():
-    return {
-        "status":"ok",
-        "app":APP_NAME,
-        "version":VERSION,
-        "timestamp":datetime.now(timezone.utc).isoformat(),
-        "activities":len(_CATALOG),
-        "languages":list(LANGUAGES),
-        "durations":list(MINUTES_ALLOWED),
-        "program_days":PROGRAM_DAYS
-    }
-
+    return {"status":"ok","app":APP_NAME,"company":COMPANY,"version":VERSION,"activity_count":len(_CATALOG),"plant_count":0,"durations":list(MINUTES_ALLOWED),"languages":list(LANGUAGES),"sections":list(SECTIONS[1:])}
 def get_config():
-    return {
-        "name":APP_NAME,
-        "company":COMPANY,
-        "version":VERSION,
-        "audience":AUDIENCE,
-        "languages":list(LANGUAGES),
-        "durations":list(MINUTES_ALLOWED),
-        "program_days":PROGRAM_DAYS,
-        "sections":get_catalog("es")["sections"],
-        "activity_count":len(_CATALOG),
-        "prompt_interval_seconds":PROMPT_INTERVAL_SECONDS
-    }
-
+    return {"name":APP_NAME,"company":COMPANY,"version":VERSION,"languages":list(LANGUAGES),"durations":list(MINUTES_ALLOWED),"sections":list(SECTIONS),"activity_count":len(_CATALOG),"plant_count":0,"program_days":7,"prompt_interval_seconds":PROMPT_INTERVAL_SECONDS,"voice_order":"show_text_then_speak_same_text"}
 catalog=get_catalog
 activities=get_activities
-activity=get_activity
-plant=get_plant
 session=get_session
+plant=get_plant
 program_day=get_program_day
 health=get_health
 config=get_config
